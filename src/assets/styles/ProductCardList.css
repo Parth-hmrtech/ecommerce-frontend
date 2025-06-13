@@ -1,0 +1,144 @@
+.product-container {
+    padding: 0px 0px 30px 0px;
+    background-color: #252525;
+}
+
+.product-heading {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    color: #27c4cf;
+padding: 10px 10px;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    padding: 0 2rem;
+}
+
+.product-card {
+    border-radius: 10px;
+    border: 1px solid #27c4cf;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    overflow: hidden;
+
+}
+
+.product-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 0 15px 5px #27c4cf;
+}
+
+.product-image-box {
+    height: 100%;
+    width: 100%;
+    background-color: #2e2e2e; 
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;    
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+}
+.product-image {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+.no-image-text {
+    color: #aaa;
+    font-size: 13px;
+}
+
+.product-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 0.2rem;
+    text-align: center;
+    color: #27c4cf;
+}
+
+.product-info {
+    font-size: 0.85rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    text-align: center;
+}
+
+.product-description {
+    font-size: 0.8rem;
+    color: #555;
+    margin: 0.4rem 0;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.product-price {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #28a745;
+    margin-top: 0.5rem;
+    text-align: center;
+}
+
+.load-more-container {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.load-more-btn {
+    background-color: #27c4cf;
+    color: white;
+    padding: 0.6rem 1.5rem;
+    border: none;
+    border-radius: 25px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.load-more-btn:hover {
+    background-color: #00e4f5f5;
+    transform: translateY(-2px);
+}
+
+.image-arrows {
+  position: absolute;
+  width: 100%;
+  top: 50%;
+  justify-content: space-between;
+  transform: translateY(-50%);
+  padding: 0 10px;
+  display: none;
+}
+.product-image-box:hover .image-arrows {
+  display: flex;
+}
+.arrow-btn {
+  background-color: rgba(0, 0, 0, 0.5);
+  border: none;
+  color: #fff;
+  font-size: 1.2rem;
+  padding: 4px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.product-image {
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.product-image:hover {
+  transform: scale(1.05);
+}
