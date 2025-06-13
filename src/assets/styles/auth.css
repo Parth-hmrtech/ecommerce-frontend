@@ -1,0 +1,118 @@
+.auth-page-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  background-color: #252525;
+  border-radius: 45px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  width: 100%;
+  max-width: 400px; /* reduced from 500px */
+  font-size: 1.1rem;
+  box-sizing: border-box;
+  margin: 1rem;
+  padding: 25px;
+}
+
+.auth-form h2 {
+  text-align: center;
+  margin: 0;
+  font-size: 2rem;
+  padding-top: 1.5rem;
+  color:#ffffff;
+}
+
+.auth-form input,
+.auth-form select {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.1rem;
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  box-sizing: border-box;
+}
+.auth-form input {
+  border: 1px solid #ccc;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.auth-form input:hover {
+  border-color: #4dd7db;
+}
+
+
+/* Input specific */
+.auth-form input {
+  border: 1px solid #ccc;
+}
+
+/* Custom styled select */
+.auth-form select {
+  border: 1px solid #ccc;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg%20fill%3D'%23000'%20viewBox%3D'0%200%2020%2020'%20xmlns%3D'http://www.w3.org/2000/svg'%3E%3Cpath%20d%3D'M5.23%207.21a.75.75%200%20011.06.02L10%2011.188l3.71-3.96a.75.75%200%20111.08%201.04l-4.25%204.54a.75.75%200%2001-1.08%200l-4.25-4.54a.75.75%200%2001.02-1.06z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1.2rem;
+}
+
+.auth-form input:focus,
+.auth-form select:focus {
+  border-color: #4dd7db;
+}
+
+.auth-form button {
+  padding: 1rem;
+  background-color: #27c4cf;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.auth-form button:hover {
+  background-color: #4dd7db;
+}
+
+.auth-form .auth-footer {
+  text-align: center;
+  font-size: 0.95rem;
+  color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+.auth-form .auth-footer span {
+  color: #27c4cf;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.auth-footer, .auth-switch {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  color: #ffffff;
+}
+
+.auth-link {
+  color: #27c4cf;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.auth-link:hover {
+  color: #4dd7db;
+}
