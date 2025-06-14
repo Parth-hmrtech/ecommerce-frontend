@@ -4,10 +4,9 @@ import {
   Box,
   Container,
   AppBar,
-  Toolbar,
+  Grid,
   Button,
   Typography,
-  Stack
 } from '@mui/material';
 import ecommerceLogo from '../assets/images/ecommerce-logo.png';
 import ProductList from '../components/ProductList';
@@ -17,29 +16,27 @@ const Home = () => {
 
   return (
     <Box>
-      <AppBar position="static" color="default" elevation={2}>
-        <Toolbar sx={{ justifyContent: 'space-between' }}>
-          <Box display="flex" alignItems="center">
-            <img
-              src={ecommerceLogo}
-              alt="Logo"
-              style={{ height: 40, marginRight: 8 }}
-            />
-            <Typography variant="h6" color="inherit" noWrap>
-              
-            </Typography>
-          </Box>
+    <AppBar position="static" color="transparent" elevation={1}>
+      <Grid container alignItems="center" justifyContent="space-between" px={3} py={1}>
+        <Grid item display="flex" alignItems="center">
+          <img src={ecommerceLogo} alt="Logo" style={{ height: 80, marginRight: 12 }} />
+          <Typography variant="h6" sx={{ fontWeight: 600 }}>
+          </Typography>
+        </Grid>
 
-          <Stack direction="row" spacing={2}>
-            <Button variant="outlined" color="primary" onClick={() => navigate('/signup')}>
+        <Grid item>
+          <Box display="flex" gap={2}>
+            <Button variant="text" color="primary" onClick={() => navigate('/signup')}>
               Sign Up
             </Button>
             <Button variant="contained" color="primary" onClick={() => navigate('/signin')}>
               Sign In
             </Button>
-          </Stack>
-        </Toolbar>
-      </AppBar>
+          </Box>
+        </Grid>
+      </Grid>
+    </AppBar>
+
 
       <Container sx={{ py: 4 }}>
         <ProductList />
