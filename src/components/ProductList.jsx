@@ -137,7 +137,7 @@ const ProductList = () => {
             const isExpanded = expandedCards[product.id];
 
             return (
-              <Grid item xs={12} sm={6} md={4} key={product.id}>
+              <Grid container spacing={3} columns={12}>
                 <Card sx={{ maxWidth: 345, mx: 'auto', height: '100%', display: 'flex', flexDirection: 'column' }}>
                   <Box sx={{ width: '100%', position: 'relative' }}>
                     {images.length > 1 ? (
@@ -151,20 +151,21 @@ const ProductList = () => {
                         prevArrow={<PrevArrow />}
                       >
                         {images.map((img, idx) => (
-                          <Box key={idx}>
+                          <Box key={`${product.id}-${idx}`}>
                             <CardMedia
                               component="img"
                               image={img || '/default-product.jpg'}
                               alt={`Product image ${idx + 1}`}
                               sx={{
                                 width: '100%',
-                                height: 400,
+                                height: '100%',
                                 objectFit: 'cover',
                                 borderBottom: '1px solid #eee',
                               }}
                             />
                           </Box>
                         ))}
+
                       </Slider>
                     ) : (
                       <CardMedia

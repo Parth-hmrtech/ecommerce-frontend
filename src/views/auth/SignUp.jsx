@@ -12,7 +12,7 @@ import {
   InputLabel,
   Paper,
   Stack,
-  Link
+  Link,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
