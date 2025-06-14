@@ -1,38 +1,56 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom'; 
-import '../assets/styles/homeStyle.css';
+import { useNavigate } from 'react-router-dom';
+import {
+  Box,
+  Container,
+  AppBar,
+  Toolbar,
+  Button,
+  Typography,
+  Stack
+} from '@mui/material';
 import ecommerceLogo from '../assets/images/ecommerce-logo.png';
 import ProductList from '../components/ProductList';
 
 const Home = () => {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   return (
-    <div className="home-container">
-      <div className="main-content">
-        <header className="header">
-          <div className="header-left">
-            <img src={ecommerceLogo} alt="Logo" className="logo" />
-          </div>
-          <div className="header-right">
-            <button className="btn" onClick={() => navigate('/signup')}>
+    <Box>
+      <AppBar position="static" color="default" elevation={2}>
+        <Toolbar sx={{ justifyContent: 'space-between' }}>
+          <Box display="flex" alignItems="center">
+            <img
+              src={ecommerceLogo}
+              alt="Logo"
+              style={{ height: 40, marginRight: 8 }}
+            />
+            <Typography variant="h6" color="inherit" noWrap>
+              
+            </Typography>
+          </Box>
+
+          <Stack direction="row" spacing={2}>
+            <Button variant="outlined" color="primary" onClick={() => navigate('/signup')}>
               Sign Up
-            </button>
-            <button className="btn" onClick={() => navigate('/signin')}>
+            </Button>
+            <Button variant="contained" color="primary" onClick={() => navigate('/signin')}>
               Sign In
-            </button>
-          </div>
-        </header>
+            </Button>
+          </Stack>
+        </Toolbar>
+      </AppBar>
 
-        <div className="content-area">
-          <ProductList />
-        </div>
-      </div>
+      <Container sx={{ py: 4 }}>
+        <ProductList />
+      </Container>
 
-      <footer className="footer">
-        <p>&copy; {new Date().getFullYear()} eCommerce. All rights reserved.</p>
-      </footer>
-    </div>
+      <Box component="footer" sx={{ py: 3, textAlign: 'center', bgcolor: 'background.paper' }}>
+        <Typography variant="body2" color="text.secondary">
+          &copy; {new Date().getFullYear()} eCommerce. All rights reserved.
+        </Typography>
+      </Box>
+    </Box>
   );
 };
 

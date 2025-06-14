@@ -1,31 +1,63 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../../assets/styles/auth.css';
+import {
+  Box,
+  Paper,
+  Typography,
+  TextField,
+  Button,
+  Link,
+  Stack,
+} from '@mui/material';
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('Reset link requested for:', email);
+    // Place your API logic here
+  };
 
   return (
-    <div className="auth-page-wrapper">
-      <form className="auth-form">
-        <h2>Forgot Password</h2>
+    <Box
+      minHeight="100vh"
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      bgcolor="#f0f2f5"
+      px={2}
+    >
+      <Paper elevation={3} sx={{ p: 4, width: '100%', maxWidth: 400 }}>
+        <form onSubmit={handleSubmit}>
+          <Stack spacing={3}>
+            <Typography variant="h5" align="center">
+              Forgot Password
+            </Typography>
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Enter your registered email"
-          required
-        />
+            <TextField
+              type="email"
+              label="Enter your registered email"
+              fullWidth
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
 
-        <button type="submit">Send Reset Link</button>
+            <Button type="submit" variant="contained" fullWidth>
+              Send Reset Link
+            </Button>
 
-        <div className="auth-footer">
-          <span className="auth-link" onClick={() => navigate('/signin')}>
-            Back to Sign In
-          </span>
-        </div>
-      </form>
-    </div>
+            <Typography variant="body2" align="center">
+              <Link component="button" onClick={() => navigate('/signin')}>
+                Back to Sign In
+              </Link>
+            </Typography>
+          </Stack>
+        </form>
+      </Paper>
+    </Box>
   );
 };
 
