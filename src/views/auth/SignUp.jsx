@@ -1,5 +1,4 @@
-// /src/views/auth/SignUp.jsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   TextField,
@@ -17,20 +16,61 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { signUpUser } from '../../store/actions/authActions';
+import { resetAuthState } from '../../store/reducers/authReducer';
 
-const SignUpForm = ({
-  formData,
-  confirmPassword,
-  showPassword,
-  showConfirm,
-  loading,
-  error,
-  handleChange,
-  handleSubmit,
-  setShowPassword,
-  setShowConfirm,
-  navigate,
-}) => {
+const SignUp = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { loading, error, success } = useSelector((state) => state.auth);
+
+  const [formData, setFormData] = useState({
+    first_name: '',
+    last_name: '',
+    email: '',
+    password_hash: '',
+    role: 'buyer',
+    phone_number: '',
+  });
+
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    if (name === 'confirm_password') {
+      setConfirmPassword(value);
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (formData.password_hash !== confirmPassword) {
+      alert('Passwords do not match!');
+      return;
+    }
+
+    const jsonPayload = JSON.stringify(formData);
+    dispatch(signUpUser(jsonPayload));
+  };
+
+  useEffect(() => {
+    if (success) {
+      navigate('/signin');
+      dispatch(resetAuthState());
+    }
+  }, [success, navigate, dispatch]);
+
   return (
     <Box minHeight="100vh" display="flex" justifyContent="center" alignItems="center" bgcolor="#f9f9f9" px={2}>
       <Paper elevation={3} sx={{ p: 4, width: '100%', maxWidth: 500 }}>
@@ -112,4 +152,4 @@ const SignUpForm = ({
   );
 };
 
-export default SignUpForm;
+export default SignUp;

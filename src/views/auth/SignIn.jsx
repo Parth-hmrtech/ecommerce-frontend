@@ -1,5 +1,4 @@
-// /src/views/auth/SignIn.jsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   TextField,
@@ -11,16 +10,54 @@ import {
   CircularProgress,
   Alert,
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { signInUser } from '../../store/actions/authActions';
+import { resetAuthState } from '../../store/reducers/authReducer';
 import ecommerceLogo from '../../assets/images/ecommerce-logo.png';
 
-const SignInForm = ({
-  formData,
-  loading,
-  error,
-  handleChange,
-  handleSubmit,
-  navigate,
-}) => {
+const SignIn = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { user, loading, error, success } = useSelector((state) => state.auth);
+
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+  });
+
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem('user'));
+    const role = userData?.role;
+
+    if (success && user) {
+      if (role === 'buyer') {
+        navigate('/buyer-dashboard');
+      } else if (role === 'seller') {
+        navigate('/seller-dashboard');
+      } else {
+        navigate('/');
+      }
+    }
+
+    return () => {
+      dispatch(resetAuthState());
+    };
+  }, [success, user, navigate, dispatch]);
+
+  const handleChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(signInUser(formData));
+  };
+
   return (
     <Box
       minHeight="100vh"
@@ -96,4 +133,4 @@ const SignInForm = ({
   );
 };
 
-export default SignInForm;
+export default SignIn;

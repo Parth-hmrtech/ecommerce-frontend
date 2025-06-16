@@ -22,7 +22,7 @@ const HomeView = () => {
         <Grid container alignItems="center" justifyContent="space-between" px={3} py={1}>
           <Grid item display="flex" alignItems="center">
             <img src={ecommerceLogo} alt="Logo" style={{ height: 80, marginRight: 12 }} />
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>MyShop</Typography>
+           
           </Grid>
 
           <Grid item>

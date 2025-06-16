@@ -48,10 +48,13 @@ const authSlice = createSlice({
             })
             .addCase(signInUser.fulfilled, (state, action) => {
                 state.loading = false;
-                state.user = action.payload;
                 state.success = true;
                 state.message = action.payload?.message || 'Sign in successful';
+                state.user = action.payload?.data?.user;
+                localStorage.setItem('user', JSON.stringify(action.payload?.data?.user));
+                localStorage.setItem('access_token', action.payload?.data?.token);
             })
+
             .addCase(signInUser.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;

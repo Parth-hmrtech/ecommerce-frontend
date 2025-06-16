@@ -1,5 +1,4 @@
-// /src/views/auth/ForgotPassword.jsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Paper,
@@ -10,16 +9,40 @@ import {
   Stack,
   Alert,
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { forgotPassword } from '../../store/actions/authActions';
+import { resetAuthState } from '../../store/reducers/authReducer';
 
-const ForgotPasswordView = ({
-  email,
-  loading,
-  error,
-  message,
-  setEmail,
-  handleSubmit,
-  navigate,
-}) => {
+const ForgotPassword = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const [email, setEmail] = useState('');
+const { loading, error, message } = useSelector((state) => state.auth);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(forgotPassword(email));
+  };
+
+  // Cleanup when component unmounts
+  useEffect(() => {
+    return () => {
+      dispatch(resetAuthState());
+    };
+  }, [dispatch]);
+
+  // Auto-dismiss message after 1 second
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => {
+        dispatch(resetAuthState());
+      }, 1000); // 1 second
+      return () => clearTimeout(timer);
+    }
+  }, [message, dispatch]);
+
   return (
     <Box
       minHeight="100vh"
@@ -65,4 +88,4 @@ const ForgotPasswordView = ({
   );
 };
 
-export default ForgotPasswordView;
+export default ForgotPassword;
