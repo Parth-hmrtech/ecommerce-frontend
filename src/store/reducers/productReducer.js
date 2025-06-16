@@ -1,47 +1,36 @@
-import {
-    FETCH_PRODUCTS_REQUEST,
-    FETCH_PRODUCTS_SUCCESS,
-    FETCH_PRODUCTS_FAILURE,
-} from '../actions/productActions';
+import { createSlice } from '@reduxjs/toolkit';
+import { fetchProducts } from '../actions/productActions';
 
-const initialState = {
+const productSlice = createSlice({
+  name: 'products',
+  initialState: {
     loading: false,
     products: [],
     error: null,
-};
+  },
+  reducers: {
+    resetProductState: (state) => {
+      state.loading = false;
+      state.products = [];
+      state.error = null;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchProducts.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchProducts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.products = action.payload;
+      })
+      .addCase(fetchProducts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+  },
+});
 
-const productsReducer = (state = initialState, action) => {
-    switch (action.type) {
-        case FETCH_PRODUCTS_REQUEST:
-            return {
-                ...state,
-                loading: true,
-                error: null,
-            };
-
-        case FETCH_PRODUCTS_SUCCESS:
-            const fetchedProducts = Array.isArray(action.payload?.data)
-                ? action.payload.data
-                : [];
-
-            console.log('Products fetched:', fetchedProducts);
-
-            return {
-                ...state,
-                loading: false,
-                products: fetchedProducts,
-            };
-
-        case FETCH_PRODUCTS_FAILURE:
-            return {
-                ...state,
-                loading: false,
-                error: action.payload,
-            };
-
-        default:            
-            return state;
-    }
-};
-
-export default productsReducer;
+export const { resetProductState } = productSlice.actions;
+export default productSlice.reducer;

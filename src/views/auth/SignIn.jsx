@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+// /src/views/auth/SignIn.jsx
+import React from 'react';
 import {
   Box,
   TextField,
@@ -7,30 +7,20 @@ import {
   Typography,
   Stack,
   Link,
-  Paper
+  Paper,
+  CircularProgress,
+  Alert,
 } from '@mui/material';
 import ecommerceLogo from '../../assets/images/ecommerce-logo.png';
 
-const SignIn = () => {
-  const navigate = useNavigate();
-
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
-
-  const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Sign In form data:', formData);
-  };
-
+const SignInForm = ({
+  formData,
+  loading,
+  error,
+  handleChange,
+  handleSubmit,
+  navigate,
+}) => {
   return (
     <Box
       minHeight="100vh"
@@ -45,11 +35,7 @@ const SignIn = () => {
         component="img"
         src={ecommerceLogo}
         alt="Ecommerce Logo"
-        sx={{
-          height: 60,
-          cursor: 'pointer',
-          mb: 4,
-        }}
+        sx={{ height: 60, cursor: 'pointer', mb: 4 }}
         onClick={() => navigate('/')}
       />
 
@@ -60,6 +46,8 @@ const SignIn = () => {
           </Typography>
 
           <Stack spacing={2}>
+            {error && <Alert severity="error">{error}</Alert>}
+
             <TextField
               fullWidth
               type="email"
@@ -80,17 +68,19 @@ const SignIn = () => {
             />
 
             <Box textAlign="right">
-              <Link
-                component="button"
-                variant="body2"
-                onClick={() => navigate('/forgot-password')}
-              >
+              <Link component="button" variant="body2" onClick={() => navigate('/forgot-password')}>
                 Forgot password?
               </Link>
             </Box>
 
-            <Button variant="contained" fullWidth type="submit">
-              Login
+            <Button
+              variant="contained"
+              fullWidth
+              type="submit"
+              disabled={loading}
+              startIcon={loading && <CircularProgress size={20} />}
+            >
+              {loading ? 'Logging in...' : 'Login'}
             </Button>
 
             <Typography variant="body2" align="center">
@@ -106,4 +96,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default SignInForm;

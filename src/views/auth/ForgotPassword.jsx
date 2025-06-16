@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+// /src/views/auth/ForgotPassword.jsx
+import React from 'react';
 import {
   Box,
   Paper,
@@ -8,18 +8,18 @@ import {
   Button,
   Link,
   Stack,
+  Alert,
 } from '@mui/material';
 
-const ForgotPassword = () => {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Reset link requested for:', email);
-    // Place your API logic here
-  };
-
+const ForgotPasswordView = ({
+  email,
+  loading,
+  error,
+  message,
+  setEmail,
+  handleSubmit,
+  navigate,
+}) => {
   return (
     <Box
       minHeight="100vh"
@@ -36,6 +36,9 @@ const ForgotPassword = () => {
               Forgot Password
             </Typography>
 
+            {error && <Alert severity="error">{error}</Alert>}
+            {message && <Alert severity="success">{message}</Alert>}
+
             <TextField
               type="email"
               label="Enter your registered email"
@@ -43,10 +46,11 @@ const ForgotPassword = () => {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              disabled={loading}
             />
 
-            <Button type="submit" variant="contained" fullWidth>
-              Send Reset Link
+            <Button type="submit" variant="contained" fullWidth disabled={loading}>
+              {loading ? 'Sending...' : 'Send Reset Link'}
             </Button>
 
             <Typography variant="body2" align="center">
@@ -61,4 +65,4 @@ const ForgotPassword = () => {
   );
 };
 
-export default ForgotPassword;
+export default ForgotPasswordView;

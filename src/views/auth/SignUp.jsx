@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+// /src/views/auth/SignUp.jsx
+import React from 'react';
 import {
   Box,
   TextField,
@@ -13,99 +14,42 @@ import {
   Paper,
   Stack,
   Link,
+  CircularProgress,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
 
-const SignUp = () => {
-  const navigate = useNavigate();
-
-  const [formData, setFormData] = useState({
-    first_name: '',
-    last_name: '',
-    email: '',
-    password_hash: '',
-    confirm_password: '',
-    role: 'buyer',
-    phone_number: '',
-  });
-
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
-
-  const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (formData.password_hash !== formData.confirm_password) {
-      alert('Passwords do not match!');
-      return;
-    }
-    console.log('Sign Up form data:', formData);
-  };
-
+const SignUpForm = ({
+  formData,
+  confirmPassword,
+  showPassword,
+  showConfirm,
+  loading,
+  error,
+  handleChange,
+  handleSubmit,
+  setShowPassword,
+  setShowConfirm,
+  navigate,
+}) => {
   return (
-    <Box
-      minHeight="100vh"
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      bgcolor="#f9f9f9"
-      px={2}
-    >
+    <Box minHeight="100vh" display="flex" justifyContent="center" alignItems="center" bgcolor="#f9f9f9" px={2}>
       <Paper elevation={3} sx={{ p: 4, width: '100%', maxWidth: 500 }}>
         <form onSubmit={handleSubmit}>
-          <Typography variant="h5" gutterBottom>
-            Sign Up
-          </Typography>
+          <Typography variant="h5" gutterBottom>Sign Up</Typography>
 
           <Stack spacing={2}>
-            <TextField
-              fullWidth
-              label="First Name"
-              name="first_name"
-              value={formData.first_name}
-              onChange={handleChange}
-              required
-            />
-            <TextField
-              fullWidth
-              label="Last Name"
-              name="last_name"
-              value={formData.last_name}
-              onChange={handleChange}
-              required
-            />
-            <TextField
-              fullWidth
-              label="Email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-            <TextField
-              fullWidth
-              label="Phone Number"
-              name="phone_number"
-              value={formData.phone_number}
-              onChange={handleChange}
-              required
-            />
+            <TextField label="First Name" name="first_name" value={formData.first_name} onChange={handleChange} fullWidth required />
+            <TextField label="Last Name" name="last_name" value={formData.last_name} onChange={handleChange} fullWidth required />
+            <TextField label="Email" name="email" type="email" value={formData.email} onChange={handleChange} fullWidth required />
+            <TextField label="Phone Number" name="phone_number" value={formData.phone_number} onChange={handleChange} fullWidth required />
 
             <TextField
-              fullWidth
               label="Password"
               name="password_hash"
               type={showPassword ? 'text' : 'password'}
               value={formData.password_hash}
               onChange={handleChange}
+              fullWidth
               required
               InputProps={{
                 endAdornment: (
@@ -119,12 +63,12 @@ const SignUp = () => {
             />
 
             <TextField
-              fullWidth
               label="Confirm Password"
               name="confirm_password"
               type={showConfirm ? 'text' : 'password'}
-              value={formData.confirm_password}
+              value={confirmPassword}
               onChange={handleChange}
+              fullWidth
               required
               InputProps={{
                 endAdornment: (
@@ -151,15 +95,15 @@ const SignUp = () => {
               </Select>
             </FormControl>
 
-            <Button variant="contained" fullWidth type="submit">
-              Sign Up
+            <Button variant="contained" fullWidth type="submit" disabled={loading}>
+              {loading ? <CircularProgress size={24} color="inherit" /> : 'Sign Up'}
             </Button>
+
+            {error && <Typography color="error" align="center">{error}</Typography>}
 
             <Typography variant="body2" align="center">
               Already have an account?{' '}
-              <Link component="button" onClick={() => navigate('/signin')}>
-                Sign in
-              </Link>
+              <Link component="button" onClick={() => navigate('/signin')}>Sign in</Link>
             </Typography>
           </Stack>
         </form>
@@ -168,4 +112,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default SignUpForm;

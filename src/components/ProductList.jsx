@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
   Box,
-  Grid,
   Card,
   CardMedia,
   CardContent,
@@ -10,13 +9,17 @@ import {
   Button,
   CardActions,
 } from '@mui/material';
+
+import { Grid } from "@mui/material";
+
+
+
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts } from '../store/actions/productActions';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-// Custom arrow components
 const NextArrow = (props) => {
   const { onClick } = props;
   return (
@@ -137,13 +140,21 @@ const ProductList = () => {
             const isExpanded = expandedCards[product.id];
 
             return (
-              <Grid container spacing={3} columns={12}>
-                <Card sx={{ maxWidth: 345, mx: 'auto', height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <Grid key={product.id}>
+                <Card
+                  sx={{
+                    maxWidth: 345,
+                    mx: 'auto',
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}
+                >
                   <Box sx={{ width: '100%', position: 'relative' }}>
                     {images.length > 1 ? (
                       <Slider
-                        dots={true}
-                        infinite={true}
+                        dots
+                        infinite
                         speed={500}
                         slidesToShow={1}
                         slidesToScroll={1}
@@ -165,7 +176,6 @@ const ProductList = () => {
                             />
                           </Box>
                         ))}
-
                       </Slider>
                     ) : (
                       <CardMedia
@@ -180,10 +190,10 @@ const ProductList = () => {
                         }}
                       />
                     )}
-
                   </Box>
+
                   <CardContent>
-                    <Typography gutterBottom variant="h6" component="div">
+                    <Typography gutterBottom variant="h6">
                       {product.product_name}
                     </Typography>
                     <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>

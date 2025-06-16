@@ -1,9 +1,8 @@
-// src/routes/index.js
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "../views/Home";
-import SignIn from "../views/auth/SignIn";
-import SignUp from "../views/auth/SignUp";
-import ForgotPassword from "../views/auth/ForgotPassword";
+import Home from "../pages/home";
+import SignIn from "../pages/auth/signIn";
+import SignUp from '../pages/auth/signUp.jsx';
+import ForgotPassword from "../pages/auth/forgotPassword";
 
 const AppRoutes = () => (
   <Router>
