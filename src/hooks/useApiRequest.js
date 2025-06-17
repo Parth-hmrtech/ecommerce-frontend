@@ -1,17 +1,23 @@
 import axios from 'axios';
 
 export const apiRequest = async ({ method, url, headers = {}, data = null }) => {
+  console.log('Request:', method, url);
+
   try {
-    const response = await axios({
+    const config = {
       method,
       url,
       headers: {
         'Content-Type': 'application/json',
-        ...headers, // merge custom headers if passed
+        ...headers,
       },
-      data,
-    });
+    };
 
+    if (method !== 'DELETE' && data) {
+      config.data = data;
+    }
+
+    const response = await axios(config);
     return response;
   } catch (error) {
     throw error;

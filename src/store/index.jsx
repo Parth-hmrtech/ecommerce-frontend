@@ -1,14 +1,21 @@
 import { configureStore } from '@reduxjs/toolkit';
+
 import authReducer from './reducers/authReducer';
 import productReducer from './reducers/productReducer';
-import sellerReducer from './reducers/sellerReducer';
+import sellerProductReducer from './reducers/sellerProductReducer';
+import categoryReducer from './reducers/sellerCategoryReducer';
+import subCategoryReducer from './reducers/sellerSubCategoryReducer';
+import sellerOrderReducer from './reducers/sellerOrderReducer'; 
+
 const store = configureStore({
   reducer: {
     auth: authReducer,
     product: productReducer,
-    categories: sellerReducer, 
+    categories: categoryReducer,
+    subcategories: subCategoryReducer,
+    sellerProduct: sellerProductReducer,
+    sellerOrders: sellerOrderReducer, 
   },
 });
-
 
 export default store;

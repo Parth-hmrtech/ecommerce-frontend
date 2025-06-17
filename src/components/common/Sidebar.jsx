@@ -1,5 +1,4 @@
-// src/components/common/Sidebar.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Drawer,
     List,
@@ -9,6 +8,7 @@ import {
     ListItemText,
     Toolbar,
     Box,
+    Collapse,
 } from '@mui/material';
 import {
     Dashboard as DashboardIcon,
@@ -19,6 +19,7 @@ import {
     Payment as PaymentIcon,
     RateReview as ReviewsIcon,
     Logout as LogoutIcon,
+    Image as ImageIcon,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
@@ -26,6 +27,7 @@ const drawerWidth = 220;
 
 const Sidebar = ({ open }) => {
     const navigate = useNavigate();
+    const [showUpload, setShowUpload] = useState(false);
 
     return (
         <Drawer
@@ -47,26 +49,92 @@ const Sidebar = ({ open }) => {
         >
             <Toolbar />
 
-            {/* Wrap the entire list in a Box and push it to the bottom */}
-            <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', mt: '20px' }}>
+            <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', mt: 2 }}>
                 <List>
-                    {[
-                        { text: 'Dashboard', icon: <DashboardIcon />, route: '/seller-dashboard' },
-                        { text: 'Categories', icon: <CategoryIcon />, route: '/seller-dashboard/categories' },
-                        { text: 'Sub Categories', icon: <SubtitlesIcon />, route: '/sub-categories' },
-                        { text: 'Products', icon: <InventoryIcon />, route: '/products' },
-                        { text: 'Orders', icon: <ReceiptLongIcon />, route: '/orders' },
-                        { text: 'Payments', icon: <PaymentIcon />, route: '/payments' },
-                        { text: 'Reviews', icon: <ReviewsIcon />, route: '/reviews' },
-                    ].map(({ text, icon, route }) => (
-                        <ListItem key={text} disablePadding>
-                            <ListItemButton onClick={() => navigate(route)}>
-                                <ListItemIcon>{icon}</ListItemIcon>
-                                <ListItemText primary={text} />
-                            </ListItemButton>
-                        </ListItem>
-                    ))}
+                    {/* Dashboard */}
+                    <ListItem disablePadding>
+                        <ListItemButton onClick={() => navigate('/seller-dashboard')}>
+                            <ListItemIcon><DashboardIcon /></ListItemIcon>
+                            <ListItemText primary="Dashboard" />
+                        </ListItemButton>
+                    </ListItem>
 
+                    {/* Categories */}
+                    <ListItem disablePadding>
+                        <ListItemButton onClick={() => navigate('/seller-dashboard/categories')}>
+                            <ListItemIcon><CategoryIcon /></ListItemIcon>
+                            <ListItemText primary="Categories" />
+                        </ListItemButton>
+                    </ListItem>
+
+                    {/* Sub Categories */}
+                    <ListItem disablePadding>
+                        <ListItemButton onClick={() => navigate('/seller-dashboard/sub-categories')}>
+                            <ListItemIcon><SubtitlesIcon /></ListItemIcon>
+                            <ListItemText primary="Sub Categories" />
+                        </ListItemButton>
+                    </ListItem>
+
+                    {/* Products + Upload Submenu on Hover */}
+                    <ListItem
+                        disablePadding
+                        onMouseEnter={() => setShowUpload(true)}
+                        onMouseLeave={() => setShowUpload(false)}
+                    >
+                        <Box sx={{ width: '100%' }}>
+                            <ListItemButton onClick={() => navigate('/seller-dashboard/products')}>
+                                <ListItemIcon><InventoryIcon /></ListItemIcon>
+                                <ListItemText primary="Products" />
+                            </ListItemButton>
+
+                            <Collapse in={showUpload} timeout="auto" unmountOnExit>
+                                <List component="div" disablePadding>
+                                    <ListItemButton
+                                        sx={{
+                                            pl: 6,
+                                            gap: 1,
+                                            minHeight: 36,
+                                        }}
+                                        onClick={() => navigate('/seller-dashboard/products/upload-images')}
+                                    >
+                                        <ListItemIcon sx={{ minWidth: 30 }}>
+                                            <ImageIcon fontSize="small" />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary="Upload Image"
+                                            primaryTypographyProps={{ fontSize: 14 }}
+                                        />
+                                    </ListItemButton>
+                                </List>
+                            </Collapse>
+                        </Box>
+                    </ListItem>
+
+                    {/* Orders */}
+                    <ListItem disablePadding>
+                        <ListItemButton onClick={() => navigate('/seller-dashboard/orders')}>
+                            <ListItemIcon><ReceiptLongIcon /></ListItemIcon>
+                            <ListItemText primary="Orders" />
+                        </ListItemButton>
+                    </ListItem>
+
+                    {/* Payments */}
+                    <ListItem disablePadding>
+                        <ListItemButton onClick={() => navigate('/seller-dashboard/payments')}>
+                            <ListItemIcon><PaymentIcon /></ListItemIcon>
+                            <ListItemText primary="Payments" />
+                        </ListItemButton>
+                    </ListItem>
+
+                    {/* Reviews */}
+                    <ListItem disablePadding>
+                        <ListItemButton onClick={() => navigate('/reviews')}>
+                            <ListItemIcon><ReviewsIcon /></ListItemIcon>
+                            <ListItemText primary="Reviews" />
+                        </ListItemButton>
+                    </ListItem>
+
+                    {/* Logout */}
                     <ListItem disablePadding>
                         <ListItemButton
                             onClick={() => {
