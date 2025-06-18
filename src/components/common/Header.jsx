@@ -15,11 +15,11 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { useNavigate } from 'react-router-dom'; // <-- import navigate hook
+import { useNavigate } from 'react-router-dom';
 
 const Header = ({ sidebarOpen, onToggleSidebar }) => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const navigate = useNavigate(); // <-- use navigate
+  const navigate = useNavigate();
 
   const handleAvatarClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -36,7 +36,7 @@ const Header = ({ sidebarOpen, onToggleSidebar }) => {
 
   const handleProfileClick = () => {
     handleMenuClose();
-    navigate('/seller-dashboard/profile'); // <-- navigate to profile
+    navigate('/seller-dashboard/profile');
   };
 
   return (
@@ -58,13 +58,12 @@ const Header = ({ sidebarOpen, onToggleSidebar }) => {
             {sidebarOpen ? <ChevronLeftIcon /> : <MenuIcon />}
           </IconButton>
 
-          <ShoppingBagIcon sx={{ fontSize: 40, color: '#fff', mr: 1 }} />
-          <Typography variant="h6" noWrap>
+          <ShoppingBagIcon sx={{ fontSize: 30, color: '#fff', mr: 1 }} />
+          <Typography variant="h6" noWrap color="#fff">
             eCommerce Dashboard
           </Typography>
         </Box>
 
-        {/* Profile Avatar */}
         <IconButton onClick={handleAvatarClick}>
           <Avatar alt="User" src="/path/to/user-image.jpg" />
         </IconButton>

@@ -1,8 +1,7 @@
 import axios from 'axios';
 
 export const apiRequest = async ({ method, url, headers = {}, data = null }) => {
-  console.log('Request:', method, url);
-
+  
   try {
     const config = {
       method,

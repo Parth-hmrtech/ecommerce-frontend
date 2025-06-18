@@ -10,6 +10,10 @@ import sellerOrderReducer from './reducers/sellerOrderReducer';
 import sellerPaymentReducer from './reducers/sellerPaymentReducer';
 import sellerReviewReducer from './reducers/sellerReviewReducer';
 import sellerProfileReducer from './reducers/sellerProfileReducer'; // <-- ✅ Add this line
+import buyerReducer from './reducers/buyerReducer';
+import buyerProductReducer from './reducers/buyerProductReducer';
+import buyerCartReducer from './reducers/buyerCartReducer';
+
 
 const store = configureStore({
   reducer: {
@@ -21,7 +25,11 @@ const store = configureStore({
     sellerOrders: sellerOrderReducer,
     sellerPayments: sellerPaymentReducer,
     sellerReviews: sellerReviewReducer,
-    sellerProfile: sellerProfileReducer, // <-- ✅ Add reducer key here
+    sellerProfile: sellerProfileReducer,
+    buyer: buyerReducer,
+    buyerProduct: buyerProductReducer,
+    buyerCart: buyerCartReducer,
+
   },
 });
 
