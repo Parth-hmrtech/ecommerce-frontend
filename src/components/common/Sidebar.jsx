@@ -128,7 +128,7 @@ const Sidebar = ({ open }) => {
 
                     {/* Reviews */}
                     <ListItem disablePadding>
-                        <ListItemButton onClick={() => navigate('/reviews')}>
+                        <ListItemButton onClick={() => navigate('/seller-dashboard/reviews')}>
                             <ListItemIcon><ReviewsIcon /></ListItemIcon>
                             <ListItemText primary="Reviews" />
                         </ListItemButton>

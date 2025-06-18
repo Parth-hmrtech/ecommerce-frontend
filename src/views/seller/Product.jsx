@@ -38,7 +38,7 @@ import Header from '../../components/common/Header';
 import Footer from '../../components/common/Footer';
 import Sidebar from '../../components/common/Sidebar';
 
-const Product = () => {
+const SellerProduct = () => {
     const dispatch = useDispatch();
 
     const { list: products, loading, error } = useSelector((state) => state.sellerProduct);
@@ -422,4 +422,4 @@ const Product = () => {
     );
 };
 
-export default Product;
+export default SellerProduct;

@@ -11,11 +11,14 @@ import BuyerDashboard from "../pages/buyer/buyerDashboard";
 
 // Seller Pages
 import SellerDashboard from "../pages/seller/sellerDashboard";
-import ManageCategory from "../views/seller/Category";
-import ManageSubCategory from "../views/seller/SubCategory";
-import ManageProducts from "../views/seller/Product";
+import SellerCategory from "../views/seller/Category";
+import SellerSubCategory from "../views/seller/SubCategory";
+import SellerProducts from "../views/seller/Product";
 import SellerOrderList from "../views/seller/Order";
-import ManageProductImages from "../views/seller/ProductUploadImage"; // ✅ FIXED
+import SellerProductImages from "../views/seller/ProductUploadImage"; // ✅ FIXED
+import SellerPayments from "../views/seller/Payment"; // ✅ FIXED
+import SellerReview from "../views/seller/Review"; // ✅ FIXED
+import SellerProfile from '../views/seller/Profile'; // ✅
 
 // Utilities
 import ProtectedRoute from "../utils/ProtectedRoute";
@@ -38,14 +41,17 @@ const AppRoutes = () => {
         {/* Protected Seller Routes */}
         <Route element={<ProtectedRoute requiredRole="seller" />}>
           <Route path="/seller-dashboard" element={<SellerDashboard />} />
-          <Route path="/seller-dashboard/categories" element={<ManageCategory />} />
-          <Route path="/seller-dashboard/sub-categories" element={<ManageSubCategory />} />
-          <Route path="/seller-dashboard/products" element={<ManageProducts />} />
+          <Route path="/seller-dashboard/categories" element={<SellerCategory />} />
+          <Route path="/seller-dashboard/sub-categories" element={<SellerSubCategory />} />
+          <Route path="/seller-dashboard/products" element={<SellerProducts />} />
           <Route
             path="/seller-dashboard/products/upload-images"
-            element={<ManageProductImages />}
+            element={<SellerProductImages />}
           />
           <Route path="/seller-dashboard/orders" element={<SellerOrderList />} />
+          <Route path="/seller-dashboard/payments" element={<SellerPayments />} />
+          <Route path="/seller-dashboard/reviews" element={<SellerReview />} />
+          <Route path="/seller-dashboard/profile" element={<SellerProfile />} />
         </Route>
       </Routes>
     </Router>

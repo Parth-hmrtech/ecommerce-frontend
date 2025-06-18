@@ -35,7 +35,7 @@ import Header from '../../components/common/Header';
 import Footer from '../../components/common/Footer';
 import Sidebar from '../../components/common/Sidebar';
 
-const Category = () => {
+const SellerCategory = () => {
     const dispatch = useDispatch();
     const { list, loading, error } = useSelector((state) => state.categories);
 
@@ -316,4 +316,4 @@ const Category = () => {
     );
 };
 
-export default Category;
+export default SellerCategory;

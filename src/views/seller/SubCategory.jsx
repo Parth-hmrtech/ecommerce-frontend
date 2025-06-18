@@ -39,7 +39,7 @@ import Header from '../../components/common/Header';
 import Sidebar from '../../components/common/Sidebar';
 import Footer from '../../components/common/Footer';
 
-const SubCategory = () => {
+const SellerSubCategory = () => {
   const dispatch = useDispatch();
   const { list, loading, error } = useSelector((state) => state.subcategories);
   const { list: categoryList } = useSelector((state) => state.categories);
@@ -295,4 +295,4 @@ const SubCategory = () => {
   );
 };
 
-export default SubCategory;
+export default SellerSubCategory;

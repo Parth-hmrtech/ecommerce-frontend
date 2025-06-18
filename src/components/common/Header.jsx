@@ -12,10 +12,14 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import logo from '../../assets/images/ecommerce-logo.png';
+import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { useNavigate } from 'react-router-dom'; // <-- import navigate hook
 
 const Header = ({ sidebarOpen, onToggleSidebar }) => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const navigate = useNavigate(); // <-- use navigate
 
   const handleAvatarClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -28,6 +32,11 @@ const Header = ({ sidebarOpen, onToggleSidebar }) => {
   const handleLogout = () => {
     localStorage.removeItem('user');
     window.location.href = '/signin';
+  };
+
+  const handleProfileClick = () => {
+    handleMenuClose();
+    navigate('/seller-dashboard/profile'); // <-- navigate to profile
   };
 
   return (
@@ -49,12 +58,7 @@ const Header = ({ sidebarOpen, onToggleSidebar }) => {
             {sidebarOpen ? <ChevronLeftIcon /> : <MenuIcon />}
           </IconButton>
 
-          <Box
-            component="img"
-            src={logo}
-            alt="eCommerce Logo"
-            sx={{ height: 60, marginRight: 2, mt: 2 }}
-          />
+          <ShoppingBagIcon sx={{ fontSize: 40, color: '#fff', mr: 1 }} />
           <Typography variant="h6" noWrap>
             eCommerce Dashboard
           </Typography>
@@ -77,8 +81,14 @@ const Header = ({ sidebarOpen, onToggleSidebar }) => {
             horizontal: 'right',
           }}
         >
-          <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-          <MenuItem onClick={handleLogout}>Logout</MenuItem>
+          <MenuItem onClick={handleProfileClick}>
+            <AccountCircleIcon sx={{ mr: 1 }} />
+            My Profile
+          </MenuItem>
+          <MenuItem onClick={handleLogout}>
+            <LogoutIcon sx={{ mr: 1 }} />
+            Logout
+          </MenuItem>
         </Menu>
       </Toolbar>
     </AppBar>

@@ -90,7 +90,7 @@ const sliderSettings = {
     arrows: true,
 };
 
-const ProductUploadImage = () => {
+const SellerProductImages = () => {
     const dispatch = useDispatch();
     const { list: products = [], loading, error } = useSelector(
         (state) => state.sellerProduct
@@ -332,4 +332,4 @@ const ProductUploadImage = () => {
     );
 };
 
-export default ProductUploadImage;
+export default SellerProductImages;
