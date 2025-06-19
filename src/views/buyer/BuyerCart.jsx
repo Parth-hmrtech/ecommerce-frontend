@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Container,
@@ -8,11 +8,12 @@ import {
   CardContent,
   IconButton,
   CircularProgress,
-  Grid,
   Button,
+  TextField,
 } from '@mui/material';
 import { Add, Remove, Delete } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import BuyerHeader from '../../components/common/BuyerHeader';
 import BuyerFooter from '../../components/common/BuyerFooter';
@@ -21,39 +22,85 @@ import {
   updateBuyerCart,
   deleteBuyerCart,
 } from '../../store/actions/buyerCartAction';
+import { fetchProducts } from '../../store/actions/productActions';
+import { placeBuyerOrder } from '../../store/actions/buyerOrderAction';
 
 const BuyerCart = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  // ✅ Fix: Include loading and error
   const { cart = [], loading, error } = useSelector((state) => state.buyerCart);
+  const { products = [] } = useSelector((state) => state.product);
+
+  const [showPlaceOrder, setShowPlaceOrder] = useState(false);
+  const [address, setAddress] = useState('');
 
   useEffect(() => {
     dispatch(fetchBuyerCart());
+    dispatch(fetchProducts());
   }, [dispatch]);
 
   const handleUpdateQuantity = (item, delta) => {
     const newQty = item.quantity + delta;
     if (newQty < 1) return;
-    dispatch(updateBuyerCart({ ...item, quantity: newQty }));
-  };
-
-  const handleDeleteItem = (id) => {
-    dispatch(deleteBuyerCart(id));
-  };
-
-  const calculateTotal = () => {
-    return cart.reduce(
-      (total, item) => total + item.quantity * (item.product?.price || 0),
-      0
+    dispatch(updateBuyerCart({ id: item.id, quantity: newQty })).then(() =>
+      dispatch(fetchBuyerCart())
     );
   };
 
+  const handleDeleteItem = (id) => {
+    dispatch(deleteBuyerCart(id)).then(() => dispatch(fetchBuyerCart()));
+  };
+
+  const handleCardClick = (productId) => {
+    navigate(`/buyer-dashboard/product-details/${productId}`);
+  };
+
+  const calculateTotal = () => {
+    return cart.reduce((total, item) => {
+      const product = products.find((p) => p.id === item.product_id);
+      return total + item.quantity * (Number(product?.price) || 0);
+    }, 0);
+  };
+
+  const handlePlaceOrderClick = () => {
+    setShowPlaceOrder(true);
+  };
+
+  const handlePlaceOrderSubmit = () => {
+    if (!address.trim()) {
+      alert('Please enter your address.');
+      return;
+    }
+
+    const orderData = {
+      delivery_address: address,
+      products: cart.map((item) => ({
+        product_id: item.product_id,
+        quantity: item.quantity,
+      })),
+    };
+
+    dispatch(placeBuyerOrder(orderData)).then((res) => {
+    console.log(orderData);
+    
+      // Check action type against correct asyncThunk action type
+      if (res.type === 'buyerOrder/placeBuyerOrder/fulfilled') {
+        setAddress('');
+        setShowPlaceOrder(false);
+        navigate('/buyer-dashboard/orders');
+      } else {
+        alert('Order failed. Please try again.');
+      }
+    });
+  };
+
+
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: '#f4f6f8' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#f4f6f8' }}>
       <BuyerHeader />
 
-      <Container sx={{ mt: 5, mb: 5 }}>
+      <Container sx={{ mt: 5, mb: 5, flex: 1 }}>
         <Typography variant="h5" gutterBottom>
           My Cart
         </Typography>
@@ -68,41 +115,67 @@ const BuyerCart = () => {
           <Typography>No items in cart.</Typography>
         ) : (
           <>
-            <Grid container spacing={3}>
+            <Box
+              display="grid"
+              gridTemplateColumns={{
+                xs: '1fr',
+                sm: 'repeat(2, 1fr)',
+                md: 'repeat(3, 1fr)',
+                lg: 'repeat(4, 1fr)',
+              }}
+              gap={3}
+            >
               {cart.map((item) => {
+                const product = products.find((p) => p.id === item.product_id);
+                if (!product) return null;
+
                 let imageUrl = '/default-product.jpg';
                 try {
-                  const parsedImages = JSON.parse(item.product?.image_url || '[]');
-                  if (Array.isArray(parsedImages) && parsedImages.length > 0) {
-                    imageUrl = parsedImages[0];
+                  const parsed = JSON.parse(product.image_url || '[]');
+                  if (Array.isArray(parsed) && parsed.length > 0) {
+                    imageUrl = parsed[0]?.image_url || imageUrl;
                   }
-                } catch {
-                  // default image will be used
-                }
+                } catch { }
 
                 return (
-                  <Grid key={item.id} item xs={12} sm={6} md={4} lg={3}>
-                    <Card sx={{ display: 'flex', flexDirection: 'column' }}>
-                      <CardMedia
-                        component="img"
-                        height="140"
-                        image={imageUrl}
-                        alt={item.product?.product_name || 'Product Image'}
-                      />
-                      <CardContent>
-                        <Typography variant="h6" fontSize={16}>
-                          {item.product?.product_name}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          ₹{item.product?.price}
-                        </Typography>
+                  <Card
+                    key={item.id}
+                    onClick={() => handleCardClick(product.id)}
+                    sx={{
+                      height: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                      cursor: 'pointer',
+                      transition: 'box-shadow 0.3s ease-in-out',
+                      '&:hover': {
+                        boxShadow: '0 0 20px rgba(0, 123, 255, 0.4)',
+                      },
+                    }}
+                  >
+                    <CardMedia
+                      component="img"
+                      height="100%"
+                      image={imageUrl}
+                      alt={product?.product_name || 'Product Image'}
+                      sx={{ objectFit: 'cover' }}
+                    />
+                    <CardContent sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+                      <Typography variant="h6" fontSize={16} gutterBottom>
+                        {product?.product_name}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        ₹{Number(product?.price).toLocaleString()}
+                      </Typography>
 
-                        <Box
-                          display="flex"
-                          alignItems="center"
-                          justifyContent="space-between"
-                          mt={2}
-                        >
+                      <Box
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        mt={2}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Box display="flex" alignItems="center">
                           <IconButton
                             onClick={() => handleUpdateQuantity(item, -1)}
                             disabled={item.quantity <= 1}
@@ -113,31 +186,118 @@ const BuyerCart = () => {
                           <IconButton onClick={() => handleUpdateQuantity(item, 1)}>
                             <Add />
                           </IconButton>
-                          <IconButton
-                            onClick={() => handleDeleteItem(item.id)}
-                            color="error"
-                          >
-                            <Delete />
-                          </IconButton>
                         </Box>
-                      </CardContent>
-                    </Card>
-                  </Grid>
+                        <IconButton onClick={() => handleDeleteItem(item.id)} color="error">
+                          <Delete />
+                        </IconButton>
+                      </Box>
+                    </CardContent>
+                  </Card>
                 );
               })}
-            </Grid>
-
-            <Box mt={4} textAlign="right">
-              <Typography variant="h6">Total: ₹{calculateTotal()}</Typography>
-              <Button variant="contained" color="primary" sx={{ mt: 2 }}>
-                Proceed to Checkout
-              </Button>
             </Box>
+
+            <Box mt={4}>
+              <Typography variant="h6" textAlign="right">
+                Total: ₹{calculateTotal().toLocaleString()}
+              </Typography>
+              <Box textAlign="right">
+                <Button
+                  variant="contained"
+                  color="success"
+                  sx={{ mt: 2 }}
+                  onClick={handlePlaceOrderClick}
+                >
+                  Place Order
+                </Button>
+              </Box>
+            </Box>
+
+            {showPlaceOrder && (
+              <>
+                {/* Background overlay */}
+                <Box
+                  onClick={() => setShowPlaceOrder(false)}
+                  sx={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    width: '100vw',
+                    height: '100vh',
+                    bgcolor: 'rgba(0, 0, 0, 0.3)',
+                    backdropFilter: 'blur(5px)',
+                    zIndex: 999,
+                    cursor: 'pointer',
+                  }}
+                />
+
+                {/* Centered order form */}
+                <Box
+                  sx={{
+                    position: 'fixed',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    bgcolor: 'white',
+                    borderRadius: 2,
+                    boxShadow: 24,
+                    zIndex: 1000,
+                    width: '90%',
+                    maxWidth: 500,
+                    p: 4,
+                  }}
+                >
+                  <Typography variant="h6" gutterBottom>
+                    Order Summary
+                  </Typography>
+
+                  {cart.map((item) => {
+                    const product = products.find((p) => p.id === item.product_id);
+                    return (
+                      <Box
+                        key={item.id}
+                        display="flex"
+                        justifyContent="space-between"
+                        borderBottom="1px solid #eee"
+                        py={1}
+                      >
+                        <Typography>{product?.product_name}</Typography>
+                        <Typography>
+                          ₹{Number(product?.price).toLocaleString()} × {item.quantity}
+                        </Typography>
+                      </Box>
+                    );
+                  })}
+
+                  <Typography mt={2} fontWeight="bold">
+                    Total: ₹{calculateTotal().toLocaleString()}
+                  </Typography>
+
+                  <TextField
+                    fullWidth
+                    multiline
+                    rows={3}
+                    label="Shipping Address"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    sx={{ mt: 3 }}
+                  />
+
+                  <Box textAlign="right" mt={3}>
+                    <Button variant="contained" color="primary" onClick={handlePlaceOrderSubmit}>
+                      Confirm Order
+                    </Button>
+                  </Box>
+                </Box>
+              </>
+            )}
           </>
         )}
       </Container>
 
-      <BuyerFooter />
+      <Box mt="auto">
+        <BuyerFooter />
+      </Box>
     </Box>
   );
 };

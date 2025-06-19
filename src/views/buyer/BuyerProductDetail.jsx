@@ -1,7 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+
+import {
+    fetchBuyerCart,
+    addToBuyerCart,
+    updateBuyerCart,
+    deleteBuyerCart,
+} from '../../store/actions/buyerCartAction';
 import { fetchBuyerProductById } from '../../store/actions/buyerProductAction';
+import {
+    fetchBuyerWishlist,
+    addToBuyerWishlist,
+} from '../../store/actions/buyerWishlistAction';
 
 import {
     Box,
@@ -11,9 +22,13 @@ import {
     CardContent,
     Container,
     IconButton,
-    Button,
+    Snackbar,
+    Alert,
 } from '@mui/material';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import { Add, Remove } from '@mui/icons-material';
+
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -21,85 +36,55 @@ import 'slick-carousel/slick/slick-theme.css';
 import BuyerHeader from '../../components/common/BuyerHeader';
 import BuyerFooter from '../../components/common/BuyerFooter';
 
-// Custom Arrows
 const NextArrow = ({ onClick }) => (
-    <Box
-        onClick={onClick}
-        sx={{
-            position: 'absolute',
-            top: '50%',
-            right: -20,
-            transform: 'translateY(-50%)',
-            width: 36,
-            height: 60,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            bgcolor: 'white',
-            borderTopLeftRadius: '30px',
-            borderBottomLeftRadius: '30px',
-            boxShadow: 3,
-            cursor: 'pointer',
-            fontSize: 22,
-            color: '#333',
-            zIndex: 1,
-            transition: 'all 0.3s ease',
-            '&:hover': {
-                bgcolor: '#f0f0f0',
-                transform: 'translateY(-50%) scale(1.05)',
-                boxShadow: '0 0 20px rgba(0, 140, 255, 0.6)',
-            },
-        }}
-    >
-        ❯
-    </Box>
+    <Box onClick={onClick} sx={{
+        position: 'absolute', top: '50%', right: -20, transform: 'translateY(-50%)',
+        width: 36, height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center',
+        bgcolor: 'white', borderTopLeftRadius: '30px', borderBottomLeftRadius: '30px',
+        boxShadow: 3, cursor: 'pointer', zIndex: 1,
+    }}>❯</Box>
 );
 
 const PrevArrow = ({ onClick }) => (
-    <Box
-        onClick={onClick}
-        sx={{
-            position: 'absolute',
-            top: '50%',
-            left: -20,
-            transform: 'translateY(-50%)',
-            width: 36,
-            height: 60,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            bgcolor: 'white',
-            borderTopRightRadius: '30px',
-            borderBottomRightRadius: '30px',
-            boxShadow: 3,
-            cursor: 'pointer',
-            fontSize: 22,
-            color: '#333',
-            zIndex: 1,
-            transition: 'all 0.3s ease',
-            '&:hover': {
-                bgcolor: '#f0f0f0',
-                transform: 'translateY(-50%) scale(1.05)',
-                boxShadow: '0 0 20px rgba(0, 140, 255, 0.6)',
-            },
-        }}
-    >
-        ❮
-    </Box>
+    <Box onClick={onClick} sx={{
+        position: 'absolute', top: '50%', left: -20, transform: 'translateY(-50%)',
+        width: 36, height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center',
+        bgcolor: 'white', borderTopRightRadius: '30px', borderBottomRightRadius: '30px',
+        boxShadow: 3, cursor: 'pointer', zIndex: 1,
+    }}>❮</Box>
 );
 
 const BuyerProductDetail = () => {
     const { productId } = useParams();
     const dispatch = useDispatch();
+
     const { product, loading, error } = useSelector((state) => state.buyerProduct);
+    const { cart = [] } = useSelector((state) => state.buyerCart);
+    const { items: wishlist = [] } = useSelector((state) => state.buyerWishlist);
 
     const [quantity, setQuantity] = useState(0);
+    const [wishlisted, setWishlisted] = useState(false);
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
 
     useEffect(() => {
         if (productId) {
             dispatch(fetchBuyerProductById(productId));
+            dispatch(fetchBuyerCart());
+            dispatch(fetchBuyerWishlist());
         }
     }, [dispatch, productId]);
+
+    useEffect(() => {
+        const existingItem = cart.find((item) => item.product_id === product?.id);
+        if (existingItem) {
+            setQuantity(existingItem.quantity);
+        }
+    }, [cart, product]);
+
+    useEffect(() => {
+        const alreadyWishlisted = wishlist.some((item) => item.product_id === product?.id);
+        setWishlisted(alreadyWishlisted);
+    }, [wishlist, product]);
 
     const getImages = (imageString) => {
         try {
@@ -111,16 +96,40 @@ const BuyerProductDetail = () => {
     };
 
     const handleQuantityChange = (delta) => {
-        setQuantity((prev) => Math.max(0, prev + delta));
+        if (!product?.id) return;
+
+        const newQuantity = Math.max(0, quantity + delta);
+        setQuantity(newQuantity);
+        const existingItem = cart.find((item) => item.product_id === product.id);
+
+        if (newQuantity === 0 && existingItem) {
+            dispatch(deleteBuyerCart(existingItem.id)).then(() => dispatch(fetchBuyerCart()));
+        } else if (existingItem) {
+            dispatch(updateBuyerCart({ id: existingItem.id, quantity: newQuantity }))
+                .then(() => dispatch(fetchBuyerCart()));
+        } else {
+            dispatch(addToBuyerCart({ product_id: product.id, quantity: newQuantity }))
+                .then(() => dispatch(fetchBuyerCart()));
+        }
     };
 
-    const handleAddToCart = () => {
-        alert(`Added ${quantity} item(s) to cart for: ${product.product_name}`);
-        // TODO: Add to cart API or Redux dispatch here
+    const handleWishlistClick = () => {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const buyer_id = user?.id;
+
+        console.log('Buyer ID:', buyer_id);
+
+        if (product && buyer_id) {
+            dispatch(addToBuyerWishlist({ buyer_id, product_id: product.id }))
+                .then(() => {
+                    setWishlisted(true);
+                    setSnackbarOpen(true);
+                });
+        }
     };
 
     const images = getImages(product?.image_url);
-    const totalPrice = product?.price * quantity;
+    const totalPrice = (product?.price || 0) * quantity;
 
     const sliderSettings = {
         dots: true,
@@ -140,22 +149,31 @@ const BuyerProductDetail = () => {
 
             <Container sx={{ mt: 5, mb: 5, flex: 1 }}>
                 {loading ? (
-                    <Box display="flex" justifyContent="center" mt={4}>
-                        <CircularProgress />
-                    </Box>
+                    <Box display="flex" justifyContent="center" mt={4}><CircularProgress /></Box>
                 ) : error ? (
                     <Typography color="error">Error: {error}</Typography>
-                ) : !product || !product.image_url ? (
+                ) : !product ? (
                     <Typography>No product found.</Typography>
                 ) : (
-                    <Box
-                        display="flex"
-                        flexDirection={{ xs: 'column', md: 'row' }}
-                        gap={4}
-                        justifyContent="center"
-                    >
+                    <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={4} justifyContent="center">
                         {/* Product Image Slider */}
-                        <Card sx={{ flex: 1, p: 2, overflow: 'hidden' }}>
+                        <Card sx={{ flex: 1, p: 2, overflow: 'hidden', position: 'relative' }}>
+                            {/* Heart Icon */}
+                            <IconButton
+                                onClick={handleWishlistClick}
+                                sx={{
+                                    position: 'absolute',
+                                    top: 12,
+                                    right: 12,
+                                    zIndex: 2,
+                                    bgcolor: '#fff',
+                                    '&:hover': { bgcolor: '#ffe6e6' },
+                                    boxShadow: 2,
+                                }}
+                            >
+                                {wishlisted ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon />}
+                            </IconButton>
+
                             {images.length > 0 ? (
                                 <Slider {...sliderSettings}>
                                     {images.map((url, index) => (
@@ -211,53 +229,39 @@ const BuyerProductDetail = () => {
                                     ₹{product.price}
                                 </Typography>
 
-                                {/* Quantity & Cart Controls */}
+                                {/* Quantity Control */}
                                 <Box display="flex" alignItems="center" mt={3}>
-                                    <IconButton
-                                        onClick={() => handleQuantityChange(-1)}
-                                        disabled={quantity === 0}
-                                        color="primary"
-                                    >
+                                    <IconButton onClick={() => handleQuantityChange(-1)} disabled={quantity === 0} color="primary">
                                         <Remove />
                                     </IconButton>
-                                    <Typography variant="body1" sx={{ mx: 2 }}>
-                                        {quantity}
-                                    </Typography>
+                                    <Typography variant="body1" sx={{ mx: 2 }}>{quantity}</Typography>
                                     <IconButton onClick={() => handleQuantityChange(1)} color="primary">
                                         <Add />
                                     </IconButton>
                                 </Box>
 
-                                {/* Total Price Display */}
                                 {quantity > 0 && (
                                     <Typography variant="body1" sx={{ mt: 2 }}>
                                         <strong>Total:</strong> ₹{totalPrice}
                                     </Typography>
-                                )}
-
-                                {quantity > 0 && (
-                                    <Button
-                                        onClick={handleAddToCart}
-                                        sx={{
-                                            mt: 2,
-                                            borderRadius: '20px',
-                                            border: '1px solid #e0e0e0',
-                                            boxShadow: 'none',
-                                            transition: 'all 0.3s ease',
-                                            '&:hover': {
-                                                boxShadow: '0 0 20px rgba(0, 140, 255, 0.6)',
-                                            },
-                                        }}
-                                    >
-                                        Add to Cart
-                                    </Button>
-
                                 )}
                             </CardContent>
                         </Card>
                     </Box>
                 )}
             </Container>
+
+            {/* Snackbar */}
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={3000}
+                onClose={() => setSnackbarOpen(false)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            >
+                <Alert severity="success" onClose={() => setSnackbarOpen(false)}>
+                    Added to wishlist!
+                </Alert>
+            </Snackbar>
 
             <BuyerFooter />
         </Box>

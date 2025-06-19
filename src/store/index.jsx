@@ -13,6 +13,10 @@ import sellerProfileReducer from './reducers/sellerProfileReducer'; // <-- ✅ A
 import buyerReducer from './reducers/buyerReducer';
 import buyerProductReducer from './reducers/buyerProductReducer';
 import buyerCartReducer from './reducers/buyerCartReducer';
+import buyerOrderReducer from './reducers/buyerOrderReducer';
+import buyerPaymentReducer from './reducers/buyerPaymentReducer';
+import buyerWishlistReducer from './reducers/buyerwishlistReducer';
+import buyerReviewReducer from './reducers/buyerReviewReducer';
 
 
 const store = configureStore({
@@ -29,6 +33,11 @@ const store = configureStore({
     buyer: buyerReducer,
     buyerProduct: buyerProductReducer,
     buyerCart: buyerCartReducer,
+    buyerOrder: buyerOrderReducer,
+    buyerPayment: buyerPaymentReducer,
+    buyerWishlist: buyerWishlistReducer,
+    buyerReview: buyerReviewReducer,
+
 
   },
 });

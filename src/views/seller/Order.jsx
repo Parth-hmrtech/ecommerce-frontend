@@ -76,6 +76,7 @@ const SellerOrderList = () => {
                                     <TableRow>
                                         <TableCell />
                                         <TableCell>Order ID</TableCell>
+                                        <TableCell>Address</TableCell>
                                         <TableCell>Status</TableCell>
                                         <TableCell>Total</TableCell>
                                         <TableCell>Order Date</TableCell>
@@ -95,6 +96,7 @@ const SellerOrderList = () => {
                                                 </TableCell>
 
                                                 <TableCell>{order.id}</TableCell>
+                                                <TableCell>{order.delivery_address}</TableCell>
 
                                                 <TableCell>
                                                     <Typography
@@ -110,18 +112,17 @@ const SellerOrderList = () => {
                                                 <TableCell>&#8377;{order.total_amount}</TableCell>
                                                 <TableCell>{new Date(order.order_date).toLocaleString()}</TableCell>
                                                 <TableCell>
-                                                    <FormControl fullWidth size="small">
-                                                        <Select
-                                                            value={order.status}
-                                                            onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                                                        >
-                                                            <MenuItem value="pending">Pending</MenuItem>
-                                                            <MenuItem value="accepted">Accepted</MenuItem>
-                                                            <MenuItem value="shipped">Shipped</MenuItem>
-                                                            <MenuItem value="delivered">Delivered</MenuItem>
-                                                            <MenuItem value="cancelled">Cancelled</MenuItem>
-                                                        </Select>
-                                                    </FormControl>
+                                                    <Select
+                                                        value={order.status?.toLowerCase() || 'pending'} 
+                                                        onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                                                    >
+                                                        <MenuItem value="pending">Pending</MenuItem>
+                                                        <MenuItem value="accepted">Accepted</MenuItem>
+                                                        <MenuItem value="shipped">Shipped</MenuItem>
+                                                        <MenuItem value="delivered">Delivered</MenuItem>
+                                                        <MenuItem value="cancelled">Cancelled</MenuItem>
+                                                    </Select>
+
                                                 </TableCell>
                                             </TableRow>
 

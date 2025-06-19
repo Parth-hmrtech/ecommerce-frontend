@@ -3,13 +3,13 @@ import {
     Box,
     Container,
     Typography,
-    Grid,
     Card,
     CardMedia,
     CardContent,
     IconButton,
     CircularProgress,
     TextField,
+    Button,
 } from '@mui/material';
 import { Add, Remove } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
@@ -17,31 +17,61 @@ import { useNavigate } from 'react-router-dom';
 
 import BuyerHeader from '../../components/common/BuyerHeader';
 import BuyerFooter from '../../components/common/BuyerFooter';
+
 import { fetchProducts } from '../../store/actions/productActions';
+import {
+    fetchBuyerCart,
+    addToBuyerCart,
+    updateBuyerCart,
+    deleteBuyerCart,
+} from '../../store/actions/buyerCartAction';
 
 const BuyerDashboard = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const { products = [], loading, error } = useSelector((state) => state.product);
+    const { cart = [] } = useSelector((state) => state.buyerCart);
 
     const [quantities, setQuantities] = useState({});
-    const [filteredProducts, setFilteredProducts] = useState([]);
     const [search, setSearch] = useState('');
 
     useEffect(() => {
         dispatch(fetchProducts());
+        dispatch(fetchBuyerCart());
     }, [dispatch]);
 
     useEffect(() => {
-        filterProducts();
-    }, [products, search]);
+        const qtyMap = {};
+        cart.forEach((item) => {
+            qtyMap[item.product_id] = item.quantity;
+        });
+        setQuantities(qtyMap);
+    }, [cart]);
 
     const handleQuantityChange = (productId, delta) => {
+        const currentQty = quantities[productId] || 0;
+        const newQty = Math.max(0, currentQty + delta);
+
         setQuantities((prev) => ({
             ...prev,
-            [productId]: Math.max(0, (prev[productId] || 0) + delta),
+            [productId]: newQty,
         }));
+
+        const cartItem = cart.find((item) => item.product_id === productId);
+
+        if (newQty === 0 && cartItem) {
+            dispatch(deleteBuyerCart(cartItem.id));
+            dispatch(fetchProducts());
+            dispatch(fetchBuyerCart());
+            return;
+        }
+
+        if (cartItem) {
+            dispatch(updateBuyerCart({ id: cartItem.id, quantity: newQty }));
+        } else if (newQty > 0) {
+            dispatch(addToBuyerCart({ product_id: productId, quantity: newQty }));
+        }
     };
 
     const handleCardClick = (productId) => {
@@ -59,12 +89,9 @@ const BuyerDashboard = () => {
         }
     };
 
-    const filterProducts = () => {
-        const result = products.filter((product) =>
-            product.product_name?.toLowerCase().includes(search.toLowerCase())
-        );
-        setFilteredProducts(result);
-    };
+    const filteredProducts = products.filter((product) =>
+        product.product_name?.toLowerCase().includes(search.toLowerCase())
+    );
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#f4f6f8' }}>
@@ -89,13 +116,22 @@ const BuyerDashboard = () => {
                 ) : error ? (
                     <Typography color="error">Error: {error}</Typography>
                 ) : (
-                    <Grid container spacing={3} justifyContent="center">
+                    <Box
+                        display="grid"
+                        gridTemplateColumns={{
+                            xs: 'repeat(1, 1fr)',
+                            sm: 'repeat(2, 1fr)',
+                            md: 'repeat(3, 1fr)',
+                            lg: 'repeat(4, 1fr)',
+                        }}
+                        gap={3}
+                    >
                         {filteredProducts.map((product) => {
                             const images = getImageArray(product.image_url);
                             const quantity = quantities[product.id] || 0;
 
                             return (
-                                <Grid key={product.id} sx={{ flexBasis: { xs: '100%', sm: '50%', md: '33.33%', lg: '20%' }, p: 1 }}>
+                                <Box key={product.id}>
                                     <Card
                                         onClick={() => handleCardClick(product.id)}
                                         sx={{
@@ -106,7 +142,7 @@ const BuyerDashboard = () => {
                                             cursor: 'pointer',
                                             transition: 'box-shadow 0.3s ease-in-out',
                                             '&:hover': {
-                                                boxShadow: '0 0 20px rgba(0, 123, 255, 0.4)', // Blue shadow
+                                                boxShadow: '0 0 20px rgba(0, 123, 255, 0.4)',
                                             },
                                         }}
                                     >
@@ -125,45 +161,43 @@ const BuyerDashboard = () => {
                                                 justifyContent: 'space-between',
                                             }}
                                         >
-                                            <Box>
-                                                <Typography variant="h6" fontSize="16px" sx={{ mb: 0.5 }}>
-                                                    {product.product_name}
-                                                </Typography>
-                                                <Typography variant="body2" color="text.secondary">
-                                                    ₹{product.price}
-                                                </Typography>
+                                            <Typography variant="h6" fontSize="16px" sx={{ mb: 0.5 }}>
+                                                {product.product_name}
+                                            </Typography>
+                                            <Typography variant="body2" color="text.secondary">
+                                                ₹{product.price}
+                                            </Typography>
 
-                                                <Box
-                                                    display="flex"
-                                                    alignItems="center"
-                                                    justifyContent="center"
-                                                    mt={1}
-                                                    onClick={(e) => e.stopPropagation()}
+                                            <Box
+                                                display="flex"
+                                                alignItems="center"
+                                                justifyContent="center"
+                                                mt={1}
+                                                onClick={(e) => e.stopPropagation()}
+                                            >
+                                                <IconButton
+                                                    color="primary"
+                                                    onClick={() => handleQuantityChange(product.id, -1)}
+                                                    disabled={quantity === 0}
                                                 >
-                                                    <IconButton
-                                                        color="primary"
-                                                        onClick={() => handleQuantityChange(product.id, -1)}
-                                                        disabled={quantity === 0}
-                                                    >
-                                                        <Remove />
-                                                    </IconButton>
-                                                    <Typography variant="body1" sx={{ mx: 2 }}>
-                                                        {quantity}
-                                                    </Typography>
-                                                    <IconButton
-                                                        color="primary"
-                                                        onClick={() => handleQuantityChange(product.id, 1)}
-                                                    >
-                                                        <Add />
-                                                    </IconButton>
-                                                </Box>
+                                                    <Remove />
+                                                </IconButton>
+                                                <Typography variant="body1" sx={{ mx: 2 }}>
+                                                    {quantity}
+                                                </Typography>
+                                                <IconButton
+                                                    color="primary"
+                                                    onClick={() => handleQuantityChange(product.id, 1)}
+                                                >
+                                                    <Add />
+                                                </IconButton>
                                             </Box>
                                         </CardContent>
                                     </Card>
-                                </Grid>
+                                </Box>
                             );
                         })}
-                    </Grid>
+                    </Box>
                 )}
             </Container>
 

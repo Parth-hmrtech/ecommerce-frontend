@@ -10,6 +10,8 @@ import ForgotPassword from "../pages/auth/forgotPassword";
 import BuyerDashboard from "../views/buyer/BuyerDashboard";
 import BuyerProductDetail from "../views/buyer/BuyerProductDetail";
 import BuyerCart from "../views/buyer/BuyerCart";
+import BuyerOrders from "../views/buyer/BuyerOrders";
+import BuyerWishlist from "../views/buyer/Buyerwishlist";
 
 // Seller Pages
 import SellerDashboard from "../pages/seller/sellerDashboard";
@@ -40,6 +42,8 @@ const AppRoutes = () => {
           <Route path="/buyer-dashboard" element={<BuyerDashboard />} />
           <Route path="/buyer-dashboard/product-details/:productId" element={<BuyerProductDetail />} />
           <Route path="/buyer-dashboard/cart" element={<BuyerCart />} />
+          <Route path="/buyer-dashboard/orders" element={<BuyerOrders />} />
+          <Route path="/buyer-dashboard/wishlist" element={<BuyerWishlist />} />
 
         </Route>
 
