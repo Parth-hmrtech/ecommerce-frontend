@@ -23,6 +23,7 @@ import {
   MenuItem,
   Snackbar,
   Alert,
+  Rating
 } from '@mui/material';
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
@@ -409,17 +410,20 @@ const BuyerOrders = () => {
                                           </FormControl>
 
                                           {/* Rating Field */}
-                                          <TextField
-                                            label="Rating"
-                                            type="number"
-                                            size="small"
-                                            sx={{ width: 80 }}
-                                            inputProps={{ min: 1, max: 5 }}
-                                            value={reviewInputs[order.id]?.rating || ''}
-                                            onChange={(e) =>
-                                              handleReviewInputChange(order.id, 'rating', e.target.value)
-                                            }
-                                          />
+                                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+  <Typography variant="body2" sx={{ mr: 1 }}>
+    Rating:
+  </Typography>
+  <Rating
+    name={`rating-${order.id}`}
+    value={Number(reviewInputs[order.id]?.rating || 0)}
+    onChange={(event, newValue) => {
+      handleReviewInputChange(order.id, 'rating', newValue);
+    }}
+    size="small"
+  />
+</Box>
+
 
                                           {/* Comment Field */}
                                           <TextField
