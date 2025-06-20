@@ -201,13 +201,24 @@ const BuyerOrders = () => {
     setReviewInputs((prev) => ({ ...prev, [order.id]: {} }));
     dispatch(fetchBuyerReviewByProductId(productId));
   };
+const handleUpdateReview = async (reviewId, orderId) => {
+  const { rating, comment, product_id } = reviewInputs[orderId] || {};
 
-  const handleUpdateReview = async (reviewId, orderId) => {
-    const { comment, rating, product_id } = reviewInputs[orderId] || {};
-    if (!comment || !rating || !reviewId) return alert('Please select a review to edit and fill details.');
-    await dispatch(updateBuyerReview(reviewId, { rating, comment }));
+  if (!reviewId || !rating || !comment) {
+    alert('Please select a review to edit and fill in all details.');
+    return;
+  }
+
+  try {
+    await dispatch(updateBuyerReview({ id: reviewId, rating, comment }));
     dispatch(fetchBuyerReviewByProductId(product_id));
-  };
+    console.log('Review updated:', { reviewId, rating, comment });
+  } catch (error) {
+    console.error('Failed to update review:', error);
+    alert('Something went wrong while updating the review.');
+  }
+};
+
 
   const handleDeleteReview = async (reviewId, productId) => {
     await dispatch(deleteBuyerReview(reviewId));
@@ -341,6 +352,7 @@ const BuyerOrders = () => {
                                               borderRadius: 1,
                                               display: 'flex',
                                               justifyContent: 'space-between',
+                                              alignItems: 'center',
                                             }}
                                           >
                                             <Box>
@@ -354,21 +366,41 @@ const BuyerOrders = () => {
                                                 <strong>Comment:</strong> {review.comment}
                                               </Typography>
                                             </Box>
-                                            <Button
-                                              size="small"
-                                              color="error"
-                                              variant="outlined"
-                                              onClick={() => handleDeleteReview(review.id, review.product_id)}
-                                            >
-                                              Delete
-                                            </Button>
+                                            <Box sx={{ display: 'flex', gap: 1 }}>
+                                              <Button
+                                                size="small"
+                                                color="error"
+                                                variant="outlined"
+                                                onClick={() => handleDeleteReview(review.id, review.product_id)}
+                                              >
+                                                Delete
+                                              </Button>
+                                              <Button
+                                                size="small"
+                                                color="primary"
+                                                variant="outlined"
+                                                onClick={() =>
+                                                  setReviewInputs((prev) => ({
+                                                    ...prev,
+                                                    [order.id]: {
+                                                      product_id: review.product_id,
+                                                      rating: review.rating,
+                                                      comment: review.comment,
+                                                      review_id: review.id,
+                                                    },
+                                                  }))
+                                                }
+                                              >
+                                                Edit
+                                              </Button>
+                                            </Box>
                                           </Box>
                                         </TableCell>
                                       </TableRow>
                                     ));
                                   })()}
 
-                                  {/* Add/Edit Review */}
+                                  {/* Add/ Review */}
                                   {order.status === 'delivered' && (
                                     <TableRow>
                                       <TableCell colSpan={4}>
@@ -411,18 +443,18 @@ const BuyerOrders = () => {
 
                                           {/* Rating Field */}
                                           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-  <Typography variant="body2" sx={{ mr: 1 }}>
-    Rating:
-  </Typography>
-  <Rating
-    name={`rating-${order.id}`}
-    value={Number(reviewInputs[order.id]?.rating || 0)}
-    onChange={(event, newValue) => {
-      handleReviewInputChange(order.id, 'rating', newValue);
-    }}
-    size="small"
-  />
-</Box>
+                                            <Typography variant="body2" sx={{ mr: 1 }}>
+                                              Rating:
+                                            </Typography>
+                                            <Rating
+                                              name={`rating-${order.id}`}
+                                              value={Number(reviewInputs[order.id]?.rating || 0)}
+                                              onChange={(event, newValue) => {
+                                                handleReviewInputChange(order.id, 'rating', newValue);
+                                              }}
+                                              size="small"
+                                            />
+                                          </Box>
 
 
                                           {/* Comment Field */}
@@ -451,15 +483,19 @@ const BuyerOrders = () => {
                                           {reviewInputs[order.id]?.review_id && (
                                             <Button
                                               size="small"
-                                              color="warning"
-                                              variant="outlined"
+                                              color="success"
+                                              variant="contained"
                                               onClick={() =>
-                                                handleUpdateReview(reviewInputs[order.id]?.review_id, order.id)
+                                                handleUpdateReview(
+                                                  reviewInputs[order.id].review_id,
+                                                  order.id
+                                                )
                                               }
                                             >
-                                              Edit
+                                              Update
                                             </Button>
                                           )}
+
                                         </Box>
                                       </TableCell>
 

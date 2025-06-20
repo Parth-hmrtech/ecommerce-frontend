@@ -1,4 +1,3 @@
-// src/store/reducers/buyerReviewReducer.js
 import { createSlice } from '@reduxjs/toolkit';
 import {
   fetchBuyerReviewByProductId,
@@ -23,15 +22,14 @@ const buyerReviewSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch all reviews (by product)
+      // Fetch reviews by product
       .addCase(fetchBuyerReviewByProductId.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchBuyerReviewByProductId.fulfilled, (state, action) => {
         state.loading = false;
-        state.items = action.payload;
-        
+        state.items = action.payload || [];
       })
       .addCase(fetchBuyerReviewByProductId.rejected, (state, action) => {
         state.loading = false;
@@ -59,9 +57,20 @@ const buyerReviewSlice = createSlice({
       })
       .addCase(updateBuyerReview.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.items.findIndex((r) => r.id === action.payload.id);
+
+        const updatedReview = action.payload;
+
+        if (!updatedReview || !updatedReview.id) {
+          state.error = 'Invalid review update payload';
+          return;
+        }
+
+        const index = state.items.findIndex((r) => r.id === updatedReview.id);
         if (index !== -1) {
-          state.items[index] = action.payload;
+          state.items[index] = updatedReview;
+        } else {
+          // Optionally push if not found
+          state.items.push(updatedReview);
         }
       })
       .addCase(updateBuyerReview.rejected, (state, action) => {

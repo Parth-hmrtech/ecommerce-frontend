@@ -13,7 +13,7 @@ const getTokenHeader = () => {
 export const fetchBuyerReviewByProductId = createAsyncThunk(
   'buyerReview/fetchByProductId',
   async (productId, { rejectWithValue }) => {
-    
+
     try {
       const response = await apiRequest({
         method: 'GET',
@@ -21,7 +21,7 @@ export const fetchBuyerReviewByProductId = createAsyncThunk(
         headers: getTokenHeader(),
       });
       // console.log("from review",response);
-      
+
       return response.data?.data;
     } catch (error) {
       return rejectWithValue(
@@ -62,10 +62,12 @@ export const addBuyerReview = createAsyncThunk(
 export const updateBuyerReview = createAsyncThunk(
   'buyerReview/update',
   async ({ id, rating, comment }, { rejectWithValue }) => {
+    console.log("Updating review:", id);
+
     try {
       const response = await apiRequest({
         method: 'PUT',
-        url: `/buyer/reviews/${id}`,
+        url: `/buyer/reviews/${id}`, // becomes /buyer/reviews/undefined 😬
         data: { rating, comment },
         headers: getTokenHeader(),
       });
@@ -78,20 +80,21 @@ export const updateBuyerReview = createAsyncThunk(
   }
 );
 
+
 // Delete a review
 export const deleteBuyerReview = createAsyncThunk(
   'buyerReview/delete',
   async (id, { rejectWithValue }) => {
     try {
-      console.log("delete",id);
-      
+      console.log("delete", id);
+
       const response = await apiRequest({
         method: 'DELETE',
         url: `/buyer/reviews/${id}`,
         headers: getTokenHeader(),
       });
       console.log(response);
-      
+
       return response.data?.data;
     } catch (error) {
       return rejectWithValue(
