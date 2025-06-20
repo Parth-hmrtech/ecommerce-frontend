@@ -6,10 +6,11 @@ import {
 } from '../actions/buyerPaymentAction';
 
 const initialState = {
-  payments: [],     // array of all payment records
   loading: false,
   error: null,
-  success: false,
+  checkoutData: null,        // result from buyerCheckoutPayment
+  verifyData: null,          // result from buyerVerifyPayment
+  buyerCheckPayments: [],    // result from buyerCheckPaymentStatus
 };
 
 const buyerPaymentSlice = createSlice({
@@ -17,44 +18,45 @@ const buyerPaymentSlice = createSlice({
   initialState,
   reducers: {
     clearPaymentState: (state) => {
-      state.success = false;
+      state.loading = false;
       state.error = null;
+      state.checkoutData = null;
+      state.verifyData = null;
+      state.buyerCheckPayments = [];
     },
   },
   extraReducers: (builder) => {
-    // === CHECKOUT ===
+    // === Checkout Payment ===
     builder
       .addCase(buyerCheckoutPayment.pending, (state) => {
         state.loading = true;
-        state.success = false;
         state.error = null;
       })
-      .addCase(buyerCheckoutPayment.fulfilled, (state) => {
+      .addCase(buyerCheckoutPayment.fulfilled, (state, action) => {
         state.loading = false;
-        state.success = true;
+        state.checkoutData = action.payload || null;
       })
       .addCase(buyerCheckoutPayment.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       });
 
-    // === VERIFY ===
+    // === Verify Payment ===
     builder
       .addCase(buyerVerifyPayment.pending, (state) => {
         state.loading = true;
-        state.success = false;
         state.error = null;
       })
-      .addCase(buyerVerifyPayment.fulfilled, (state) => {
+      .addCase(buyerVerifyPayment.fulfilled, (state, action) => {
         state.loading = false;
-        state.success = true;
+        state.verifyData = action.payload || null;
       })
       .addCase(buyerVerifyPayment.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       });
 
-    // === CHECK STATUS ===
+    // === Check Payment Status ===
     builder
       .addCase(buyerCheckPaymentStatus.pending, (state) => {
         state.loading = true;
@@ -62,7 +64,7 @@ const buyerPaymentSlice = createSlice({
       })
       .addCase(buyerCheckPaymentStatus.fulfilled, (state, action) => {
         state.loading = false;
-        state.payments = action.payload || []; // replaces with latest fetched payments
+        state.buyerCheckPayments = action.payload || [];
       })
       .addCase(buyerCheckPaymentStatus.rejected, (state, action) => {
         state.loading = false;

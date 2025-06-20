@@ -1,15 +1,18 @@
-// src/store/index.js
 import { configureStore } from '@reduxjs/toolkit';
 
+// Auth
 import authReducer from './reducers/authReducer';
-import productReducer from './reducers/productReducer';
+
+// Seller
 import sellerProductReducer from './reducers/sellerProductReducer';
 import categoryReducer from './reducers/sellerCategoryReducer';
 import subCategoryReducer from './reducers/sellerSubCategoryReducer';
 import sellerOrderReducer from './reducers/sellerOrderReducer';
 import sellerPaymentReducer from './reducers/sellerPaymentReducer';
 import sellerReviewReducer from './reducers/sellerReviewReducer';
-import sellerProfileReducer from './reducers/sellerProfileReducer'; // <-- ✅ Add this line
+import sellerProfileReducer from './reducers/sellerProfileReducer';
+
+// Buyer
 import buyerReducer from './reducers/buyerReducer';
 import buyerProductReducer from './reducers/buyerProductReducer';
 import buyerCartReducer from './reducers/buyerCartReducer';
@@ -18,19 +21,24 @@ import buyerPaymentReducer from './reducers/buyerPaymentReducer';
 import buyerWishlistReducer from './reducers/buyerwishlistReducer';
 import buyerReviewReducer from './reducers/buyerReviewReducer';
 
+// Product
+import productReducer from './reducers/productReducer';
 
 const store = configureStore({
   reducer: {
+    // Auth
     auth: authReducer,
-    product: productReducer,
+
+    // Seller
+    sellerProduct: sellerProductReducer,
     categories: categoryReducer,
     subcategories: subCategoryReducer,
-    sellerProduct: sellerProductReducer,
     sellerOrders: sellerOrderReducer,
     sellerPayments: sellerPaymentReducer,
     sellerReviews: sellerReviewReducer,
     sellerProfile: sellerProfileReducer,
-    
+
+    // Buyer
     buyer: buyerReducer,
     buyerProduct: buyerProductReducer,
     buyerCart: buyerCartReducer,
@@ -39,7 +47,8 @@ const store = configureStore({
     buyerWishlist: buyerWishlistReducer,
     buyerReview: buyerReviewReducer,
 
-
+    // Product (shared/global)
+    product: productReducer,
   },
 });
 

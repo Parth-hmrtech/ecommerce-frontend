@@ -48,28 +48,22 @@ const BuyerOrders = () => {
 
   const { orders = [], loading, error } = useSelector((state) => state.buyerOrder);
   const { products = [] } = useSelector((state) => state.product);
-  const { paymentStatusByOrder= [] } = useSelector(
-    (state) => state.buyerPayment
-  );
+  const { buyerCheckPayments = [] } = useSelector((state) => state.buyerPayment);
 
   const [openRows, setOpenRows] = useState({});
   const [editAddressRow, setEditAddressRow] = useState(null);
   const [newAddress, setNewAddress] = useState('');
-
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState('UPI');
   const [payingOrderId, setPayingOrderId] = useState(null);
-
   const [successMessage, setSuccessMessage] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  console.log("hello",paymentStatusByOrder);
 
   useEffect(() => {
     dispatch(fetchBuyerOrders());
     dispatch(fetchProducts());
     dispatch(buyerCheckPaymentStatus());
-
   }, [dispatch, location]);
 
   const handleToggleRow = (orderId) => {
@@ -77,7 +71,10 @@ const BuyerOrders = () => {
   };
 
   const handleDelete = (orderId) => {
-    dispatch(deleteBuyerOrder(orderId)).then(() => dispatch(fetchBuyerOrders()));
+    dispatch(deleteBuyerOrder(orderId)).then(() => {
+      dispatch(fetchBuyerOrders());
+      dispatch(buyerCheckPaymentStatus());
+    });
   };
 
   const handleEditAddress = (orderId, currentAddress) => {
@@ -106,13 +103,13 @@ const BuyerOrders = () => {
     setPaymentMethod('UPI');
     setPaymentModalOpen(true);
   };
-
   const handleVerifyPayment = async () => {
+    if (!selectedOrder || isOrderPaid(selectedOrder.id)) return; // Already paid check
     const totalAmount = calculateOrderTotal(selectedOrder?.order_items || []);
     const transactionId = `txn_${Date.now()}_${selectedOrder.id}`;
     setPayingOrderId(selectedOrder.id);
-
     try {
+      // Step 1: Checkout
       await dispatch(
         buyerCheckoutPayment({
           order_id: selectedOrder.id,
@@ -121,37 +118,33 @@ const BuyerOrders = () => {
           payment_method: paymentMethod,
           transaction_id: transactionId,
         })
-      ).unwrap();
-
+      );
+      setOpenSnackbar(true);
+      setSuccessMessage(`Checkout initiated for Order #${selectedOrder.id}`);
       await dispatch(
         buyerVerifyPayment({
           status: 'success',
           transaction_id: transactionId,
         })
-      ).unwrap();
-
-      const statusRes = await dispatch(
-        buyerCheckPaymentStatus({ order_id: selectedOrder.id })
-      ).unwrap();
-
-      if (
-        statusRes?.payment_status?.toLowerCase() === 'success' ||
-        statusRes?.payment_status?.toLowerCase() === 'paid'
-      ) {
-        setSuccessMessage(`Payment successful for Order #${selectedOrder.id}`);
-        setOpenSnackbar(true);
-        setPaymentModalOpen(false);
-        dispatch(fetchBuyerOrders());
-      }
-    } catch (err) {
-      alert(`Payment failed: ${err?.message || err}`);
+      );
+      setOpenSnackbar(true);
+      setSuccessMessage(`Payment verified for Order #${selectedOrder.id}`);
+      await dispatch(fetchBuyerOrders());
+      await dispatch(buyerCheckPaymentStatus());
+      setPaymentModalOpen(false);
+      setSelectedOrder(null);
+    } catch (error) {
+      console.error('Payment error:', error);
+      setOpenSnackbar(true);
+      setSuccessMessage(`Payment failed for Order #${selectedOrder.id}`);
     } finally {
       setPayingOrderId(null);
     }
   };
 
+
   const isOrderPaid = (orderId) => {
-    const entry = paymentStatusByOrder.find((p) => p.order_id === orderId);
+    const entry = buyerCheckPayments.find((p) => p.order_id === orderId);
     return entry?.payment_status?.toLowerCase() === 'success' || entry?.payment_status?.toLowerCase() === 'paid';
   };
 
@@ -291,7 +284,9 @@ const BuyerOrders = () => {
                                     <TableRow key={item.id || idx}>
                                       <TableCell>{getProductName(item.product_id)}</TableCell>
                                       <TableCell>{item.quantity}</TableCell>
-                                      <TableCell>₹{Number(item.price || 0).toLocaleString()}</TableCell>
+                                      <TableCell>
+                                        ₹{Number(item.price || 0).toLocaleString()}
+                                      </TableCell>
                                     </TableRow>
                                   ))}
                                 </TableBody>
@@ -308,7 +303,7 @@ const BuyerOrders = () => {
         )}
       </Container>
 
-      {/* 💳 Payment Modal */}
+      {/* Payment Modal */}
       <Modal open={paymentModalOpen} onClose={() => setPaymentModalOpen(false)}>
         <Box
           sx={{
