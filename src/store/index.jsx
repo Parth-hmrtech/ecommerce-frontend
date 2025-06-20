@@ -30,6 +30,7 @@ const store = configureStore({
     sellerPayments: sellerPaymentReducer,
     sellerReviews: sellerReviewReducer,
     sellerProfile: sellerProfileReducer,
+    
     buyer: buyerReducer,
     buyerProduct: buyerProductReducer,
     buyerCart: buyerCartReducer,

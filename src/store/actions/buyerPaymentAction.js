@@ -2,7 +2,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { apiRequest } from '../../hooks/useApiRequest';
 
-const BASE_URL = 'http://localhost:3008/api/buyer/payments';
+const BASE_URL = 'http://localhost:3009/api/buyer/payments';
 
 const getTokenHeader = () => {
   const token = localStorage.getItem('access_token');
@@ -53,15 +53,17 @@ export const buyerVerifyPayment = createAsyncThunk(
 
 export const buyerCheckPaymentStatus = createAsyncThunk(
   'buyerPayment/checkStatus',
-  async ({ order_id }, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'GET',
-        url: `${BASE_URL}/status/${order_id}`,
+        url: `${BASE_URL}/status`, // No order_id in URL anymore
         headers: getTokenHeader(),
       });
 
-      return response.data?.data;
+      // console.log(response);
+
+      return response.data?.data; // this will be an array of payments
     } catch (error) {
       return rejectWithValue(
         error?.response?.data?.message || error.message || 'Failed to fetch payment status'
