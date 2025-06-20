@@ -20,6 +20,7 @@ import buyerOrderReducer from './reducers/buyerOrderReducer';
 import buyerPaymentReducer from './reducers/buyerPaymentReducer';
 import buyerWishlistReducer from './reducers/buyerwishlistReducer';
 import buyerReviewReducer from './reducers/buyerReviewReducer';
+import buyerProfileReducer from './reducers/buyerProfileReducer';
 
 // Product
 import productReducer from './reducers/productReducer';
@@ -46,6 +47,7 @@ const store = configureStore({
     buyerPayment: buyerPaymentReducer,
     buyerWishlist: buyerWishlistReducer,
     buyerReview: buyerReviewReducer,
+    buyerProfile: buyerProfileReducer,
 
     // Product (shared/global)
     product: productReducer,

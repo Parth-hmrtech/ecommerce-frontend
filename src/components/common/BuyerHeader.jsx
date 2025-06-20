@@ -52,10 +52,7 @@ const BuyerHeader = () => {
           </Button>
           <Button color="inherit" onClick={() => navigate('/buyer-dashboard/wishlist')}>
             Wishlist
-          </Button>
-          <Button color="inherit" onClick={() => navigate('/buyer-dashboard/reviews')}>
-            Reviews
-          </Button>
+          </Button> 
 
           <IconButton color="inherit" onClick={() => navigate('/buyer-dashboard/cart')}>
             <ShoppingCartIcon />

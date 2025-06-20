@@ -25,6 +25,7 @@ import {
   Alert,
   Rating
 } from '@mui/material';
+
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
@@ -201,23 +202,23 @@ const BuyerOrders = () => {
     setReviewInputs((prev) => ({ ...prev, [order.id]: {} }));
     dispatch(fetchBuyerReviewByProductId(productId));
   };
-const handleUpdateReview = async (reviewId, orderId) => {
-  const { rating, comment, product_id } = reviewInputs[orderId] || {};
+  const handleUpdateReview = async (reviewId, orderId) => {
+    const { rating, comment, product_id } = reviewInputs[orderId] || {};
 
-  if (!reviewId || !rating || !comment) {
-    alert('Please select a review to edit and fill in all details.');
-    return;
-  }
+    if (!reviewId || !rating || !comment) {
+      alert('Please select a review to edit and fill in all details.');
+      return;
+    }
 
-  try {
-    await dispatch(updateBuyerReview({ id: reviewId, rating, comment }));
-    dispatch(fetchBuyerReviewByProductId(product_id));
-    console.log('Review updated:', { reviewId, rating, comment });
-  } catch (error) {
-    console.error('Failed to update review:', error);
-    alert('Something went wrong while updating the review.');
-  }
-};
+    try {
+      await dispatch(updateBuyerReview({ id: reviewId, rating, comment }));
+      dispatch(fetchBuyerReviewByProductId(product_id));
+      console.log('Review updated:', { reviewId, rating, comment });
+    } catch (error) {
+      console.error('Failed to update review:', error);
+      alert('Something went wrong while updating the review.');
+    }
+  };
 
 
   const handleDeleteReview = async (reviewId, productId) => {
@@ -236,7 +237,7 @@ const handleUpdateReview = async (reviewId, orderId) => {
           </Alert>
         </Snackbar>
 
-        <Typography variant="h5" gutterBottom>My Orders</Typography>
+        <Typography   variant="h5" gutterBottom>My Orders</Typography>
 
         {loading ? (
           <Box display="flex" justifyContent="center" mt={4}><CircularProgress /></Box>

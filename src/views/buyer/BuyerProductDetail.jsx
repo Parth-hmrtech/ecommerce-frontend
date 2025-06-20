@@ -13,6 +13,11 @@ import {
     fetchBuyerWishlist,
     addToBuyerWishlist,
 } from '../../store/actions/buyerWishlistAction';
+import {
+    fetchBuyerReviewByProductId,
+    updateBuyerReview,
+    deleteBuyerReview,
+} from '../../store/actions/buyerReviewAction';
 
 import {
     Box,
@@ -24,6 +29,8 @@ import {
     IconButton,
     Snackbar,
     Alert,
+    Rating,
+    Button,
 } from '@mui/material';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -61,10 +68,15 @@ const BuyerProductDetail = () => {
     const { product, loading, error } = useSelector((state) => state.buyerProduct);
     const { cart = [] } = useSelector((state) => state.buyerCart);
     const { items: wishlist = [] } = useSelector((state) => state.buyerWishlist);
+    const { items: reviewResponses = [] } = useSelector((state) => state.buyerReview);
 
     const [quantity, setQuantity] = useState(0);
     const [wishlisted, setWishlisted] = useState(false);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+    const [editingReviewId, setEditingReviewId] = useState(null);
+    const [editedRating, setEditedRating] = useState(0);
+    const [editedComment, setEditedComment] = useState('');
 
     useEffect(() => {
         if (productId) {
@@ -73,6 +85,12 @@ const BuyerProductDetail = () => {
             dispatch(fetchBuyerWishlist());
         }
     }, [dispatch, productId]);
+
+    useEffect(() => {
+        if (product?.id) {
+            dispatch(fetchBuyerReviewByProductId(product.id));
+        }
+    }, [dispatch, product?.id]);
 
     useEffect(() => {
         const existingItem = cart.find((item) => item.product_id === product?.id);
@@ -117,8 +135,6 @@ const BuyerProductDetail = () => {
         const user = JSON.parse(localStorage.getItem('user'));
         const buyer_id = user?.id;
 
-        console.log('Buyer ID:', buyer_id);
-
         if (product && buyer_id) {
             dispatch(addToBuyerWishlist({ buyer_id, product_id: product.id }))
                 .then(() => {
@@ -126,6 +142,29 @@ const BuyerProductDetail = () => {
                     setSnackbarOpen(true);
                 });
         }
+    };
+
+    const handleEditClick = (review) => {
+        setEditingReviewId(review.id);
+        setEditedRating(review.rating);
+        setEditedComment(review.comment);
+    };
+
+    const handleUpdateReview = (reviewId) => {
+        dispatch(updateBuyerReview({
+            id: reviewId,
+            rating: editedRating,
+            comment: editedComment,
+        })).then(() => {
+            setEditingReviewId(null);
+            dispatch(fetchBuyerReviewByProductId(product.id));
+        });
+    };
+
+    const handleDeleteReview = (reviewId) => {
+        dispatch(deleteBuyerReview(reviewId)).then(() => {
+            dispatch(fetchBuyerReviewByProductId(product.id));
+        });
     };
 
     const images = getImages(product?.image_url);
@@ -149,105 +188,262 @@ const BuyerProductDetail = () => {
 
             <Container sx={{ mt: 5, mb: 5, flex: 1 }}>
                 {loading ? (
-                    <Box display="flex" justifyContent="center" mt={4}><CircularProgress /></Box>
+                    <Box display="flex" justifyContent="center" mt={4}>
+                        <CircularProgress />
+                    </Box>
                 ) : error ? (
                     <Typography color="error">Error: {error}</Typography>
                 ) : !product ? (
                     <Typography>No product found.</Typography>
                 ) : (
-                    <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={4} justifyContent="center">
-                        {/* Product Image Slider */}
-                        <Card sx={{ flex: 1, p: 2, overflow: 'hidden', position: 'relative' }}>
-                            {/* Heart Icon */}
-                            <IconButton
-                                onClick={handleWishlistClick}
+                    <>
+                        {/* Product Detail Section */}
+                        <Box
+                            display="flex"
+                            flexDirection={{ xs: 'column', md: 'row' }}
+                            gap={4}
+                            justifyContent="center"
+                            mb={4}
+                        >
+                            <Card sx={{ flex: 1, p: 2, overflow: 'hidden', position: 'relative' }}>
+                                <IconButton
+                                    onClick={handleWishlistClick}
+                                    sx={{
+                                        position: 'absolute',
+                                        top: 12,
+                                        right: 12,
+                                        zIndex: 2,
+                                        bgcolor: '#fff',
+                                        '&:hover': { bgcolor: '#ffe6e6' },
+                                        boxShadow: 2,
+                                    }}
+                                >
+                                    {wishlisted ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon />}
+                                </IconButton>
+
+                                {images.length > 0 ? (
+                                    <Slider {...sliderSettings}>
+                                        {images.map((url, index) => (
+                                            <Box key={index} sx={{ px: 2 }}>
+                                                <img
+                                                    src={url}
+                                                    alt={`product-${index}`}
+                                                    style={{
+                                                        width: '100%',
+                                                        height: '320px',
+                                                        objectFit: 'contain',
+                                                        borderRadius: '12px',
+                                                    }}
+                                                />
+                                            </Box>
+                                        ))}
+                                    </Slider>
+                                ) : (
+                                    <Box>
+                                        <img
+                                            src="https://via.placeholder.com/300"
+                                            alt="placeholder"
+                                            style={{
+                                                width: '100%',
+                                                height: '320px',
+                                                objectFit: 'contain',
+                                                borderRadius: '12px',
+                                            }}
+                                        />
+                                    </Box>
+                                )}
+                            </Card>
+
+                            <Card sx={{ flex: 1, p: 2 }}>
+                                <CardContent>
+                                    <Typography variant="h4" fontWeight="bold" gutterBottom>
+                                        {product.product_name}
+                                    </Typography>
+                                    <Typography variant="body1" gutterBottom>
+                                        {product.description}
+                                    </Typography>
+                                    <Typography variant="subtitle1" sx={{ mt: 2 }}>
+                                        <strong>Category:</strong> {product.category?.category_name || 'N/A'}
+                                    </Typography>
+                                    <Typography variant="subtitle1">
+                                        <strong>Subcategory:</strong> {product.subCategory?.sub_category_name || 'N/A'}
+                                    </Typography>
+                                    <Typography variant="subtitle1">
+                                        <strong>Available:</strong> {product.quantity}
+                                    </Typography>
+                                    <Typography variant="h6" color="primary" sx={{ mt: 2 }}>
+                                        ₹{product.price}
+                                    </Typography>
+
+                                    <Box display="flex" alignItems="center" mt={3}>
+                                        <IconButton onClick={() => handleQuantityChange(-1)} disabled={quantity === 0} color="primary">
+                                            <Remove />
+                                        </IconButton>
+                                        <Typography variant="body1" sx={{ mx: 2 }}>{quantity}</Typography>
+                                        <IconButton onClick={() => handleQuantityChange(1)} color="primary">
+                                            <Add />
+                                        </IconButton>
+                                    </Box>
+
+                                    {quantity > 0 && (
+                                        <Typography variant="body1" sx={{ mt: 2 }}>
+                                            <strong>Total:</strong> ₹{totalPrice}
+                                        </Typography>
+                                    )}
+                                </CardContent>
+                            </Card>
+                        </Box>
+
+                        {/* Reviews Section (All in One Container) */}
+                        {reviewResponses.length > 0 && (
+                            <Box
                                 sx={{
-                                    position: 'absolute',
-                                    top: 12,
-                                    right: 12,
-                                    zIndex: 2,
-                                    bgcolor: '#fff',
-                                    '&:hover': { bgcolor: '#ffe6e6' },
-                                    boxShadow: 2,
+                                    border: '1px solid #ccc',
+                                    borderRadius: 2,
+                                    p: 2,
+                                    backgroundColor: '#fafafa',
+                                    maxHeight: '400px',
+                                    overflowY: 'auto',
                                 }}
                             >
-                                {wishlisted ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon />}
-                            </IconButton>
+                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                    {reviewResponses.map((review) => {
+                                        const user = JSON.parse(localStorage.getItem('user'));
+                                        const isOwnReview = user?.id === review.buyer_id;
+                                        const isEditing = editingReviewId === review.id;
 
-                            {images.length > 0 ? (
-                                <Slider {...sliderSettings}>
-                                    {images.map((url, index) => (
-                                        <Box key={index} sx={{ px: 2 }}>
-                                            <img
-                                                src={url}
-                                                alt={`product-${index}`}
-                                                style={{
-                                                    width: '100%',
-                                                    height: '320px',
-                                                    objectFit: 'contain',
-                                                    borderRadius: '12px',
+                                        return (
+                                            <Box
+                                                key={`review-${review.id}`}
+                                                sx={{
+                                                    display: 'flex',
+                                                    justifyContent: isOwnReview ? 'flex-end' : 'flex-start',
                                                 }}
-                                            />
-                                        </Box>
-                                    ))}
-                                </Slider>
-                            ) : (
-                                <Box>
-                                    <img
-                                        src="https://via.placeholder.com/300"
-                                        alt="placeholder"
-                                        style={{
-                                            width: '100%',
-                                            height: '320px',
-                                            objectFit: 'contain',
-                                            borderRadius: '12px',
-                                        }}
-                                    />
+                                            >
+                                                <Box
+                                                    sx={{
+                                                        backgroundColor: isOwnReview ? '#d1ffd6' : '#e0e0e0',
+                                                        px: 2,
+                                                        py: 1.5,
+                                                        borderRadius: 3,
+                                                        borderBottomRightRadius: isOwnReview ? 0 : 12,
+                                                        borderBottomLeftRadius: isOwnReview ? 12 : 0,
+                                                        maxWidth: '75%',
+                                                        textAlign: 'left',
+                                                    }}
+                                                >
+                                                    <Typography
+                                                        variant="caption"
+                                                        color="text.secondary"
+                                                        sx={{ fontWeight: 'bold' }}
+                                                    >
+                                                        {isOwnReview ? 'You' : `Buyer: ${review.buyer_id}`}
+                                                    </Typography>
+
+                                                    {isEditing ? (
+                                                        <>
+                                                            <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+                                                                <Rating
+                                                                    value={editedRating}
+                                                                    onChange={(_, val) => setEditedRating(val)}
+                                                                    precision={0.5}
+                                                                />
+                                                                <Typography variant="body2" sx={{ ml: 1 }}>
+                                                                    ({editedRating}/5)
+                                                                </Typography>
+                                                            </Box>
+                                                            <textarea
+                                                                value={editedComment}
+                                                                onChange={(e) => setEditedComment(e.target.value)}
+                                                                style={{
+                                                                    width: '100%',
+                                                                    padding: '8px',
+                                                                    marginTop: '10px',
+                                                                    borderRadius: '6px',
+                                                                    border: '1px solid #ccc',
+                                                                    resize: 'vertical',
+                                                                }}
+                                                                rows={3}
+                                                            />
+                                                            <Box sx={{ mt: 1, display: 'flex', gap: 1 }}>
+                                                                <Button
+                                                                    variant="contained"
+                                                                    color="success"
+                                                                    size="small"
+                                                                    onClick={() => handleUpdateReview(review.id)}
+                                                                >
+                                                                    Save
+                                                                </Button>
+                                                                <Button
+                                                                    variant="outlined"
+                                                                    size="small"
+                                                                    onClick={() => setEditingReviewId(null)}
+                                                                >
+                                                                    Cancel
+                                                                </Button>
+                                                            </Box>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <Box
+                                                                sx={{
+                                                                    display: 'flex',
+                                                                    alignItems: 'center',
+                                                                    gap: 1,
+                                                                    mt: 1,
+                                                                    flexWrap: 'wrap',
+                                                                }}
+                                                            >
+                                                                <Rating
+                                                                    value={review.rating}
+                                                                    readOnly
+                                                                    precision={0.5}
+                                                                    size="small"
+                                                                />
+                                                                <Typography variant="body1">{review.comment}</Typography>
+                                                            </Box>
+
+                                                            <Typography
+                                                                variant="caption"
+                                                                color="text.secondary"
+                                                                sx={{
+                                                                    display: 'block',
+                                                                    mt: 0.5,
+                                                                    textAlign: isOwnReview ? 'right' : 'left',
+                                                                }}
+                                                            >
+                                                                {new Date(review.created_at).toLocaleString('en-IN')}
+                                                            </Typography>
+
+                                                            {isOwnReview && (
+                                                                <Box sx={{ mt: 1, display: 'flex', gap: 1 }}>
+                                                                    <Button
+                                                                        variant="text"
+                                                                        size="small"
+                                                                        onClick={() => handleEditClick(review)}
+                                                                    >
+                                                                        Edit
+                                                                    </Button>
+                                                                    <Button
+                                                                        variant="text"
+                                                                        size="small"
+                                                                        color="error"
+                                                                        onClick={() => handleDeleteReview(review.id)}
+                                                                    >
+                                                                        Delete
+                                                                    </Button>
+                                                                </Box>
+                                                            )}
+                                                        </>
+                                                    )}
+                                                </Box>
+                                            </Box>
+                                        );
+                                    })}
                                 </Box>
-                            )}
-                        </Card>
-
-                        {/* Product Info */}
-                        <Card sx={{ flex: 1, p: 2 }}>
-                            <CardContent>
-                                <Typography variant="h4" fontWeight="bold" gutterBottom>
-                                    {product.product_name}
-                                </Typography>
-                                <Typography variant="body1" gutterBottom>
-                                    {product.description}
-                                </Typography>
-                                <Typography variant="subtitle1" sx={{ mt: 2 }}>
-                                    <strong>Category:</strong> {product.category?.category_name || 'N/A'}
-                                </Typography>
-                                <Typography variant="subtitle1">
-                                    <strong>Subcategory:</strong> {product.subCategory?.sub_category_name || 'N/A'}
-                                </Typography>
-                                <Typography variant="subtitle1">
-                                    <strong>Available:</strong> {product.quantity}
-                                </Typography>
-                                <Typography variant="h6" color="primary" sx={{ mt: 2 }}>
-                                    ₹{product.price}
-                                </Typography>
-
-                                {/* Quantity Control */}
-                                <Box display="flex" alignItems="center" mt={3}>
-                                    <IconButton onClick={() => handleQuantityChange(-1)} disabled={quantity === 0} color="primary">
-                                        <Remove />
-                                    </IconButton>
-                                    <Typography variant="body1" sx={{ mx: 2 }}>{quantity}</Typography>
-                                    <IconButton onClick={() => handleQuantityChange(1)} color="primary">
-                                        <Add />
-                                    </IconButton>
-                                </Box>
-
-                                {quantity > 0 && (
-                                    <Typography variant="body1" sx={{ mt: 2 }}>
-                                        <strong>Total:</strong> ₹{totalPrice}
-                                    </Typography>
-                                )}
-                            </CardContent>
-                        </Card>
-                    </Box>
+                            </Box>
+                        )}
+                    </>
                 )}
             </Container>
 
@@ -265,6 +461,7 @@ const BuyerProductDetail = () => {
             <BuyerFooter />
         </Box>
     );
+
 };
 
 export default BuyerProductDetail;
