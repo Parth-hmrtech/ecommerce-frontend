@@ -48,7 +48,9 @@ const BuyerOrders = () => {
 
   const { orders = [], loading, error } = useSelector((state) => state.buyerOrder);
   const { products = [] } = useSelector((state) => state.product);
-  const { paymentStatusByOrder = [] } = useSelector((state) => state.buyerPayment);
+  const { paymentStatusByOrder } = useSelector(
+    (state) => state.buyerPayment
+  );
 
   const [openRows, setOpenRows] = useState({});
   const [editAddressRow, setEditAddressRow] = useState(null);
@@ -61,14 +63,15 @@ const BuyerOrders = () => {
 
   const [successMessage, setSuccessMessage] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  console.log(paymentStatusByOrder);
 
   useEffect(() => {
     dispatch(fetchBuyerOrders());
     dispatch(fetchProducts());
+
   }, [dispatch, location]);
 
   useEffect(() => {
-    // ✅ After orders load, check payment status only if not already checked
     orders.forEach((order) => {
       const alreadyChecked = paymentStatusByOrder.find((p) => p.order_id === order.id);
       if (!alreadyChecked && order.status?.toLowerCase() !== 'cancelled') {

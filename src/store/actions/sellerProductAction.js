@@ -2,7 +2,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { apiRequest } from '../../hooks/useApiRequest';
 import axios from 'axios';
-// Helper to get token
+
 const getAuthHeaders = () => {
   const token = localStorage.getItem('access_token');
   return {
@@ -17,12 +17,11 @@ export const fetchAllProducts = createAsyncThunk(
     try {
       const response = await apiRequest({
         method: 'GET',
-        url: 'http://localhost:3008/api/seller/products',
+        url: '/seller/products',
         headers: getAuthHeaders(),
       });
       return response.data.data;
     } catch (err) {
-      console.error('Fetch Products Error:', err);
       return rejectWithValue(err?.response?.data?.message || 'Failed to fetch products');
     }
   }
@@ -35,13 +34,12 @@ export const addProductAction = createAsyncThunk(
     try {
       const response = await apiRequest({
         method: 'POST',
-        url: 'http://localhost:3008/api/seller/products',
+        url: '/seller/products',
         data,
         headers: getAuthHeaders(),
       });
       return response.data.data;
     } catch (err) {
-      console.error('Add Product Error:', err);
       return rejectWithValue(err?.response?.data?.message || 'Failed to add product');
     }
   }
@@ -54,13 +52,12 @@ export const updateProductAction = createAsyncThunk(
     try {
       const response = await apiRequest({
         method: 'PUT',
-        url: `http://localhost:3008/api/seller/products/${id}`,
+        url: `/seller/products/${id}`,
         data: productData,
         headers: getAuthHeaders(),
       });
       return response.data.data;
     } catch (err) {
-      console.error('Update Product Error:', err);
       return rejectWithValue(err?.response?.data?.message || 'Failed to update product');
     }
   }
@@ -73,12 +70,11 @@ export const deleteProductAction = createAsyncThunk(
     try {
       await apiRequest({
         method: 'DELETE',
-        url: `http://localhost:3008/api/seller/products/${id}`,
+        url: `/seller/products/${id}`,
         headers: getAuthHeaders(),
       });
       return id;
     } catch (err) {
-      console.error('Delete Product Error:', err);
       return rejectWithValue(err?.response?.data?.message || 'Failed to delete product');
     }
   }
@@ -87,16 +83,18 @@ export const uploadProductImageAction = createAsyncThunk(
   'productImages/upload',
   async (formData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(
-        'http://localhost:3008/api/seller/products/image',
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            ...getAuthHeaders(), // ✅ spread the object here
-          },
-        }
-      );
+      const token = localStorage.getItem('access_token');
+
+      const response = await apiRequest({
+        method: 'POST',
+        url: '/seller/products/image', // ✅ Now relative
+        data: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       return response.data;
     } catch (error) {
       return rejectWithValue(

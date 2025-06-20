@@ -2,18 +2,23 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { apiRequest } from '../../hooks/useApiRequest';
 
-// ✅ Fetch Seller Profile
+// Utility: Get token header
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('access_token');
+  return {
+    Authorization: `Bearer ${token}`,
+  };
+};
+
+// Fetch Seller Profile
 export const fetchSellerProfile = createAsyncThunk(
   'sellerProfile/fetch',
   async (_, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('access_token');
       const response = await apiRequest({
         method: 'GET',
-        url: 'http://localhost:3008/api/profile',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        url: '/profile',
+        headers: getAuthHeaders(),
       });
       return response.data.data;
     } catch (err) {
@@ -22,19 +27,16 @@ export const fetchSellerProfile = createAsyncThunk(
   }
 );
 
-// ✅ Update Seller Profile using hook instead of raw axios
+// Update Seller Profile
 export const updateSellerProfile = createAsyncThunk(
   'sellerProfile/update',
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('access_token');
       const response = await apiRequest({
         method: 'PUT',
-        url: `http://localhost:3008/api/profile/${id}`,
+        url: `/profile/${id}`,
         data,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: getAuthHeaders(),
       });
       return response.data;
     } catch (err) {
@@ -43,24 +45,20 @@ export const updateSellerProfile = createAsyncThunk(
   }
 );
 
+// Reset Seller Password
 export const resetSellerPassword = createAsyncThunk(
   'seller/resetPassword',
   async ({ oldPassword, newPassword }, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('access_token');
       const response = await apiRequest({
         method: 'POST',
-        url: 'http://localhost:3008/api/reset-password',
+        url: '/reset-password',
         data: { oldPassword, newPassword },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: getAuthHeaders(),
       });
       return response.data.message;
     } catch (err) {
-      return rejectWithValue(
-        err?.response?.data?.message || 'Password reset failed'
-      );
+      return rejectWithValue(err?.response?.data?.message || 'Password reset failed');
     }
   }
 );

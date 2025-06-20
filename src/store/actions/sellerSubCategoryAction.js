@@ -2,7 +2,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { apiRequest } from '../../hooks/useApiRequest';
 
-// Helper to get token
+// Token Helper
 const getAuthHeaders = () => {
   const token = localStorage.getItem('access_token');
   return {
@@ -10,14 +10,14 @@ const getAuthHeaders = () => {
   };
 };
 
-// Fetch All Subcategories
+// ✅ Fetch All Subcategories
 export const fetchAllSubCategories = createAsyncThunk(
   'subcategories/fetchAll',
   async (_, { rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'GET',
-        url: 'http://localhost:3008/api/seller/subcategories',
+        url: '/seller/subcategories',
         headers: getAuthHeaders(),
       });
       return response.data.data;
@@ -27,34 +27,33 @@ export const fetchAllSubCategories = createAsyncThunk(
     }
   }
 );
+
+// ✅ Fetch Subcategories by Category ID
 export const fetchAllSubCategoriesById = createAsyncThunk(
   'subcategories/fetchByCategoryId',
   async (categoryId, { rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'GET',
-        url: `http://localhost:3008/api/seller/subcategories/${categoryId}`,
+        url: `/seller/subcategories/${categoryId}`,
         headers: getAuthHeaders(),
       });
       return response.data.data;
     } catch (err) {
-      console.error('Fetch Subcategories Error:', err);
-      return rejectWithValue(
-        err?.response?.data?.message || 'Failed to fetch subcategories'
-      );
+      console.error('Fetch Subcategories by ID Error:', err);
+      return rejectWithValue(err?.response?.data?.message || 'Failed to fetch subcategories');
     }
   }
 );
 
-
-// Add Subcategory
+// ✅ Add Subcategory
 export const addSubCategoryAction = createAsyncThunk(
   'subcategories/add',
   async (data, { rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'POST',
-        url: 'http://localhost:3008/api/seller/subcategories',
+        url: '/seller/subcategories',
         data,
         headers: getAuthHeaders(),
       });
@@ -66,14 +65,14 @@ export const addSubCategoryAction = createAsyncThunk(
   }
 );
 
-// Update Subcategory
+// ✅ Update Subcategory
 export const updateSubCategoryAction = createAsyncThunk(
   'subcategories/update',
   async ({ id, sub_category_name }, { rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'PUT',
-        url: `http://localhost:3008/api/seller/subcategories/${id}`,
+        url: `/seller/subcategories/${id}`,
         data: { sub_category_name },
         headers: getAuthHeaders(),
       });
@@ -85,17 +84,17 @@ export const updateSubCategoryAction = createAsyncThunk(
   }
 );
 
-// Delete Subcategory
+// ✅ Delete Subcategory
 export const deleteSubCategoryAction = createAsyncThunk(
   'subcategories/delete',
   async (id, { rejectWithValue }) => {
     try {
       await apiRequest({
         method: 'DELETE',
-        url: `http://localhost:3008/api/seller/subcategories/${id}`,
+        url: `/seller/subcategories/${id}`,
         headers: getAuthHeaders(),
       });
-      return id;
+      return id; // Return ID for reducer to remove from list
     } catch (err) {
       console.error('Delete Subcategory Error:', err);
       return rejectWithValue(err?.response?.data?.message || 'Failed to delete subcategory');

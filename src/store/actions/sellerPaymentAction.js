@@ -1,20 +1,24 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { apiRequest } from '../../hooks/useApiRequest';
 
+const getTokenHeader = () => {
+  const token = localStorage.getItem('access_token');
+  return {
+    Authorization: `Bearer ${token}`,
+  };
+};
+
 export const fetchSellerPaymentsAction = createAsyncThunk(
   'payments/fetchAll',
   async (_, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('access_token');
       const response = await apiRequest({
         method: 'GET',
-        url: 'http://localhost:3008/api/seller/payments',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        url: '/seller/payments',
+        headers: getTokenHeader(),
       });
 
-      return response.data.data; // array of payments
+      return response.data.data;
     } catch (err) {
       const errorMsg = err?.response?.data?.message || err.message || 'Failed to fetch payments';
       return rejectWithValue(errorMsg);
@@ -26,16 +30,13 @@ export const fetchSellerEarningsAction = createAsyncThunk(
   'earnings/fetchAll',
   async (_, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('access_token');
       const response = await apiRequest({
         method: 'GET',
-        url: 'http://localhost:3008/api/seller/earnings',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        url: '/seller/earnings',
+        headers: getTokenHeader(),
       });
 
-      return response.data.data; // assuming earnings are inside `data.data`
+      return response.data.data;
     } catch (err) {
       const errorMsg = err?.response?.data?.message || err.message || 'Failed to fetch earnings';
       return rejectWithValue(errorMsg);

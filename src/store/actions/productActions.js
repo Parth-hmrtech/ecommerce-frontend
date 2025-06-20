@@ -7,7 +7,7 @@ export const fetchProducts = createAsyncThunk(
     try {
       const response = await apiRequest({
         method: 'GET',
-        url: 'http://localhost:3008/api/buyer/products',
+        url: '/buyer/products',
       });
 
       return response.data?.data || [];

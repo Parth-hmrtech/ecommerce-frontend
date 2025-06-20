@@ -1,9 +1,7 @@
-// src/store/actions/buyerCartAction.js
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { apiRequest } from '../../hooks/useApiRequest';
-import { PlayArrow, PlayLesson } from '@mui/icons-material';
 
-const BASE_URL = 'http://localhost:3008/api/buyer/cart';
+const BASE_ENDPOINT = '/buyer/cart';
 
 // Utility to get auth headers
 const getAuthHeaders = () => {
@@ -13,14 +11,14 @@ const getAuthHeaders = () => {
   };
 };
 
-// ✅ Fetch Cart Items
+// Fetch Cart Items
 export const fetchBuyerCart = createAsyncThunk(
   'buyerCart/fetch',
   async (_, { rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'GET',
-        url: BASE_URL,
+        url: BASE_ENDPOINT,
         headers: getAuthHeaders(),
       });
       return response.data?.data || [];
@@ -32,21 +30,17 @@ export const fetchBuyerCart = createAsyncThunk(
   }
 );
 
-// ✅ Add to Cart
+// Add to Cart
 export const addToBuyerCart = createAsyncThunk(
   'buyerCart/add',
   async ({ product_id, quantity }, { rejectWithValue }) => {
     try {
-      console.log("Product ID:", product_id);
-      console.log("Quantity:", quantity);
-
       const response = await apiRequest({
         method: 'POST',
-        url: BASE_URL,
+        url: BASE_ENDPOINT,
         headers: getAuthHeaders(),
-        data: { product_id, quantity }, // Build payload here
+        data: { product_id, quantity },
       });
-
       return response.data?.data;
     } catch (err) {
       return rejectWithValue(
@@ -55,15 +49,17 @@ export const addToBuyerCart = createAsyncThunk(
     }
   }
 );
+
+// Update Cart Item
 export const updateBuyerCart = createAsyncThunk(
   'buyerCart/update',
   async ({ id, quantity }, { rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'PUT',
-        url: `${BASE_URL}/${id}`, // Append ID to the endpoint
+        url: `${BASE_ENDPOINT}/${id}`,
         headers: getAuthHeaders(),
-        data: { quantity: String(quantity) }, // Send only quantity in body
+        data: { quantity: String(quantity) },
       });
       return response.data?.data;
     } catch (err) {
@@ -74,17 +70,14 @@ export const updateBuyerCart = createAsyncThunk(
   }
 );
 
-
-// ✅ Delete Cart Item
+// Delete Cart Item
 export const deleteBuyerCart = createAsyncThunk(
   'buyerCart/delete',
   async (id, { rejectWithValue }) => {
-    console.log(id);
-    
     try {
       const response = await apiRequest({
         method: 'DELETE',
-        url: `${BASE_URL}/${id}`,
+        url: `${BASE_ENDPOINT}/${id}`,
         headers: getAuthHeaders(),
       });
       return response.data?.data;

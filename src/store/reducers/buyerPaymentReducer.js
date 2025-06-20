@@ -5,25 +5,22 @@ import {
   buyerCheckPaymentStatus,
 } from '../actions/buyerPaymentAction';
 
-const initialState = {
-  loading: false,
-  error: null,
-  paymentStatusByOrder: [], // ✅ Array of full response objects per order
-};
-
 const buyerPaymentSlice = createSlice({
   name: 'buyerPayment',
-  initialState,
+  initialState: {
+    paymentStatusByOrder: [],
+    loading: false,
+    error: null,
+  },
   reducers: {
     resetBuyerPaymentState: (state) => {
+      state.paymentStatusByOrder = [];
       state.loading = false;
       state.error = null;
-      state.paymentStatusByOrder = [];
     },
   },
   extraReducers: (builder) => {
     builder
-      // Checkout
       .addCase(buyerCheckoutPayment.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -36,7 +33,6 @@ const buyerPaymentSlice = createSlice({
         state.error = action.payload || action.error.message;
       })
 
-      // Verify
       .addCase(buyerVerifyPayment.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -49,7 +45,6 @@ const buyerPaymentSlice = createSlice({
         state.error = action.payload || action.error.message;
       })
 
-      // ✅ Store full response from checkPaymentStatus
       .addCase(buyerCheckPaymentStatus.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -57,13 +52,17 @@ const buyerPaymentSlice = createSlice({
       .addCase(buyerCheckPaymentStatus.fulfilled, (state, action) => {
         state.loading = false;
         const response = action.payload;
-
         if (response?.order_id) {
-          const existing = state.paymentStatusByOrder.find((entry) => entry.order_id === response.order_id);
-          if (existing) {
-            Object.assign(existing, response); // 🔁 Update all fields
+          const index = state.paymentStatusByOrder.findIndex(
+            (entry) => entry.order_id === response.order_id
+          );
+          if (index !== -1) {
+            state.paymentStatusByOrder[index] = {
+              ...state.paymentStatusByOrder[index],
+              ...response,
+            };
           } else {
-            state.paymentStatusByOrder.push(response); // ➕ Add new full entry
+            state.paymentStatusByOrder.push(response);
           }
         }
       })

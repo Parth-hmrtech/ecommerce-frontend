@@ -1,18 +1,21 @@
-// src/store/actions/sellerCategoryAction.js
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { apiRequest } from '../../hooks/useApiRequest';
+
+const getTokenHeader = () => {
+  const token = localStorage.getItem('access_token');
+  return {
+    Authorization: `Bearer ${token}`,
+  };
+};
 
 export const fetchAllCategories = createAsyncThunk(
   'categories/fetchAll',
   async (_, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('access_token');
       const response = await apiRequest({
         method: 'GET',
-        url: `http://localhost:3008/api/seller/categories`,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        url: '/seller/categories',
+        headers: getTokenHeader(),
       });
       return response.data.data;
     } catch (err) {
@@ -25,14 +28,11 @@ export const addCategoryAction = createAsyncThunk(
   'categories/add',
   async (data, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('access_token');
       const response = await apiRequest({
         method: 'POST',
-        url: `http://localhost:3008/api/seller/categories`,
+        url: '/seller/categories',
         data,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: getTokenHeader(),
       });
       return response.data.data;
     } catch (err) {
@@ -45,14 +45,11 @@ export const updateCategoryAction = createAsyncThunk(
   'categories/update',
   async ({ id, category_name }, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('access_token');
       const response = await apiRequest({
         method: 'PUT',
-        url: `http://localhost:3008/api/seller/categories/${id}`,
+        url: `/seller/categories/${id}`,
         data: { category_name },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: getTokenHeader(),
       });
       return response.data.data;
     } catch (err) {
@@ -65,20 +62,14 @@ export const deleteCategoryAction = createAsyncThunk(
   'categories/delete',
   async (id, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('access_token');
-      const response = await apiRequest({
+      await apiRequest({
         method: 'DELETE',
-        url: `http://localhost:3008/api/seller/categories/${id}`,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        url: `/seller/categories/${id}`,
+        headers: getTokenHeader(),
       });
-
       return id;
     } catch (err) {
-      // 👇 logs actual error from backend if available
-      const errorMsg = err?.response?.data?.message || err.message || 'Failed to delete category';
-      return rejectWithValue(errorMsg);
+      return rejectWithValue(err?.response?.data?.message || err.message || 'Failed to delete category');
     }
   }
 );

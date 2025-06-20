@@ -8,12 +8,11 @@ export const fetchBuyerCategories = createAsyncThunk(
     try {
       const response = await apiRequest({
         method: 'GET',
-        url: 'http://localhost:3008/api/buyer/categories',
+        url: '/buyer/categories', // ✅ No need for full URL
       });
-      log
       return response.data?.data || [];
     } catch (error) {
-      const message = error?.response?.data?.message || error.message || 'Failed to fetch products';
+      const message = error?.response?.data?.message || error.message || 'Failed to fetch categories';
       return rejectWithValue(message);
     }
   }

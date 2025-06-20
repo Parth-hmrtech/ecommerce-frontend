@@ -251,7 +251,6 @@ const BuyerProductDetail = () => {
                 )}
             </Container>
 
-            {/* Snackbar */}
             <Snackbar
                 open={snackbarOpen}
                 autoHideDuration={3000}

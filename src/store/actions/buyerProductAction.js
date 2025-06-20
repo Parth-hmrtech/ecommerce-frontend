@@ -8,10 +8,9 @@ export const fetchBuyerProductById = createAsyncThunk(
     try {
       const response = await apiRequest({
         method: 'GET',
-        url: `http://localhost:3008/api/buyer/products/${productId}`,
+        url: `/buyer/products/${productId}`, // 👈 only relative path
       });
-      console.log(response);
-      
+
       return response.data?.data;
     } catch (error) {
       const message =

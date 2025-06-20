@@ -34,6 +34,7 @@ const BuyerCart = () => {
 
   const [showPlaceOrder, setShowPlaceOrder] = useState(false);
   const [address, setAddress] = useState('');
+  const [placingOrder, setPlacingOrder] = useState(false);
 
   useEffect(() => {
     dispatch(fetchBuyerCart());
@@ -59,7 +60,8 @@ const BuyerCart = () => {
   const calculateTotal = () => {
     return cart.reduce((total, item) => {
       const product = products.find((p) => p.id === item.product_id);
-      return total + item.quantity * (Number(product?.price) || 0);
+      if (!product || isNaN(Number(product.price))) return total;
+      return total + item.quantity * Number(product.price);
     }, 0);
   };
 
@@ -67,24 +69,26 @@ const BuyerCart = () => {
     setShowPlaceOrder(true);
   };
 
-  const handlePlaceOrderSubmit = () => {
+  const handlePlaceOrderSubmit = async () => {
     if (!address.trim()) {
       alert('Please enter your address.');
       return;
     }
-
     const orderData = {
       delivery_address: address,
-      products: cart.map((item) => ({
-        product_id: item.product_id,
-        quantity: item.quantity,
-      })),
+      products: cart
+        .filter((item) => products.some((p) => p.id === item.product_id)) 
+        .map((item) => ({
+          product_id: item.product_id,
+          quantity: item.quantity,
+        })),
     };
 
-    dispatch(placeBuyerOrder(orderData)).then((res) => {
-    console.log(orderData);
-    
-      // Check action type against correct asyncThunk action type
+
+    setPlacingOrder(true);
+
+    try {
+      const res = await dispatch(placeBuyerOrder(orderData));
       if (res.type === 'buyerOrder/placeBuyerOrder/fulfilled') {
         setAddress('');
         setShowPlaceOrder(false);
@@ -92,9 +96,13 @@ const BuyerCart = () => {
       } else {
         alert('Order failed. Please try again.');
       }
-    });
+    } catch (error) {
+      console.error('Error placing order:', error);
+      alert('Something went wrong. Please try again.');
+    } finally {
+      setPlacingOrder(false);
+    }
   };
-
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#f4f6f8' }}>
@@ -215,7 +223,6 @@ const BuyerCart = () => {
 
             {showPlaceOrder && (
               <>
-                {/* Background overlay */}
                 <Box
                   onClick={() => setShowPlaceOrder(false)}
                   sx={{
@@ -231,7 +238,6 @@ const BuyerCart = () => {
                   }}
                 />
 
-                {/* Centered order form */}
                 <Box
                   sx={{
                     position: 'fixed',
@@ -253,6 +259,8 @@ const BuyerCart = () => {
 
                   {cart.map((item) => {
                     const product = products.find((p) => p.id === item.product_id);
+                    if (!product) return null;
+
                     return (
                       <Box
                         key={item.id}
@@ -284,8 +292,13 @@ const BuyerCart = () => {
                   />
 
                   <Box textAlign="right" mt={3}>
-                    <Button variant="contained" color="primary" onClick={handlePlaceOrderSubmit}>
-                      Confirm Order
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handlePlaceOrderSubmit}
+                      disabled={placingOrder}
+                    >
+                      {placingOrder ? 'Placing Order...' : 'Confirm Order'}
                     </Button>
                   </Box>
                 </Box>

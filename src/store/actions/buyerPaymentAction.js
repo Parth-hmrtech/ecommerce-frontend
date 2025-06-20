@@ -2,7 +2,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { apiRequest } from '../../hooks/useApiRequest';
 
-// Utility to get token from localStorage
+const BASE_URL = 'http://localhost:3008/api/buyer/payments';
+
 const getTokenHeader = () => {
   const token = localStorage.getItem('access_token');
   return {
@@ -10,21 +11,14 @@ const getTokenHeader = () => {
   };
 };
 
-// ✅ Buyer Payment: Checkout
 export const buyerCheckoutPayment = createAsyncThunk(
   'buyerPayment/checkout',
   async ({ order_id, seller_id, amount, payment_method, transaction_id }, { rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'POST',
-        url: 'http://localhost:3008/api/buyer/payments/checkout',
-        data: {
-          order_id,
-          seller_id,
-          amount,
-          payment_method,
-          transaction_id,
-        },
+        url: `${BASE_URL}/checkout`,
+        data: { order_id, seller_id, amount, payment_method, transaction_id },
         headers: getTokenHeader(),
       });
 
@@ -37,18 +31,14 @@ export const buyerCheckoutPayment = createAsyncThunk(
   }
 );
 
-// ✅ Buyer Payment: Verify
 export const buyerVerifyPayment = createAsyncThunk(
   'buyerPayment/verify',
   async ({ status, transaction_id }, { rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'POST',
-        url: 'http://localhost:3008/api/buyer/payments/verify',
-        data: {
-          status,
-          transaction_id,
-        },
+        url: `${BASE_URL}/verify`,
+        data: { status, transaction_id },
         headers: getTokenHeader(),
       });
 
@@ -61,19 +51,17 @@ export const buyerVerifyPayment = createAsyncThunk(
   }
 );
 
-// ✅ Buyer Payment: Check Status
 export const buyerCheckPaymentStatus = createAsyncThunk(
   'buyerPayment/checkStatus',
   async ({ order_id }, { rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'GET',
-        url: `http://localhost:3008/api/buyer/payments/status/${order_id}`,
+        url: `${BASE_URL}/status/${order_id}`,
         headers: getTokenHeader(),
       });
-      console.log(response);
-      
-      return response.data?.data; // e.g., { status: "success", transaction_id: "..." }
+
+      return response.data?.data;
     } catch (error) {
       return rejectWithValue(
         error?.response?.data?.message || error.message || 'Failed to fetch payment status'
