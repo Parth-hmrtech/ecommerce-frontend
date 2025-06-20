@@ -9,6 +9,28 @@ const getTokenHeader = () => {
   };
 };
 
+// ✅ NEW: Get review by product ID
+export const fetchBuyerReviewByProductId = createAsyncThunk(
+  'buyerReview/fetchByProductId',
+  async (productId, { rejectWithValue }) => {
+    
+    try {
+      const response = await apiRequest({
+        method: 'GET',
+        url: `/buyer/reviews/${productId}`,
+        headers: getTokenHeader(),
+      });
+      // console.log("from review",response);
+      
+      return response.data?.data;
+    } catch (error) {
+      return rejectWithValue(
+        error?.response?.data?.message || error.message || 'Failed to fetch review'
+      );
+    }
+  }
+);
+
 // Add a new review
 export const addBuyerReview = createAsyncThunk(
   'buyerReview/add',
@@ -61,11 +83,15 @@ export const deleteBuyerReview = createAsyncThunk(
   'buyerReview/delete',
   async (id, { rejectWithValue }) => {
     try {
+      console.log("delete",id);
+      
       const response = await apiRequest({
         method: 'DELETE',
         url: `/buyer/reviews/${id}`,
         headers: getTokenHeader(),
       });
+      console.log(response);
+      
       return response.data?.data;
     } catch (error) {
       return rejectWithValue(

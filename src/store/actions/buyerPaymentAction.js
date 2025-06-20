@@ -1,9 +1,9 @@
 // src/store/actions/buyerPaymentAction.js
+
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { apiRequest } from '../../hooks/useApiRequest';
 
-const BASE_URL = 'http://localhost:3009/api/buyer/payments';
-
+const BASE_URL = '/buyer/payments'; // Use relative paths if apiRequest uses baseURL
 const getTokenHeader = () => {
   const token = localStorage.getItem('access_token');
   return {
@@ -11,6 +11,7 @@ const getTokenHeader = () => {
   };
 };
 
+// 1. Checkout Payment
 export const buyerCheckoutPayment = createAsyncThunk(
   'buyerPayment/checkout',
   async ({ order_id, seller_id, amount, payment_method, transaction_id }, { rejectWithValue }) => {
@@ -18,11 +19,17 @@ export const buyerCheckoutPayment = createAsyncThunk(
       const response = await apiRequest({
         method: 'POST',
         url: `${BASE_URL}/checkout`,
-        data: { order_id, seller_id, amount, payment_method, transaction_id },
+        data: {
+          order_id,
+          seller_id,
+          amount,
+          payment_method,
+          transaction_id,
+        },
         headers: getTokenHeader(),
       });
 
-      return response.data?.data;
+      return response.data?.data; // Returns checkout response
     } catch (error) {
       return rejectWithValue(
         error?.response?.data?.message || error.message || 'Checkout failed'
@@ -31,6 +38,7 @@ export const buyerCheckoutPayment = createAsyncThunk(
   }
 );
 
+// 2. Verify Payment
 export const buyerVerifyPayment = createAsyncThunk(
   'buyerPayment/verify',
   async ({ status, transaction_id }, { rejectWithValue }) => {
@@ -38,11 +46,14 @@ export const buyerVerifyPayment = createAsyncThunk(
       const response = await apiRequest({
         method: 'POST',
         url: `${BASE_URL}/verify`,
-        data: { status, transaction_id },
+        data: {
+          status,
+          transaction_id,
+        },
         headers: getTokenHeader(),
       });
 
-      return response.data?.data;
+      return response.data?.data; 
     } catch (error) {
       return rejectWithValue(
         error?.response?.data?.message || error.message || 'Payment verification failed'
@@ -57,13 +68,11 @@ export const buyerCheckPaymentStatus = createAsyncThunk(
     try {
       const response = await apiRequest({
         method: 'GET',
-        url: `${BASE_URL}/status`, // No order_id in URL anymore
+        url: `${BASE_URL}/status`, // Endpoint returns all payment statuses
         headers: getTokenHeader(),
       });
 
-      // console.log(response);
-
-      return response.data?.data; // this will be an array of payments
+      return response.data?.data; // Returns array of payment statuses
     } catch (error) {
       return rejectWithValue(
         error?.response?.data?.message || error.message || 'Failed to fetch payment status'
