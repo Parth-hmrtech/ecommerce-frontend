@@ -7,8 +7,7 @@ const getTokenHeader = () => {
     Authorization: `Bearer ${token}`,
   };
 };
-
-const placeBuyerOrderAction = createAsyncThunk(
+ const placeBuyerOrderAction = createAsyncThunk(
   'buyerOrder/placeBuyerOrder',
   async ({ products, delivery_address }, { rejectWithValue }) => {
     try {
@@ -25,9 +24,8 @@ const placeBuyerOrderAction = createAsyncThunk(
       );
     }
   }
-);
-
-const fetchBuyerOrdersAction = createAsyncThunk(
+  
+);const fetchBuyerOrdersAction = createAsyncThunk(
   'buyerOrder/fetchBuyerOrders',
   async (_, { rejectWithValue }) => {
     try {

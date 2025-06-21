@@ -41,15 +41,18 @@ const BuyerCart = () => {
     dispatch(fetchProductsAction());
   }, [dispatch]);
 
-  const handleUpdateQuantity = (item, delta, id) => {
+  const handleUpdateQuantity = (item, delta) => {
     const newQty = item.quantity + delta;
-    if (newQty === 0) {
-      dispatch(deleteBuyerCartAction(id)).then(() => dispatch(fetchBuyerCartAction()));
 
+    if (newQty < 1) {
+      dispatch(deleteBuyerCartAction(item.id)).then(() =>
+        dispatch(fetchBuyerCartAction())
+      );
+    } else {
+      dispatch(updateBuyerCartAction({ id: item.id, quantity: newQty })).then(() =>
+        dispatch(fetchBuyerCartAction())
+      );
     }
-    dispatch(updateBuyerCartAction({ id: item.id, quantity: newQty })).then(() =>
-      dispatch(fetchBuyerCartAction())
-    );
   };
 
   const handleDeleteItem = (id) => {
@@ -80,10 +83,12 @@ const BuyerCart = () => {
 
     const orderData = {
       delivery_address: address,
-      products: cart.map((item) => ({
-        product_id: item.product_id,
-        quantity: item.quantity,
-      })),
+      products: cart
+        .filter((item) => products.some((p) => p.id === item.product_id))
+        .map((item) => ({
+          product_id: item.product_id,
+          quantity: item.quantity,
+        })),
     };
 
     setPlacingOrder(true);
@@ -104,6 +109,7 @@ const BuyerCart = () => {
       setPlacingOrder(false);
     }
   };
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#f4f6f8' }}>
       <BuyerHeader />
@@ -143,7 +149,7 @@ const BuyerCart = () => {
                   if (Array.isArray(parsed) && parsed.length > 0) {
                     imageUrl = parsed[0]?.image_url || imageUrl;
                   }
-                } catch { }
+                } catch {}
 
                 return (
                   <Card
@@ -183,17 +189,18 @@ const BuyerCart = () => {
                         mt={2}
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <Box display="flex" alignItems="center">
-                          <IconButton
-                            onClick={() => handleUpdateQuantity(item, -1, item.id)}
-                          >
+                        <Box display="flex" alignItems="center" mt={3}>
+                          <IconButton onClick={() => handleUpdateQuantity(item, -1)}>
                             <Remove />
                           </IconButton>
+
                           <Typography>{item.quantity}</Typography>
+
                           <IconButton onClick={() => handleUpdateQuantity(item, 1)}>
                             <Add />
                           </IconButton>
                         </Box>
+
                         <IconButton onClick={() => handleDeleteItem(item.id)} color="error">
                           <Delete />
                         </IconButton>
