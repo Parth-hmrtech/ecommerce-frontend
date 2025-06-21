@@ -1,4 +1,3 @@
-// src/store/reducers/buyerReducer.js
 import { createSlice } from '@reduxjs/toolkit';
 import { fetchBuyerProductById } from '../actions/buyerProductAction';
 

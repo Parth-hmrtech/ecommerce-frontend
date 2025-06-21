@@ -4,9 +4,8 @@ import {
   addProductAction,
   updateProductAction,
   deleteProductAction,
-    uploadProductImageAction,
+  uploadProductImageAction,
 } from '../actions/sellerProductAction';
-
 
 const initialState = {
   list: [],
@@ -30,7 +29,6 @@ const productSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch Products
       .addCase(fetchAllProducts.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -44,7 +42,6 @@ const productSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Add Product
       .addCase(addProductAction.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -58,7 +55,6 @@ const productSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Update Product
       .addCase(updateProductAction.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -75,7 +71,6 @@ const productSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Delete Product
       .addCase(deleteProductAction.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -89,7 +84,6 @@ const productSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Upload Image
       .addCase(uploadProductImageAction.pending, (state) => {
         state.loading = true;
         state.imageUploadSuccess = false;
@@ -103,9 +97,7 @@ const productSlice = createSlice({
         state.loading = false;
         state.imageUploadSuccess = false;
         state.error = action.payload;
-      })
-
-
+      });
   },
 });
 

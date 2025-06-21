@@ -10,19 +10,17 @@ import {
 const buyerCartSlice = createSlice({
   name: 'buyerCart',
   initialState: {
-    cart: [],       // ✅ renamed from cartItems to cart
+    cart: [],
     loading: false,
     error: null,
   },
   reducers: {
-    // Optional: Add this if you want to clear cart manually (e.g. after checkout or logout)
     clearBuyerCart: (state) => {
       state.cart = [];
     },
   },
   extraReducers: (builder) => {
     builder
-      // ✅ FETCH
       .addCase(fetchBuyerCart.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -36,7 +34,6 @@ const buyerCartSlice = createSlice({
         state.error = action.payload;
       })
 
-      // ✅ ADD
       .addCase(addToBuyerCart.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -50,7 +47,6 @@ const buyerCartSlice = createSlice({
         state.error = action.payload;
       })
 
-      // ✅ UPDATE
       .addCase(updateBuyerCart.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -67,7 +63,6 @@ const buyerCartSlice = createSlice({
         state.error = action.payload;
       })
 
-      // ✅ DELETE
       .addCase(deleteBuyerCart.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -83,5 +78,5 @@ const buyerCartSlice = createSlice({
   },
 });
 
-export const { clearBuyerCart } = buyerCartSlice.actions; // optional
+export const { clearBuyerCart } = buyerCartSlice.actions;
 export default buyerCartSlice.reducer;

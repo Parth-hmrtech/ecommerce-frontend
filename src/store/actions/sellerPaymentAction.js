@@ -8,7 +8,7 @@ const getTokenHeader = () => {
   };
 };
 
-export const fetchSellerPaymentsAction = createAsyncThunk(
+const fetchSellerPaymentsAction = createAsyncThunk(
   'payments/fetchAll',
   async (_, { rejectWithValue }) => {
     try {
@@ -17,7 +17,6 @@ export const fetchSellerPaymentsAction = createAsyncThunk(
         url: '/seller/payments',
         headers: getTokenHeader(),
       });
-
       return response.data.data;
     } catch (err) {
       const errorMsg = err?.response?.data?.message || err.message || 'Failed to fetch payments';
@@ -26,7 +25,7 @@ export const fetchSellerPaymentsAction = createAsyncThunk(
   }
 );
 
-export const fetchSellerEarningsAction = createAsyncThunk(
+const fetchSellerEarningsAction = createAsyncThunk(
   'earnings/fetchAll',
   async (_, { rejectWithValue }) => {
     try {
@@ -35,7 +34,6 @@ export const fetchSellerEarningsAction = createAsyncThunk(
         url: '/seller/earnings',
         headers: getTokenHeader(),
       });
-
       return response.data.data;
     } catch (err) {
       const errorMsg = err?.response?.data?.message || err.message || 'Failed to fetch earnings';
@@ -43,3 +41,5 @@ export const fetchSellerEarningsAction = createAsyncThunk(
     }
   }
 );
+
+export { fetchSellerPaymentsAction, fetchSellerEarningsAction };

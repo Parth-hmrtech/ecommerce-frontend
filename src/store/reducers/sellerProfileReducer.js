@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import {
   fetchSellerProfile,
   updateSellerProfile,
-  resetSellerPassword
+  resetSellerPassword,
 } from '../actions/sellerProfileAction';
 
 const initialState = {
@@ -56,7 +56,6 @@ const sellerProfileSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Reset Password
       .addCase(resetSellerPassword.pending, (state) => {
         state.passwordResetLoading = true;
         state.passwordResetSuccess = '';

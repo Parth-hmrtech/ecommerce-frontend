@@ -183,10 +183,12 @@ const BuyerProductDetail = () => {
     };
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#f4f6f8' }}>
+        <Box sx={{
+            display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#f4f6f8', marginBottom: '0px',
+        }}>
             <BuyerHeader />
 
-            <Container sx={{ mt: 5, mb: 5, flex: 1 }}>
+            <Container sx={{ mt: 5, flex: 1 }}>
                 {loading ? (
                     <Box display="flex" justifyContent="center" mt={4}>
                         <CircularProgress />
@@ -201,9 +203,7 @@ const BuyerProductDetail = () => {
                         <Box
                             display="flex"
                             flexDirection={{ xs: 'column', md: 'row' }}
-                            gap={4}
                             justifyContent="center"
-                            mb={4}
                         >
                             <Card sx={{ flex: 1, p: 2, overflow: 'hidden', position: 'relative' }}>
                                 <IconButton
@@ -221,7 +221,7 @@ const BuyerProductDetail = () => {
                                     {wishlisted ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon />}
                                 </IconButton>
 
-                                {images.length > 0 ? (
+                                {images.length > 1 ? (
                                     <Slider {...sliderSettings}>
                                         {images.map((url, index) => (
                                             <Box key={index} sx={{ px: 2 }}>
@@ -238,6 +238,19 @@ const BuyerProductDetail = () => {
                                             </Box>
                                         ))}
                                     </Slider>
+                                ) : images.length === 1 ? (
+                                    <Box sx={{ px: 2 }}>
+                                        <img
+                                            src={images[0]}
+                                            alt="product-single"
+                                            style={{
+                                                width: '100%',
+                                                height: '320px',
+                                                objectFit: 'contain',
+                                                borderRadius: '12px',
+                                            }}
+                                        />
+                                    </Box>
                                 ) : (
                                     <Box>
                                         <img
@@ -254,7 +267,7 @@ const BuyerProductDetail = () => {
                                 )}
                             </Card>
 
-                            <Card sx={{ flex: 1, p: 2 }}>
+                            <Card sx={{ flex: 1 }}>
                                 <CardContent>
                                     <Typography variant="h4" fontWeight="bold" gutterBottom>
                                         {product.product_name}

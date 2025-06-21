@@ -22,7 +22,6 @@ const buyerWishlistSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch Wishlist
       .addCase(fetchBuyerWishlist.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -36,7 +35,6 @@ const buyerWishlistSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Add to Wishlist
       .addCase(addToBuyerWishlist.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -52,7 +50,6 @@ const buyerWishlistSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Delete from Wishlist
       .addCase(deleteFromBuyerWishlist.pending, (state) => {
         state.loading = true;
         state.error = null;

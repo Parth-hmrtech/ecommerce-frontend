@@ -8,9 +8,9 @@ import {
 const initialState = {
   loading: false,
   error: null,
-  checkoutData: null,        // result from buyerCheckoutPayment
-  verifyData: null,          // result from buyerVerifyPayment
-  buyerCheckPayments: [],    // result from buyerCheckPaymentStatus
+  checkoutData: null,
+  verifyData: null,
+  buyerCheckPayments: [],
 };
 
 const buyerPaymentSlice = createSlice({
@@ -26,7 +26,6 @@ const buyerPaymentSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // === Checkout Payment ===
     builder
       .addCase(buyerCheckoutPayment.pending, (state) => {
         state.loading = true;
@@ -39,10 +38,8 @@ const buyerPaymentSlice = createSlice({
       .addCase(buyerCheckoutPayment.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
-      });
+      })
 
-    // === Verify Payment ===
-    builder
       .addCase(buyerVerifyPayment.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -54,10 +51,8 @@ const buyerPaymentSlice = createSlice({
       .addCase(buyerVerifyPayment.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
-      });
+      })
 
-    // === Check Payment Status ===
-    builder
       .addCase(buyerCheckPaymentStatus.pending, (state) => {
         state.loading = true;
         state.error = null;

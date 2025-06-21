@@ -8,7 +8,7 @@ const getTokenHeader = () => {
   };
 };
 
-export const fetchSellerOrdersAction = createAsyncThunk(
+const fetchSellerOrdersAction = createAsyncThunk(
   'orders/fetchAll',
   async (_, { rejectWithValue }) => {
     try {
@@ -17,7 +17,6 @@ export const fetchSellerOrdersAction = createAsyncThunk(
         url: '/seller/orders',
         headers: getTokenHeader(),
       });
-
       return response.data.data;
     } catch (err) {
       const errorMsg = err?.response?.data?.message || err.message || 'Failed to fetch orders';
@@ -26,7 +25,7 @@ export const fetchSellerOrdersAction = createAsyncThunk(
   }
 );
 
-export const updateOrderStatusAction = createAsyncThunk(
+const updateOrderStatusAction = createAsyncThunk(
   'orders/updateStatus',
   async ({ orderId, status }, { rejectWithValue, dispatch }) => {
     try {
@@ -36,9 +35,7 @@ export const updateOrderStatusAction = createAsyncThunk(
         headers: getTokenHeader(),
         data: { status },
       });
-
       dispatch(fetchSellerOrdersAction());
-
       return response.data;
     } catch (err) {
       const errorMsg = err?.response?.data?.message || err.message || 'Failed to update status';
@@ -46,3 +43,5 @@ export const updateOrderStatusAction = createAsyncThunk(
     }
   }
 );
+
+export { fetchSellerOrdersAction, updateOrderStatusAction };

@@ -1,4 +1,3 @@
-// src/store/actions/buyerWishlistAction.js
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { apiRequest } from '../../hooks/useApiRequest';
 
@@ -9,8 +8,7 @@ const getTokenHeader = () => {
   };
 };
 
-// Fetch Wishlist
-export const fetchBuyerWishlist = createAsyncThunk(
+const fetchBuyerWishlist = createAsyncThunk(
   'buyerWishlist/fetchBuyerWishlist',
   async (_, { rejectWithValue }) => {
     try {
@@ -28,8 +26,7 @@ export const fetchBuyerWishlist = createAsyncThunk(
   }
 );
 
-// Add to Wishlist
-export const addToBuyerWishlist = createAsyncThunk(
+const addToBuyerWishlist = createAsyncThunk(
   'buyerWishlist/addToBuyerWishlist',
   async ({ buyer_id, product_id }, { rejectWithValue }) => {
     try {
@@ -48,8 +45,7 @@ export const addToBuyerWishlist = createAsyncThunk(
   }
 );
 
-// Delete from Wishlist
-export const deleteFromBuyerWishlist = createAsyncThunk(
+const deleteFromBuyerWishlist = createAsyncThunk(
   'buyerWishlist/deleteFromBuyerWishlist',
   async (wishlistId, { rejectWithValue }) => {
     try {
@@ -58,7 +54,6 @@ export const deleteFromBuyerWishlist = createAsyncThunk(
         url: `/buyer/wishlist/${wishlistId}`,
         headers: getTokenHeader(),
       });
-
       return {
         wishlistId,
         message: response?.data?.message || 'Deleted from wishlist',
@@ -70,3 +65,9 @@ export const deleteFromBuyerWishlist = createAsyncThunk(
     }
   }
 );
+
+export {
+  fetchBuyerWishlist,
+  addToBuyerWishlist,
+  deleteFromBuyerWishlist
+};

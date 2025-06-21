@@ -1,9 +1,7 @@
-// src/store/actions/buyerPaymentAction.js
-
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { apiRequest } from '../../hooks/useApiRequest';
 
-const BASE_URL = '/buyer/payments'; // Use relative paths if apiRequest uses baseURL
+const BASE_URL = '/buyer/payments';
 const getTokenHeader = () => {
   const token = localStorage.getItem('access_token');
   return {
@@ -11,8 +9,7 @@ const getTokenHeader = () => {
   };
 };
 
-// 1. Checkout Payment
-export const buyerCheckoutPayment = createAsyncThunk(
+const buyerCheckoutPayment = createAsyncThunk(
   'buyerPayment/checkout',
   async ({ order_id, seller_id, amount, payment_method, transaction_id }, { rejectWithValue }) => {
     try {
@@ -28,18 +25,14 @@ export const buyerCheckoutPayment = createAsyncThunk(
         },
         headers: getTokenHeader(),
       });
-
-      return response.data?.data; // Returns checkout response
+      return response.data?.data;
     } catch (error) {
-      return rejectWithValue(
-        error?.response?.data?.message || error.message || 'Checkout failed'
-      );
+      return rejectWithValue(error?.response?.data?.message || error.message || 'Checkout failed');
     }
   }
 );
 
-// 2. Verify Payment
-export const buyerVerifyPayment = createAsyncThunk(
+const buyerVerifyPayment = createAsyncThunk(
   'buyerPayment/verify',
   async ({ status, transaction_id }, { rejectWithValue }) => {
     try {
@@ -52,31 +45,27 @@ export const buyerVerifyPayment = createAsyncThunk(
         },
         headers: getTokenHeader(),
       });
-
-      return response.data?.data; 
+      return response.data?.data;
     } catch (error) {
-      return rejectWithValue(
-        error?.response?.data?.message || error.message || 'Payment verification failed'
-      );
+      return rejectWithValue(error?.response?.data?.message || error.message || 'Payment verification failed');
     }
   }
 );
 
-export const buyerCheckPaymentStatus = createAsyncThunk(
+const buyerCheckPaymentStatus = createAsyncThunk(
   'buyerPayment/checkStatus',
   async (_, { rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'GET',
-        url: `${BASE_URL}/status`, // Endpoint returns all payment statuses
+        url: `${BASE_URL}/status`,
         headers: getTokenHeader(),
       });
-
-      return response.data?.data; // Returns array of payment statuses
+      return response.data?.data;
     } catch (error) {
-      return rejectWithValue(
-        error?.response?.data?.message || error.message || 'Failed to fetch payment status'
-      );
+      return rejectWithValue(error?.response?.data?.message || error.message || 'Failed to fetch payment status');
     }
   }
 );
+
+export { buyerCheckoutPayment, buyerVerifyPayment, buyerCheckPaymentStatus };

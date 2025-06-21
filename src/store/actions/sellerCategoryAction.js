@@ -8,7 +8,7 @@ const getTokenHeader = () => {
   };
 };
 
-export const fetchAllCategories = createAsyncThunk(
+const fetchAllCategories = createAsyncThunk(
   'categories/fetchAll',
   async (_, { rejectWithValue }) => {
     try {
@@ -24,7 +24,7 @@ export const fetchAllCategories = createAsyncThunk(
   }
 );
 
-export const addCategoryAction = createAsyncThunk(
+const addCategoryAction = createAsyncThunk(
   'categories/add',
   async (data, { rejectWithValue }) => {
     try {
@@ -41,7 +41,7 @@ export const addCategoryAction = createAsyncThunk(
   }
 );
 
-export const updateCategoryAction = createAsyncThunk(
+const updateCategoryAction = createAsyncThunk(
   'categories/update',
   async ({ id, category_name }, { rejectWithValue }) => {
     try {
@@ -58,7 +58,7 @@ export const updateCategoryAction = createAsyncThunk(
   }
 );
 
-export const deleteCategoryAction = createAsyncThunk(
+const deleteCategoryAction = createAsyncThunk(
   'categories/delete',
   async (id, { rejectWithValue }) => {
     try {
@@ -73,3 +73,10 @@ export const deleteCategoryAction = createAsyncThunk(
     }
   }
 );
+
+export {
+  fetchAllCategories,
+  addCategoryAction,
+  updateCategoryAction,
+  deleteCategoryAction
+};

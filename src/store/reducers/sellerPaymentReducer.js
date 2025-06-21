@@ -1,5 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchSellerPaymentsAction, fetchSellerEarningsAction } from '../actions/sellerPaymentAction';
+import {
+  fetchSellerPaymentsAction,
+  fetchSellerEarningsAction,
+} from '../actions/sellerPaymentAction';
 
 const sellerPaymentSlice = createSlice({
   name: 'sellerPayments',
@@ -12,7 +15,6 @@ const sellerPaymentSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Payments
       .addCase(fetchSellerPaymentsAction.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -26,7 +28,6 @@ const sellerPaymentSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Earnings
       .addCase(fetchSellerEarningsAction.pending, (state) => {
         state.loading = true;
         state.error = null;

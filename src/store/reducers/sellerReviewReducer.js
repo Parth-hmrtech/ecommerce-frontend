@@ -23,7 +23,6 @@ const sellerReviewsSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      // 👉 Delete Review Cases
       .addCase(deleteSellerReviewAction.pending, (state) => {
         state.loading = true;
       })

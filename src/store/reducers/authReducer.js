@@ -19,7 +19,6 @@ const authSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            //  Sign Up
             .addCase(signUpUser.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -38,8 +37,6 @@ const authSlice = createSlice({
                 state.success = false;
                 state.message = null;
             })
-
-            //  Sign In
             .addCase(signInUser.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -54,15 +51,12 @@ const authSlice = createSlice({
                 localStorage.setItem('user', JSON.stringify(action.payload?.data?.user));
                 localStorage.setItem('access_token', action.payload?.data?.token);
             })
-
             .addCase(signInUser.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
                 state.success = false;
                 state.message = null;
             })
-
-            //  Forgot Password
             .addCase(forgotPassword.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -77,8 +71,7 @@ const authSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
                 state.message = null;
-            })
-
+            });
     },
 });
 

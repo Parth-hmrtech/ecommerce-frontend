@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { apiRequest } from '../../hooks/useApiRequest';
 
-export const fetchProducts = createAsyncThunk(
+const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
   async (_, { rejectWithValue }) => {
     try {
@@ -9,7 +9,6 @@ export const fetchProducts = createAsyncThunk(
         method: 'GET',
         url: '/buyer/products',
       });
-
       return response.data?.data || [];
     } catch (error) {
       const message = error?.response?.data?.message || error.message || 'Failed to fetch products';
@@ -17,3 +16,5 @@ export const fetchProducts = createAsyncThunk(
     }
   }
 );
+
+export { fetchProducts };

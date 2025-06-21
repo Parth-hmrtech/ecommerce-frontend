@@ -1,16 +1,14 @@
-// src/store/actions/buyerProductAction.js
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { apiRequest } from '../../hooks/useApiRequest';
 
-export const fetchBuyerProductById = createAsyncThunk(
+const fetchBuyerProductById = createAsyncThunk(
   'buyer/fetchBuyerProductById',
   async (productId, { rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'GET',
-        url: `/buyer/products/${productId}`, // 👈 only relative path
+        url: `/buyer/products/${productId}`,
       });
-
       return response.data?.data;
     } catch (error) {
       const message =
@@ -19,3 +17,5 @@ export const fetchBuyerProductById = createAsyncThunk(
     }
   }
 );
+
+export { fetchBuyerProductById };

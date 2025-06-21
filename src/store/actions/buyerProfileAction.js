@@ -1,8 +1,6 @@
-// src/store/actions/buyerProfileAction.js
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { apiRequest } from '../../hooks/useApiRequest';
 
-// Utility: Get token header
 const getAuthHeaders = () => {
   const token = localStorage.getItem('access_token');
   return {
@@ -10,8 +8,7 @@ const getAuthHeaders = () => {
   };
 };
 
-// Fetch Buyer Profile
-export const fetchBuyerProfile = createAsyncThunk(
+const fetchBuyerProfile = createAsyncThunk(
   'buyerProfile/fetch',
   async (_, { rejectWithValue }) => {
     try {
@@ -27,8 +24,7 @@ export const fetchBuyerProfile = createAsyncThunk(
   }
 );
 
-// Update Buyer Profile
-export const updateBuyerProfile = createAsyncThunk(
+const updateBuyerProfile = createAsyncThunk(
   'buyerProfile/update',
   async ({ id, data }, { rejectWithValue }) => {
     try {
@@ -45,13 +41,9 @@ export const updateBuyerProfile = createAsyncThunk(
   }
 );
 
-// Reset Buyer Password
-export const resetBuyerPassword = createAsyncThunk(
+const resetBuyerPassword = createAsyncThunk(
   'buyer/resetPassword',
   async ({ oldPassword, newPassword }, { rejectWithValue }) => {
-    console.log(oldPassword);
-    console.log(newPassword);
-    
     try {
       const response = await apiRequest({
         method: 'POST',
@@ -59,11 +51,11 @@ export const resetBuyerPassword = createAsyncThunk(
         data: { oldPassword, newPassword },
         headers: getAuthHeaders(),
       });
-      console.log(response);
-      
       return response.data.message;
     } catch (err) {
       return rejectWithValue(err?.response?.data?.message || 'Password reset failed');
     }
   }
 );
+
+export { fetchBuyerProfile, updateBuyerProfile, resetBuyerPassword };

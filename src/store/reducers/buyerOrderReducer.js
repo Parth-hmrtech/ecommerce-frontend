@@ -25,7 +25,6 @@ const buyerOrderSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // Place Order
     builder
       .addCase(placeBuyerOrder.pending, (state) => {
         state.loading = true;
@@ -35,15 +34,13 @@ const buyerOrderSlice = createSlice({
       .addCase(placeBuyerOrder.fulfilled, (state, action) => {
         state.loading = false;
         state.success = true;
-        state.orders.push(action.payload); // optional
+        state.orders.push(action.payload);
       })
       .addCase(placeBuyerOrder.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
 
-    // Fetch All Orders
-    builder
       .addCase(fetchBuyerOrders.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -55,10 +52,8 @@ const buyerOrderSlice = createSlice({
       .addCase(fetchBuyerOrders.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
 
-    // Fetch Single Order
-    builder
       .addCase(fetchBuyerOrderById.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -70,10 +65,8 @@ const buyerOrderSlice = createSlice({
       .addCase(fetchBuyerOrderById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
 
-    // Update Order Address
-    builder
       .addCase(updateBuyerOrderAddress.pending, (state) => {
         state.loading = true;
         state.success = false;
@@ -87,10 +80,8 @@ const buyerOrderSlice = createSlice({
       .addCase(updateBuyerOrderAddress.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
 
-    // Delete Order
-    builder
       .addCase(deleteBuyerOrder.pending, (state) => {
         state.loading = true;
         state.success = false;

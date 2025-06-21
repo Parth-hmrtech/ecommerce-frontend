@@ -1,4 +1,3 @@
-// src/store/slices/buyerSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 import { fetchBuyerCategories } from '../actions/buyerAction';
 

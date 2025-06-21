@@ -1,4 +1,3 @@
-// src/store/reducers/sellerSubCategorySlice.js
 import { createSlice } from '@reduxjs/toolkit';
 import {
   fetchAllSubCategories,
@@ -18,7 +17,6 @@ const subCategorySlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Fetch All
       .addCase(fetchAllSubCategories.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -32,7 +30,6 @@ const subCategorySlice = createSlice({
         state.error = action.payload;
       })
 
-      // Fetch by Category ID
       .addCase(fetchAllSubCategoriesById.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -46,7 +43,6 @@ const subCategorySlice = createSlice({
         state.error = action.payload;
       })
 
-      // Add
       .addCase(addSubCategoryAction.fulfilled, (state, action) => {
         state.list.push(action.payload);
       })
@@ -54,7 +50,6 @@ const subCategorySlice = createSlice({
         state.error = action.payload;
       })
 
-      // Update
       .addCase(updateSubCategoryAction.fulfilled, (state, action) => {
         const index = state.list.findIndex(sub => sub.id === action.payload.id);
         if (index !== -1) {
@@ -65,7 +60,6 @@ const subCategorySlice = createSlice({
         state.error = action.payload;
       })
 
-      // Delete
       .addCase(deleteSubCategoryAction.fulfilled, (state, action) => {
         state.list = state.list.filter(sub => sub.id !== action.payload);
       })

@@ -1,4 +1,3 @@
-// src/store/reducers/buyerProfileReducer.js
 import { createSlice } from '@reduxjs/toolkit';
 import {
   fetchBuyerProfile,

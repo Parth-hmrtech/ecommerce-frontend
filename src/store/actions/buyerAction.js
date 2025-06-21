@@ -1,14 +1,13 @@
-// src/store/actions/buyerAction.js
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { apiRequest } from '../../hooks/useApiRequest';
 
-export const fetchBuyerCategories = createAsyncThunk(
+const fetchBuyerCategories = createAsyncThunk(
   'buyer/fetchBuyerCategories',
   async (_, { rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'GET',
-        url: '/buyer/categories', // ✅ No need for full URL
+        url: '/buyer/categories',
       });
       return response.data?.data || [];
     } catch (error) {
@@ -17,3 +16,5 @@ export const fetchBuyerCategories = createAsyncThunk(
     }
   }
 );
+
+export { fetchBuyerCategories };

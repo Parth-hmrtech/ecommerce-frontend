@@ -1,8 +1,6 @@
-// src/store/actions/sellerSubCategoryAction.js
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { apiRequest } from '../../hooks/useApiRequest';
 
-// Token Helper
 const getAuthHeaders = () => {
   const token = localStorage.getItem('access_token');
   return {
@@ -10,8 +8,7 @@ const getAuthHeaders = () => {
   };
 };
 
-// ✅ Fetch All Subcategories
-export const fetchAllSubCategories = createAsyncThunk(
+const fetchAllSubCategories = createAsyncThunk(
   'subcategories/fetchAll',
   async (_, { rejectWithValue }) => {
     try {
@@ -22,14 +19,12 @@ export const fetchAllSubCategories = createAsyncThunk(
       });
       return response.data.data;
     } catch (err) {
-      console.error('Fetch Subcategories Error:', err);
       return rejectWithValue(err?.response?.data?.message || 'Failed to fetch subcategories');
     }
   }
 );
 
-// ✅ Fetch Subcategories by Category ID
-export const fetchAllSubCategoriesById = createAsyncThunk(
+const fetchAllSubCategoriesById = createAsyncThunk(
   'subcategories/fetchByCategoryId',
   async (categoryId, { rejectWithValue }) => {
     try {
@@ -40,14 +35,12 @@ export const fetchAllSubCategoriesById = createAsyncThunk(
       });
       return response.data.data;
     } catch (err) {
-      console.error('Fetch Subcategories by ID Error:', err);
       return rejectWithValue(err?.response?.data?.message || 'Failed to fetch subcategories');
     }
   }
 );
 
-// ✅ Add Subcategory
-export const addSubCategoryAction = createAsyncThunk(
+const addSubCategoryAction = createAsyncThunk(
   'subcategories/add',
   async (data, { rejectWithValue }) => {
     try {
@@ -59,14 +52,12 @@ export const addSubCategoryAction = createAsyncThunk(
       });
       return response.data.data;
     } catch (err) {
-      console.error('Add Subcategory Error:', err);
       return rejectWithValue(err?.response?.data?.message || 'Failed to add subcategory');
     }
   }
 );
 
-// ✅ Update Subcategory
-export const updateSubCategoryAction = createAsyncThunk(
+const updateSubCategoryAction = createAsyncThunk(
   'subcategories/update',
   async ({ id, sub_category_name }, { rejectWithValue }) => {
     try {
@@ -78,14 +69,12 @@ export const updateSubCategoryAction = createAsyncThunk(
       });
       return response.data.data;
     } catch (err) {
-      console.error('Update Subcategory Error:', err);
       return rejectWithValue(err?.response?.data?.message || 'Failed to update subcategory');
     }
   }
 );
 
-// ✅ Delete Subcategory
-export const deleteSubCategoryAction = createAsyncThunk(
+const deleteSubCategoryAction = createAsyncThunk(
   'subcategories/delete',
   async (id, { rejectWithValue }) => {
     try {
@@ -94,10 +83,17 @@ export const deleteSubCategoryAction = createAsyncThunk(
         url: `/seller/subcategories/${id}`,
         headers: getAuthHeaders(),
       });
-      return id; // Return ID for reducer to remove from list
+      return id;
     } catch (err) {
-      console.error('Delete Subcategory Error:', err);
       return rejectWithValue(err?.response?.data?.message || 'Failed to delete subcategory');
     }
   }
 );
+
+export {
+  fetchAllSubCategories,
+  fetchAllSubCategoriesById,
+  addSubCategoryAction,
+  updateSubCategoryAction,
+  deleteSubCategoryAction
+};

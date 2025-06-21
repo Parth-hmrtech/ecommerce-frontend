@@ -1,4 +1,3 @@
-// src/store/actions/buyerReviewAction.js
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { apiRequest } from '../../hooks/useApiRequest';
 
@@ -9,19 +8,15 @@ const getTokenHeader = () => {
   };
 };
 
-// ✅ NEW: Get review by product ID
-export const fetchBuyerReviewByProductId = createAsyncThunk(
+const fetchBuyerReviewByProductId = createAsyncThunk(
   'buyerReview/fetchByProductId',
   async (productId, { rejectWithValue }) => {
-
     try {
       const response = await apiRequest({
         method: 'GET',
         url: `/buyer/reviews/${productId}`,
         headers: getTokenHeader(),
       });
-      // console.log("from review",response);
-
       return response.data?.data;
     } catch (error) {
       return rejectWithValue(
@@ -31,22 +26,14 @@ export const fetchBuyerReviewByProductId = createAsyncThunk(
   }
 );
 
-// Add a new review
-export const addBuyerReview = createAsyncThunk(
+const addBuyerReview = createAsyncThunk(
   'buyerReview/add',
   async ({ product_id, order_id, buyer_id, seller_id, rating, comment }, { rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'POST',
         url: '/buyer/review',
-        data: {
-          product_id,
-          order_id,
-          buyer_id,
-          seller_id,
-          rating,
-          comment,
-        },
+        data: { product_id, order_id, buyer_id, seller_id, rating, comment },
         headers: getTokenHeader(),
       });
       return response.data?.data;
@@ -58,16 +45,13 @@ export const addBuyerReview = createAsyncThunk(
   }
 );
 
-// Update an existing review
-export const updateBuyerReview = createAsyncThunk(
+const updateBuyerReview = createAsyncThunk(
   'buyerReview/update',
   async ({ id, rating, comment }, { rejectWithValue }) => {
-    console.log("Updating review:", id);
-
     try {
       const response = await apiRequest({
         method: 'PUT',
-        url: `/buyer/reviews/${id}`, // becomes /buyer/reviews/undefined 😬
+        url: `/buyer/reviews/${id}`,
         data: { rating, comment },
         headers: getTokenHeader(),
       });
@@ -80,21 +64,15 @@ export const updateBuyerReview = createAsyncThunk(
   }
 );
 
-
-// Delete a review
-export const deleteBuyerReview = createAsyncThunk(
+const deleteBuyerReview = createAsyncThunk(
   'buyerReview/delete',
   async (id, { rejectWithValue }) => {
     try {
-      console.log("delete", id);
-
       const response = await apiRequest({
         method: 'DELETE',
         url: `/buyer/reviews/${id}`,
         headers: getTokenHeader(),
       });
-      console.log(response);
-
       return response.data?.data;
     } catch (error) {
       return rejectWithValue(
@@ -103,3 +81,10 @@ export const deleteBuyerReview = createAsyncThunk(
     }
   }
 );
+
+export {
+  fetchBuyerReviewByProductId,
+  addBuyerReview,
+  updateBuyerReview,
+  deleteBuyerReview,
+};

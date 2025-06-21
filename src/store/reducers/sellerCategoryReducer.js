@@ -19,8 +19,6 @@ const categorySlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-
-      // ✅ Fetch All Categories
       .addCase(fetchAllCategories.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -34,21 +32,19 @@ const categorySlice = createSlice({
         state.error = action.payload || 'Failed to load categories';
       })
 
-      // ✅ Add Category
       .addCase(addCategoryAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(addCategoryAction.fulfilled, (state, action) => {
         state.loading = false;
-        state.list.push(action.payload); // Add new category to the list
+        state.list.push(action.payload);
       })
       .addCase(addCategoryAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || 'Failed to add category';
       })
 
-      // ✅ Update Category
       .addCase(updateCategoryAction.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -57,7 +53,7 @@ const categorySlice = createSlice({
         state.loading = false;
         const index = state.list.findIndex((cat) => cat.id === action.payload.id);
         if (index !== -1) {
-          state.list[index] = action.payload; // Replace updated category
+          state.list[index] = action.payload;
         }
       })
       .addCase(updateCategoryAction.rejected, (state, action) => {
@@ -65,14 +61,13 @@ const categorySlice = createSlice({
         state.error = action.payload || 'Failed to update category';
       })
 
-      // ✅ Delete Category
       .addCase(deleteCategoryAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(deleteCategoryAction.fulfilled, (state, action) => {
         state.loading = false;
-        state.list = state.list.filter((cat) => cat.id !== action.payload); // Remove category by ID
+        state.list = state.list.filter((cat) => cat.id !== action.payload);
       })
       .addCase(deleteCategoryAction.rejected, (state, action) => {
         state.loading = false;

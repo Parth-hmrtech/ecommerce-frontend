@@ -1,8 +1,6 @@
-// src/store/actions/sellerReviewAction.js
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { apiRequest } from '../../hooks/useApiRequest';
 
-// Reusable auth header
 const getAuthHeaders = () => {
   const token = localStorage.getItem('access_token');
   return {
@@ -10,8 +8,7 @@ const getAuthHeaders = () => {
   };
 };
 
-// ✅ Fetch Seller Reviews
-export const fetchSellerReviewsAction = createAsyncThunk(
+const fetchSellerReviewsAction = createAsyncThunk(
   'seller/fetchReviews',
   async (_, { rejectWithValue }) => {
     try {
@@ -20,7 +17,7 @@ export const fetchSellerReviewsAction = createAsyncThunk(
         url: '/seller/reviews/',
         headers: getAuthHeaders(),
       });
-      return response.data.data; // Assuming response contains data.data
+      return response.data.data;
     } catch (err) {
       const message = err?.response?.data?.message || err.message || 'Failed to fetch reviews';
       return rejectWithValue(message);
@@ -28,8 +25,7 @@ export const fetchSellerReviewsAction = createAsyncThunk(
   }
 );
 
-// ✅ Delete Seller Review
-export const deleteSellerReviewAction = createAsyncThunk(
+const deleteSellerReviewAction = createAsyncThunk(
   'seller/deleteReview',
   async (reviewId, { rejectWithValue }) => {
     try {
@@ -38,11 +34,12 @@ export const deleteSellerReviewAction = createAsyncThunk(
         url: `/seller/reviews/${reviewId}`,
         headers: getAuthHeaders(),
       });
-
-      return reviewId; // Used to remove from state in reducer
+      return reviewId;
     } catch (err) {
       const message = err?.response?.data?.message || err.message || 'Failed to delete review';
       return rejectWithValue(message);
     }
   }
 );
+
+export { fetchSellerReviewsAction, deleteSellerReviewAction };

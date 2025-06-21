@@ -3,7 +3,6 @@ import { apiRequest } from '../../hooks/useApiRequest';
 
 const BASE_ENDPOINT = '/buyer/cart';
 
-// Utility to get auth headers
 const getAuthHeaders = () => {
   const token = localStorage.getItem('access_token');
   return {
@@ -11,8 +10,7 @@ const getAuthHeaders = () => {
   };
 };
 
-// Fetch Cart Items
-export const fetchBuyerCart = createAsyncThunk(
+const fetchBuyerCart = createAsyncThunk(
   'buyerCart/fetch',
   async (_, { rejectWithValue }) => {
     try {
@@ -23,15 +21,12 @@ export const fetchBuyerCart = createAsyncThunk(
       });
       return response.data?.data || [];
     } catch (err) {
-      return rejectWithValue(
-        err?.response?.data?.message || 'Failed to fetch cart'
-      );
+      return rejectWithValue(err?.response?.data?.message || 'Failed to fetch cart');
     }
   }
 );
 
-// Add to Cart
-export const addToBuyerCart = createAsyncThunk(
+const addToBuyerCart = createAsyncThunk(
   'buyerCart/add',
   async ({ product_id, quantity }, { rejectWithValue }) => {
     try {
@@ -43,15 +38,12 @@ export const addToBuyerCart = createAsyncThunk(
       });
       return response.data?.data;
     } catch (err) {
-      return rejectWithValue(
-        err?.response?.data?.message || 'Failed to add item to cart'
-      );
+      return rejectWithValue(err?.response?.data?.message || 'Failed to add item to cart');
     }
   }
 );
 
-// Update Cart Item
-export const updateBuyerCart = createAsyncThunk(
+const updateBuyerCart = createAsyncThunk(
   'buyerCart/update',
   async ({ id, quantity }, { rejectWithValue }) => {
     try {
@@ -63,15 +55,12 @@ export const updateBuyerCart = createAsyncThunk(
       });
       return response.data?.data;
     } catch (err) {
-      return rejectWithValue(
-        err?.response?.data?.message || 'Failed to update cart'
-      );
+      return rejectWithValue(err?.response?.data?.message || 'Failed to update cart');
     }
   }
 );
 
-// Delete Cart Item
-export const deleteBuyerCart = createAsyncThunk(
+const deleteBuyerCart = createAsyncThunk(
   'buyerCart/delete',
   async (id, { rejectWithValue }) => {
     try {
@@ -82,9 +71,9 @@ export const deleteBuyerCart = createAsyncThunk(
       });
       return response.data?.data;
     } catch (err) {
-      return rejectWithValue(
-        err?.response?.data?.message || 'Failed to delete item'
-      );
+      return rejectWithValue(err?.response?.data?.message || 'Failed to delete item');
     }
   }
 );
+
+export { fetchBuyerCart, addToBuyerCart, updateBuyerCart, deleteBuyerCart };

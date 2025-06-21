@@ -1,8 +1,6 @@
-// src/store/actions/sellerProfileAction.js
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { apiRequest } from '../../hooks/useApiRequest';
 
-// Utility: Get token header
 const getAuthHeaders = () => {
   const token = localStorage.getItem('access_token');
   return {
@@ -10,8 +8,7 @@ const getAuthHeaders = () => {
   };
 };
 
-// Fetch Seller Profile
-export const fetchSellerProfile = createAsyncThunk(
+const fetchSellerProfile = createAsyncThunk(
   'sellerProfile/fetch',
   async (_, { rejectWithValue }) => {
     try {
@@ -27,8 +24,7 @@ export const fetchSellerProfile = createAsyncThunk(
   }
 );
 
-// Update Seller Profile
-export const updateSellerProfile = createAsyncThunk(
+const updateSellerProfile = createAsyncThunk(
   'sellerProfile/update',
   async ({ id, data }, { rejectWithValue }) => {
     try {
@@ -45,8 +41,7 @@ export const updateSellerProfile = createAsyncThunk(
   }
 );
 
-// Reset Seller Password
-export const resetSellerPassword = createAsyncThunk(
+const resetSellerPassword = createAsyncThunk(
   'seller/resetPassword',
   async ({ oldPassword, newPassword }, { rejectWithValue }) => {
     try {
@@ -62,3 +57,9 @@ export const resetSellerPassword = createAsyncThunk(
     }
   }
 );
+
+export {
+  fetchSellerProfile,
+  updateSellerProfile,
+  resetSellerPassword
+};
