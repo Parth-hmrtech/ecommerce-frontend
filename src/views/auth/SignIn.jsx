@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { signInUser } from '../../store/actions/authActions';
+import { signInUserAction } from '../../store/actions/authActions';
 import { resetAuthState } from '../../store/reducers/authReducer';
 import ecommerceLogo from '../../assets/images/ecommerce-logo.png';
 
@@ -55,7 +55,7 @@ const SignIn = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(signInUser(formData));
+    dispatch(signInUserAction(formData));
   };
 
   return (

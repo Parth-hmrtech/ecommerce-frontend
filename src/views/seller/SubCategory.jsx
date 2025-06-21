@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  fetchAllSubCategories,
+  fetchAllSubCategoriesAction,
   addSubCategoryAction,
   updateSubCategoryAction,
   deleteSubCategoryAction,
 } from '../../store/actions/sellerSubCategoryAction';
-import { fetchAllCategories } from '../../store/actions/sellerCategoryAction';
+import { fetchAllCategoriesAction } from '../../store/actions/sellerCategoryAction';
 
 import {
   Box,
@@ -57,8 +57,8 @@ const SellerSubCategory = () => {
   const [subCategoryToDelete, setSubCategoryToDelete] = useState(null);
 
   useEffect(() => {
-    dispatch(fetchAllSubCategories());
-    dispatch(fetchAllCategories());
+    dispatch(fetchAllSubCategoriesAction());
+    dispatch(fetchAllCategoriesAction());
   }, [dispatch]);
 
   const handleToggleSidebar = () => {
@@ -101,7 +101,7 @@ const SellerSubCategory = () => {
       .then(() => {
         setEditSubCategoryId(null);
         setEditSubCategoryName('');
-        dispatch(fetchAllSubCategories());
+        dispatch(fetchAllSubCategoriesAction());
       })
       .catch((err) => console.error('Update failed:', err));
   };
@@ -122,7 +122,7 @@ const SellerSubCategory = () => {
       .then(() => {
         setConfirmOpen(false);
         setSubCategoryToDelete(null);
-        dispatch(fetchAllSubCategories());
+        dispatch(fetchAllSubCategoriesAction());
       })
       .catch((err) => console.error('Delete failed:', err));
   };

@@ -28,7 +28,7 @@ import Footer from '../../components/common/Footer';
 import Sidebar from '../../components/common/Sidebar';
 
 import { fetchSellerReviewsAction, deleteSellerReviewAction } from '../../store/actions/sellerReviewAction';
-import { fetchAllProducts } from '../../store/actions/sellerProductAction';
+import { fetchAllProductsAction } from '../../store/actions/sellerProductAction';
 
 const SellerReview = () => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -43,7 +43,7 @@ const SellerReview = () => {
 
     useEffect(() => {
         dispatch(fetchSellerReviewsAction());
-        dispatch(fetchAllProducts());
+        dispatch(fetchAllProductsAction());
     }, [dispatch]);
 
     const handleToggleSidebar = () => {

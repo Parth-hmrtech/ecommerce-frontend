@@ -1,9 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
-  fetchBuyerReviewByProductId,
-  addBuyerReview,
-  updateBuyerReview,
-  deleteBuyerReview,
+  fetchBuyerReviewByProductIdAction,
+  addBuyerReviewAction,
+  updateBuyerReviewAction,
+  deleteBuyerReviewAction,
 } from '../actions/buyerReviewAction';
 
 const buyerReviewSlice = createSlice({
@@ -22,37 +22,37 @@ const buyerReviewSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchBuyerReviewByProductId.pending, (state) => {
+      .addCase(fetchBuyerReviewByProductIdAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchBuyerReviewByProductId.fulfilled, (state, action) => {
+      .addCase(fetchBuyerReviewByProductIdAction.fulfilled, (state, action) => {
         state.loading = false;
         state.items = action.payload || [];
       })
-      .addCase(fetchBuyerReviewByProductId.rejected, (state, action) => {
+      .addCase(fetchBuyerReviewByProductIdAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       })
 
-      .addCase(addBuyerReview.pending, (state) => {
+      .addCase(addBuyerReviewAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(addBuyerReview.fulfilled, (state, action) => {
+      .addCase(addBuyerReviewAction.fulfilled, (state, action) => {
         state.loading = false;
         state.items.push(action.payload);
       })
-      .addCase(addBuyerReview.rejected, (state, action) => {
+      .addCase(addBuyerReviewAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       })
 
-      .addCase(updateBuyerReview.pending, (state) => {
+      .addCase(updateBuyerReviewAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateBuyerReview.fulfilled, (state, action) => {
+      .addCase(updateBuyerReviewAction.fulfilled, (state, action) => {
         state.loading = false;
         const updatedReview = action.payload;
         if (!updatedReview || !updatedReview.id) {
@@ -66,21 +66,21 @@ const buyerReviewSlice = createSlice({
           state.items.push(updatedReview);
         }
       })
-      .addCase(updateBuyerReview.rejected, (state, action) => {
+      .addCase(updateBuyerReviewAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       })
 
-      .addCase(deleteBuyerReview.pending, (state) => {
+      .addCase(deleteBuyerReviewAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(deleteBuyerReview.fulfilled, (state, action) => {
+      .addCase(deleteBuyerReviewAction.fulfilled, (state, action) => {
         state.loading = false;
         const deletedId = action.payload;
         state.items = state.items.filter((r) => r.id !== deletedId);
       })
-      .addCase(deleteBuyerReview.rejected, (state, action) => {
+      .addCase(deleteBuyerReviewAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       });

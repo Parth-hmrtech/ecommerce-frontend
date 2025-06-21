@@ -1,10 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
-  fetchAllSubCategories,
+  fetchAllSubCategoriesAction,
   addSubCategoryAction,
   updateSubCategoryAction,
   deleteSubCategoryAction,
-  fetchAllSubCategoriesById,
+  fetchAllSubCategoriesByIdAction,
 } from '../actions/sellerSubCategoryAction';
 
 const subCategorySlice = createSlice({
@@ -17,28 +17,28 @@ const subCategorySlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchAllSubCategories.pending, (state) => {
+      .addCase(fetchAllSubCategoriesAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchAllSubCategories.fulfilled, (state, action) => {
+      .addCase(fetchAllSubCategoriesAction.fulfilled, (state, action) => {
         state.loading = false;
         state.list = action.payload;
       })
-      .addCase(fetchAllSubCategories.rejected, (state, action) => {
+      .addCase(fetchAllSubCategoriesAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      .addCase(fetchAllSubCategoriesById.pending, (state) => {
+      .addCase(fetchAllSubCategoriesByIdAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchAllSubCategoriesById.fulfilled, (state, action) => {
+      .addCase(fetchAllSubCategoriesByIdAction.fulfilled, (state, action) => {
         state.loading = false;
         state.list = action.payload;
       })
-      .addCase(fetchAllSubCategoriesById.rejected, (state, action) => {
+      .addCase(fetchAllSubCategoriesByIdAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

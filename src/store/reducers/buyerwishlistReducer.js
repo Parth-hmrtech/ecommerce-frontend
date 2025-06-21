@@ -1,9 +1,9 @@
 // src/store/reducers/buyerWishlistReducer.js
 import { createSlice } from '@reduxjs/toolkit';
 import {
-  fetchBuyerWishlist,
-  addToBuyerWishlist,
-  deleteFromBuyerWishlist,
+  fetchBuyerWishlistAction,
+  addToBuyerWishlistAction,
+  deleteFromBuyerWishlistAction,
 } from '../actions/buyerWishlistAction';
 
 const buyerWishlistSlice = createSlice({
@@ -22,43 +22,43 @@ const buyerWishlistSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchBuyerWishlist.pending, (state) => {
+      .addCase(fetchBuyerWishlistAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchBuyerWishlist.fulfilled, (state, action) => {
+      .addCase(fetchBuyerWishlistAction.fulfilled, (state, action) => {
         state.loading = false;
         state.items = Array.isArray(action.payload) ? action.payload : [];
       })
-      .addCase(fetchBuyerWishlist.rejected, (state, action) => {
+      .addCase(fetchBuyerWishlistAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      .addCase(addToBuyerWishlist.pending, (state) => {
+      .addCase(addToBuyerWishlistAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(addToBuyerWishlist.fulfilled, (state, action) => {
+      .addCase(addToBuyerWishlistAction.fulfilled, (state, action) => {
         state.loading = false;
         if (action.payload) {
           state.items.push(action.payload);
         }
       })
-      .addCase(addToBuyerWishlist.rejected, (state, action) => {
+      .addCase(addToBuyerWishlistAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      .addCase(deleteFromBuyerWishlist.pending, (state) => {
+      .addCase(deleteFromBuyerWishlistAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(deleteFromBuyerWishlist.fulfilled, (state, action) => {
+      .addCase(deleteFromBuyerWishlistAction.fulfilled, (state, action) => {
         state.loading = false;
-        state.items = state.items.filter((item) => item.id !== action.payload);
+        state.items = state.items.filter((item) => item.id !== action.payload.wishlistId);
       })
-      .addCase(deleteFromBuyerWishlist.rejected, (state, action) => {
+      .addCase(deleteFromBuyerWishlistAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

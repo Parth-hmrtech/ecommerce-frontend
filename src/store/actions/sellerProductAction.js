@@ -8,7 +8,7 @@ const getAuthHeaders = () => {
   };
 };
 
-const fetchAllProducts = createAsyncThunk(
+const fetchAllProductsAction = createAsyncThunk(
   'products/fetchAll',
   async (_, { rejectWithValue }) => {
     try {
@@ -18,8 +18,8 @@ const fetchAllProducts = createAsyncThunk(
         headers: getAuthHeaders(),
       });
       return response.data.data;
-    } catch (err) {
-      return rejectWithValue(err?.response?.data?.message || 'Failed to fetch products');
+    } catch (error) {
+      return rejectWithValue(error?.response?.data?.message || 'Failed to fetch products');
     }
   }
 );
@@ -35,8 +35,8 @@ const addProductAction = createAsyncThunk(
         headers: getAuthHeaders(),
       });
       return response.data.data;
-    } catch (err) {
-      return rejectWithValue(err?.response?.data?.message || 'Failed to add product');
+    } catch (error) {
+      return rejectWithValue(error?.response?.data?.message || 'Failed to add product');
     }
   }
 );
@@ -52,8 +52,8 @@ const updateProductAction = createAsyncThunk(
         headers: getAuthHeaders(),
       });
       return response.data.data;
-    } catch (err) {
-      return rejectWithValue(err?.response?.data?.message || 'Failed to update product');
+    } catch (error) {
+      return rejectWithValue(error?.response?.data?.message || 'Failed to update product');
     }
   }
 );
@@ -68,8 +68,8 @@ const deleteProductAction = createAsyncThunk(
         headers: getAuthHeaders(),
       });
       return id;
-    } catch (err) {
-      return rejectWithValue(err?.response?.data?.message || 'Failed to delete product');
+    } catch (error) {
+      return rejectWithValue(error?.response?.data?.message || 'Failed to delete product');
     }
   }
 );
@@ -90,15 +90,15 @@ const uploadProductImageAction = createAsyncThunk(
         },
       });
 
-      return response.data;
+      return response.data.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to upload image');
+      return rejectWithValue(error?.response?.data?.message || 'Failed to upload image');
     }
   }
 );
 
 export {
-  fetchAllProducts,
+  fetchAllProductsAction,
   addProductAction,
   updateProductAction,
   deleteProductAction,

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-    fetchAllCategories,
+    fetchAllCategoriesAction,
     addCategoryAction,
     deleteCategoryAction,
     updateCategoryAction,
@@ -54,7 +54,7 @@ const SellerCategory = () => {
     const [sortDirection, setSortDirection] = useState('desc');
 
     useEffect(() => {
-        dispatch(fetchAllCategories());
+        dispatch(fetchAllCategoriesAction());
     }, [dispatch]);
 
     const handleToggleSidebar = () => {
@@ -86,7 +86,7 @@ const SellerCategory = () => {
             .then(() => {
                 setEditCategoryId(null);
                 setEditCategoryName('');
-                dispatch(fetchAllCategories());
+                dispatch(fetchAllCategoriesAction());
             })
             .catch((err) => console.error('Update failed:', err));
     };
@@ -106,7 +106,7 @@ const SellerCategory = () => {
         dispatch(deleteCategoryAction(categoryToDelete))
             .unwrap()
             .then(() => {
-                dispatch(fetchAllCategories());
+                dispatch(fetchAllCategoriesAction());
                 setConfirmOpen(false);
                 setCategoryToDelete(null);
             })

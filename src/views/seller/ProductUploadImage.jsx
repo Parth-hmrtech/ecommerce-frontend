@@ -22,7 +22,7 @@ import Sidebar from '../../components/common/Sidebar';
 import Footer from '../../components/common/Footer';
 
 import {
-    fetchAllProducts,
+    fetchAllProductsAction,
     uploadProductImageAction,
 } from '../../store/actions/sellerProductAction';
 
@@ -102,7 +102,7 @@ const SellerProductImages = () => {
     const [visibleCount, setVisibleCount] = useState(20); // Show 20 products at a time
 
     useEffect(() => {
-        dispatch(fetchAllProducts());
+        dispatch(fetchAllProductsAction());
     }, [dispatch]);
 
     const handleToggleSidebar = () => setSidebarOpen((o) => !o);
@@ -121,7 +121,7 @@ const SellerProductImages = () => {
             .then(() => {
                 setFile(null);
                 document.querySelector('input[type="file"]').value = '';
-                dispatch(fetchAllProducts());
+                dispatch(fetchAllProductsAction());
             })
             .catch((err) => {
                 console.error('Image upload failed:', err);

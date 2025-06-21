@@ -1,10 +1,9 @@
-// src/store/reducers/buyerCartReducer.js
 import { createSlice } from '@reduxjs/toolkit';
 import {
-  fetchBuyerCart,
-  addToBuyerCart,
-  updateBuyerCart,
-  deleteBuyerCart,
+  fetchBuyerCartAction,
+  addToBuyerCartAction,
+  updateBuyerCartAction,
+  deleteBuyerCartAction,
 } from '../actions/buyerCartAction';
 
 const buyerCartSlice = createSlice({
@@ -21,57 +20,58 @@ const buyerCartSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchBuyerCart.pending, (state) => {
+      .addCase(fetchBuyerCartAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchBuyerCart.fulfilled, (state, action) => {
+      .addCase(fetchBuyerCartAction.fulfilled, (state, action) => {
         state.loading = false;
         state.cart = action.payload;
       })
-      .addCase(fetchBuyerCart.rejected, (state, action) => {
+      .addCase(fetchBuyerCartAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      .addCase(addToBuyerCart.pending, (state) => {
+      .addCase(addToBuyerCartAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(addToBuyerCart.fulfilled, (state, action) => {
+      .addCase(addToBuyerCartAction.fulfilled, (state, action) => {
         state.loading = false;
         state.cart.push(action.payload);
       })
-      .addCase(addToBuyerCart.rejected, (state, action) => {
+      .addCase(addToBuyerCartAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      .addCase(updateBuyerCart.pending, (state) => {
+      .addCase(updateBuyerCartAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateBuyerCart.fulfilled, (state, action) => {
+      .addCase(updateBuyerCartAction.fulfilled, (state, action) => {
         state.loading = false;
         const index = state.cart.findIndex((item) => item.id === action.payload.id);
         if (index !== -1) {
           state.cart[index] = action.payload;
         }
       })
-      .addCase(updateBuyerCart.rejected, (state, action) => {
+      .addCase(updateBuyerCartAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      .addCase(deleteBuyerCart.pending, (state) => {
+      .addCase(deleteBuyerCartAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(deleteBuyerCart.fulfilled, (state, action) => {
+      .addCase(deleteBuyerCartAction.fulfilled, (state, action) => {
         state.loading = false;
+        // Assuming action.payload contains the id of the deleted item
         state.cart = state.cart.filter((item) => item.id !== action.payload);
       })
-      .addCase(deleteBuyerCart.rejected, (state, action) => {
+      .addCase(deleteBuyerCartAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

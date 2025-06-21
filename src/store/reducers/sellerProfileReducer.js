@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
-  fetchSellerProfile,
-  updateSellerProfile,
-  resetSellerPassword,
+  fetchSellerProfileAction,
+  updateSellerProfileAction,
+  resetSellerPasswordAction,
 } from '../actions/sellerProfileAction';
 
 const initialState = {
@@ -28,44 +28,44 @@ const sellerProfileSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchSellerProfile.pending, (state) => {
+      .addCase(fetchSellerProfileAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchSellerProfile.fulfilled, (state, action) => {
+      .addCase(fetchSellerProfileAction.fulfilled, (state, action) => {
         state.loading = false;
         state.profile = action.payload;
       })
-      .addCase(fetchSellerProfile.rejected, (state, action) => {
+      .addCase(fetchSellerProfileAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      .addCase(updateSellerProfile.pending, (state) => {
+      .addCase(updateSellerProfileAction.pending, (state) => {
         state.loading = true;
         state.error = null;
         state.updateSuccess = false;
       })
-      .addCase(updateSellerProfile.fulfilled, (state, action) => {
+      .addCase(updateSellerProfileAction.fulfilled, (state, action) => {
         state.loading = false;
         state.profile = action.payload;
         state.updateSuccess = true;
       })
-      .addCase(updateSellerProfile.rejected, (state, action) => {
+      .addCase(updateSellerProfileAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      .addCase(resetSellerPassword.pending, (state) => {
+      .addCase(resetSellerPasswordAction.pending, (state) => {
         state.passwordResetLoading = true;
         state.passwordResetSuccess = '';
         state.passwordResetError = '';
       })
-      .addCase(resetSellerPassword.fulfilled, (state, action) => {
+      .addCase(resetSellerPasswordAction.fulfilled, (state, action) => {
         state.passwordResetLoading = false;
         state.passwordResetSuccess = action.payload;
       })
-      .addCase(resetSellerPassword.rejected, (state, action) => {
+      .addCase(resetSellerPasswordAction.rejected, (state, action) => {
         state.passwordResetLoading = false;
         state.passwordResetError = action.payload;
       });

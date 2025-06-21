@@ -1,10 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
-  placeBuyerOrder,
-  fetchBuyerOrders,
-  fetchBuyerOrderById,
-  updateBuyerOrderAddress,
-  deleteBuyerOrder,
+  placeBuyerOrderAction,
+  fetchBuyerOrdersAction,
+  fetchBuyerOrderByIdAction,
+  updateBuyerOrderAddressAction,
+  deleteBuyerOrderAction,
 } from '../actions/buyerOrderAction';
 
 const initialState = {
@@ -26,73 +26,73 @@ const buyerOrderSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(placeBuyerOrder.pending, (state) => {
+      .addCase(placeBuyerOrderAction.pending, (state) => {
         state.loading = true;
         state.success = false;
         state.error = null;
       })
-      .addCase(placeBuyerOrder.fulfilled, (state, action) => {
+      .addCase(placeBuyerOrderAction.fulfilled, (state, action) => {
         state.loading = false;
         state.success = true;
         state.orders.push(action.payload);
       })
-      .addCase(placeBuyerOrder.rejected, (state, action) => {
+      .addCase(placeBuyerOrderAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      .addCase(fetchBuyerOrders.pending, (state) => {
+      .addCase(fetchBuyerOrdersAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchBuyerOrders.fulfilled, (state, action) => {
+      .addCase(fetchBuyerOrdersAction.fulfilled, (state, action) => {
         state.loading = false;
         state.orders = action.payload;
       })
-      .addCase(fetchBuyerOrders.rejected, (state, action) => {
+      .addCase(fetchBuyerOrdersAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      .addCase(fetchBuyerOrderById.pending, (state) => {
+      .addCase(fetchBuyerOrderByIdAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchBuyerOrderById.fulfilled, (state, action) => {
+      .addCase(fetchBuyerOrderByIdAction.fulfilled, (state, action) => {
         state.loading = false;
         state.order = action.payload;
       })
-      .addCase(fetchBuyerOrderById.rejected, (state, action) => {
+      .addCase(fetchBuyerOrderByIdAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      .addCase(updateBuyerOrderAddress.pending, (state) => {
+      .addCase(updateBuyerOrderAddressAction.pending, (state) => {
         state.loading = true;
         state.success = false;
         state.error = null;
       })
-      .addCase(updateBuyerOrderAddress.fulfilled, (state, action) => {
+      .addCase(updateBuyerOrderAddressAction.fulfilled, (state, action) => {
         state.loading = false;
         state.success = true;
         state.order = action.payload;
       })
-      .addCase(updateBuyerOrderAddress.rejected, (state, action) => {
+      .addCase(updateBuyerOrderAddressAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      .addCase(deleteBuyerOrder.pending, (state) => {
+      .addCase(deleteBuyerOrderAction.pending, (state) => {
         state.loading = true;
         state.success = false;
         state.error = null;
       })
-      .addCase(deleteBuyerOrder.fulfilled, (state, action) => {
+      .addCase(deleteBuyerOrderAction.fulfilled, (state, action) => {
         state.loading = false;
         state.success = true;
         state.orders = state.orders.filter((o) => o.id !== action.meta.arg);
       })
-      .addCase(deleteBuyerOrder.rejected, (state, action) => {
+      .addCase(deleteBuyerOrderAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

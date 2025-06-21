@@ -8,7 +8,7 @@ const getTokenHeader = () => {
   };
 };
 
-const fetchBuyerReviewByProductId = createAsyncThunk(
+const fetchBuyerReviewByProductIdAction = createAsyncThunk(
   'buyerReview/fetchByProductId',
   async (productId, { rejectWithValue }) => {
     try {
@@ -26,7 +26,7 @@ const fetchBuyerReviewByProductId = createAsyncThunk(
   }
 );
 
-const addBuyerReview = createAsyncThunk(
+const addBuyerReviewAction = createAsyncThunk(
   'buyerReview/add',
   async ({ product_id, order_id, buyer_id, seller_id, rating, comment }, { rejectWithValue }) => {
     try {
@@ -45,7 +45,7 @@ const addBuyerReview = createAsyncThunk(
   }
 );
 
-const updateBuyerReview = createAsyncThunk(
+const updateBuyerReviewAction = createAsyncThunk(
   'buyerReview/update',
   async ({ id, rating, comment }, { rejectWithValue }) => {
     try {
@@ -64,7 +64,7 @@ const updateBuyerReview = createAsyncThunk(
   }
 );
 
-const deleteBuyerReview = createAsyncThunk(
+const deleteBuyerReviewAction = createAsyncThunk(
   'buyerReview/delete',
   async (id, { rejectWithValue }) => {
     try {
@@ -83,8 +83,8 @@ const deleteBuyerReview = createAsyncThunk(
 );
 
 export {
-  fetchBuyerReviewByProductId,
-  addBuyerReview,
-  updateBuyerReview,
-  deleteBuyerReview,
+  fetchBuyerReviewByProductIdAction,
+  addBuyerReviewAction,
+  updateBuyerReviewAction,
+  deleteBuyerReviewAction,
 };

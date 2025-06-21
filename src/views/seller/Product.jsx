@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-    fetchAllProducts,
+    fetchAllProductsAction,
     addProductAction,
     deleteProductAction,
     updateProductAction,
 } from '../../store/actions/sellerProductAction';
-import { fetchAllCategories } from '../../store/actions/sellerCategoryAction';
-import { fetchAllSubCategoriesById } from '../../store/actions/sellerSubCategoryAction';
+import { fetchAllCategoriesAction } from '../../store/actions/sellerCategoryAction';
+import { fetchAllSubCategoriesByIdAction } from '../../store/actions/sellerSubCategoryAction';
 
 import {
     Box,
@@ -64,13 +64,13 @@ const SellerProduct = () => {
     const [expandedDescriptions, setExpandedDescriptions] = useState({});
 
     useEffect(() => {
-        dispatch(fetchAllProducts());
-        dispatch(fetchAllCategories());
+        dispatch(fetchAllProductsAction());
+        dispatch(fetchAllCategoriesAction());
     }, [dispatch]);
 
     useEffect(() => {
         if (formData.category_id) {
-            dispatch(fetchAllSubCategoriesById(formData.category_id))
+            dispatch(fetchAllSubCategoriesByIdAction(formData.category_id))
                 .then((res) => {
                     const subList = res?.payload || [];
                     if (!subList.some((sub) => sub.id === formData.subcategory_id)) {
@@ -124,7 +124,7 @@ const SellerProduct = () => {
                     subcategory_id: '',
                 });
                 setShowAddForm(false);
-                dispatch(fetchAllProducts());
+                dispatch(fetchAllProductsAction());
             })
             .catch((err) => console.error('Add failed:', err));
     };
@@ -145,7 +145,7 @@ const SellerProduct = () => {
             .then(() => {
                 setEditId(null);
                 setEditData({});
-                dispatch(fetchAllProducts());
+                dispatch(fetchAllProductsAction());
             })
             .catch((err) => console.error('Update failed:', err));
     };
@@ -165,7 +165,7 @@ const SellerProduct = () => {
             .then(() => {
                 setConfirmOpen(false);
                 setProductToDelete(null);
-                dispatch(fetchAllProducts());
+                dispatch(fetchAllProductsAction());
             })
             .catch((err) => console.error('Delete failed:', err));
     };

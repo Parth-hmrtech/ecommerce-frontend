@@ -10,7 +10,7 @@ const getAuthHeaders = () => {
   };
 };
 
-const fetchBuyerCart = createAsyncThunk(
+const fetchBuyerCartAction = createAsyncThunk(
   'buyerCart/fetch',
   async (_, { rejectWithValue }) => {
     try {
@@ -26,7 +26,7 @@ const fetchBuyerCart = createAsyncThunk(
   }
 );
 
-const addToBuyerCart = createAsyncThunk(
+const addToBuyerCartAction = createAsyncThunk(
   'buyerCart/add',
   async ({ product_id, quantity }, { rejectWithValue }) => {
     try {
@@ -43,7 +43,7 @@ const addToBuyerCart = createAsyncThunk(
   }
 );
 
-const updateBuyerCart = createAsyncThunk(
+const updateBuyerCartAction = createAsyncThunk(
   'buyerCart/update',
   async ({ id, quantity }, { rejectWithValue }) => {
     try {
@@ -60,10 +60,12 @@ const updateBuyerCart = createAsyncThunk(
   }
 );
 
-const deleteBuyerCart = createAsyncThunk(
+const deleteBuyerCartAction = createAsyncThunk(
   'buyerCart/delete',
   async (id, { rejectWithValue }) => {
     try {
+      console.log(id);
+      
       const response = await apiRequest({
         method: 'DELETE',
         url: `${BASE_ENDPOINT}/${id}`,
@@ -76,4 +78,4 @@ const deleteBuyerCart = createAsyncThunk(
   }
 );
 
-export { fetchBuyerCart, addToBuyerCart, updateBuyerCart, deleteBuyerCart };
+export { fetchBuyerCartAction, addToBuyerCartAction, updateBuyerCartAction, deleteBuyerCartAction };

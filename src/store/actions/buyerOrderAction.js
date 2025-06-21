@@ -8,7 +8,7 @@ const getTokenHeader = () => {
   };
 };
 
-const placeBuyerOrder = createAsyncThunk(
+const placeBuyerOrderAction = createAsyncThunk(
   'buyerOrder/placeBuyerOrder',
   async ({ products, delivery_address }, { rejectWithValue }) => {
     try {
@@ -27,7 +27,7 @@ const placeBuyerOrder = createAsyncThunk(
   }
 );
 
-const fetchBuyerOrders = createAsyncThunk(
+const fetchBuyerOrdersAction = createAsyncThunk(
   'buyerOrder/fetchBuyerOrders',
   async (_, { rejectWithValue }) => {
     try {
@@ -45,7 +45,7 @@ const fetchBuyerOrders = createAsyncThunk(
   }
 );
 
-const fetchBuyerOrderById = createAsyncThunk(
+const fetchBuyerOrderByIdAction = createAsyncThunk(
   'buyerOrder/fetchBuyerOrderById',
   async (orderId, { rejectWithValue }) => {
     try {
@@ -63,7 +63,7 @@ const fetchBuyerOrderById = createAsyncThunk(
   }
 );
 
-const updateBuyerOrderAddress = createAsyncThunk(
+const updateBuyerOrderAddressAction = createAsyncThunk(
   'buyerOrder/updateBuyerOrderAddress',
   async ({ orderId, delivery_address }, { rejectWithValue }) => {
     try {
@@ -82,7 +82,7 @@ const updateBuyerOrderAddress = createAsyncThunk(
   }
 );
 
-const deleteBuyerOrder = createAsyncThunk(
+const deleteBuyerOrderAction = createAsyncThunk(
   'buyerOrder/deleteBuyerOrder',
   async (orderId, { rejectWithValue }) => {
     try {
@@ -101,9 +101,9 @@ const deleteBuyerOrder = createAsyncThunk(
 );
 
 export {
-  placeBuyerOrder,
-  fetchBuyerOrders,
-  fetchBuyerOrderById,
-  updateBuyerOrderAddress,
-  deleteBuyerOrder
+  placeBuyerOrderAction,
+  fetchBuyerOrdersAction,
+  fetchBuyerOrderByIdAction,
+  updateBuyerOrderAddressAction,
+  deleteBuyerOrderAction
 };

@@ -8,7 +8,7 @@ const getAuthHeaders = () => {
   };
 };
 
-const fetchBuyerProfile = createAsyncThunk(
+const fetchBuyerProfileAction = createAsyncThunk(
   'buyerProfile/fetch',
   async (_, { rejectWithValue }) => {
     try {
@@ -24,7 +24,7 @@ const fetchBuyerProfile = createAsyncThunk(
   }
 );
 
-const updateBuyerProfile = createAsyncThunk(
+const updateBuyerProfileAction = createAsyncThunk(
   'buyerProfile/update',
   async ({ id, data }, { rejectWithValue }) => {
     try {
@@ -41,7 +41,7 @@ const updateBuyerProfile = createAsyncThunk(
   }
 );
 
-const resetBuyerPassword = createAsyncThunk(
+const resetBuyerPasswordAction = createAsyncThunk(
   'buyer/resetPassword',
   async ({ oldPassword, newPassword }, { rejectWithValue }) => {
     try {
@@ -58,4 +58,8 @@ const resetBuyerPassword = createAsyncThunk(
   }
 );
 
-export { fetchBuyerProfile, updateBuyerProfile, resetBuyerPassword };
+export {
+  fetchBuyerProfileAction,
+  updateBuyerProfileAction,
+  resetBuyerPasswordAction,
+};

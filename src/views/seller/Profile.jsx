@@ -18,9 +18,9 @@ import Sidebar from '../../components/common/Sidebar';
 import Footer from '../../components/common/Footer';
 
 import {
-    fetchSellerProfile,
-    updateSellerProfile,
-    resetSellerPassword
+    fetchSellerProfileAction,
+    updateSellerProfileAction,
+    resetSellerPasswordAction
 } from '../../store/actions/sellerProfileAction';
 
 const SellerProfile = () => {
@@ -45,7 +45,7 @@ const SellerProfile = () => {
     const { profile, loading } = useSelector((state) => state.sellerProfile);
 
     useEffect(() => {
-        dispatch(fetchSellerProfile(id));
+        dispatch(fetchSellerProfileAction(id));
     }, [dispatch, id]);
 
     useEffect(() => {
@@ -65,7 +65,7 @@ const SellerProfile = () => {
         setSuccessMsg('');
         setUpdating(true);
 
-        dispatch(updateSellerProfile({ id, data: formData }))
+        dispatch(updateSellerProfileAction({ id, data: formData }))
             .unwrap()
             .then(() => {
                 setSuccessMsg('Profile updated successfully');
@@ -85,7 +85,7 @@ const SellerProfile = () => {
         setPasswordResetMsg('');
         setPasswordResetError('');
 
-        dispatch(resetSellerPassword({ oldPassword, newPassword }))
+        dispatch(resetSellerPasswordAction({ oldPassword, newPassword }))
             .unwrap()
             .then(() => {
                 setPasswordResetMsg('Password reset successful');

@@ -9,7 +9,7 @@ const getTokenHeader = () => {
   };
 };
 
-const buyerCheckoutPayment = createAsyncThunk(
+const buyerCheckoutPaymentAction = createAsyncThunk(
   'buyerPayment/checkout',
   async ({ order_id, seller_id, amount, payment_method, transaction_id }, { rejectWithValue }) => {
     try {
@@ -32,7 +32,7 @@ const buyerCheckoutPayment = createAsyncThunk(
   }
 );
 
-const buyerVerifyPayment = createAsyncThunk(
+const buyerVerifyPaymentAction = createAsyncThunk(
   'buyerPayment/verify',
   async ({ status, transaction_id }, { rejectWithValue }) => {
     try {
@@ -52,7 +52,7 @@ const buyerVerifyPayment = createAsyncThunk(
   }
 );
 
-const buyerCheckPaymentStatus = createAsyncThunk(
+const buyerCheckPaymentStatusAction = createAsyncThunk(
   'buyerPayment/checkStatus',
   async (_, { rejectWithValue }) => {
     try {
@@ -68,4 +68,4 @@ const buyerCheckPaymentStatus = createAsyncThunk(
   }
 );
 
-export { buyerCheckoutPayment, buyerVerifyPayment, buyerCheckPaymentStatus };
+export { buyerCheckoutPaymentAction, buyerVerifyPaymentAction, buyerCheckPaymentStatusAction };

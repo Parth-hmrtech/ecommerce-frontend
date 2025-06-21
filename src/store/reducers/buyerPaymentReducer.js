@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
-  buyerCheckoutPayment,
-  buyerVerifyPayment,
-  buyerCheckPaymentStatus,
+  buyerCheckoutPaymentAction,
+  buyerVerifyPaymentAction,
+  buyerCheckPaymentStatusAction,
 } from '../actions/buyerPaymentAction';
 
 const initialState = {
@@ -27,41 +27,41 @@ const buyerPaymentSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(buyerCheckoutPayment.pending, (state) => {
+      .addCase(buyerCheckoutPaymentAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(buyerCheckoutPayment.fulfilled, (state, action) => {
+      .addCase(buyerCheckoutPaymentAction.fulfilled, (state, action) => {
         state.loading = false;
         state.checkoutData = action.payload || null;
       })
-      .addCase(buyerCheckoutPayment.rejected, (state, action) => {
+      .addCase(buyerCheckoutPaymentAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       })
 
-      .addCase(buyerVerifyPayment.pending, (state) => {
+      .addCase(buyerVerifyPaymentAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(buyerVerifyPayment.fulfilled, (state, action) => {
+      .addCase(buyerVerifyPaymentAction.fulfilled, (state, action) => {
         state.loading = false;
         state.verifyData = action.payload || null;
       })
-      .addCase(buyerVerifyPayment.rejected, (state, action) => {
+      .addCase(buyerVerifyPaymentAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       })
 
-      .addCase(buyerCheckPaymentStatus.pending, (state) => {
+      .addCase(buyerCheckPaymentStatusAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(buyerCheckPaymentStatus.fulfilled, (state, action) => {
+      .addCase(buyerCheckPaymentStatusAction.fulfilled, (state, action) => {
         state.loading = false;
         state.buyerCheckPayments = action.payload || [];
       })
-      .addCase(buyerCheckPaymentStatus.rejected, (state, action) => {
+      .addCase(buyerCheckPaymentStatusAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       });

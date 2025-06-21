@@ -6,10 +6,9 @@ import {
   Typography,
   IconButton,
   Box,
-  Menu,
-  MenuItem,
   Button,
   ListItemIcon,
+  Paper,
 } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -19,27 +18,22 @@ import { useNavigate } from 'react-router-dom';
 
 const BuyerHeader = () => {
   const navigate = useNavigate();
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [isHovering, setIsHovering] = useState(false);
 
-  const handleProfileClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleLogout = () => {
+    localStorage.clear();
+    setIsHovering(false);
+    navigate('/');
   };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
- const handleLogout = () => {
-  localStorage.clear();
-  handleMenuClose();
-  navigate('/');
-};
-
 
   return (
     <AppBar position="static" color="primary">
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Typography variant="h6" sx={{ fontWeight: 'bold', cursor: 'pointer' }} onClick={() => navigate('/')}>
+        <Typography
+          variant="h6"
+          sx={{ fontWeight: 'bold', cursor: 'pointer' }}
+          onClick={() => navigate('/')}
+        >
           Buyer Dashboard
         </Typography>
 
@@ -52,36 +46,61 @@ const BuyerHeader = () => {
           </Button>
           <Button color="inherit" onClick={() => navigate('/buyer-dashboard/wishlist')}>
             Wishlist
-          </Button> 
+          </Button>
 
           <IconButton color="inherit" onClick={() => navigate('/buyer-dashboard/cart')}>
             <ShoppingCartIcon />
           </IconButton>
 
-          {/* Profile Dropdown */}
-          <Box sx={{ position: 'relative' }}>
-            <IconButton color="inherit" onClick={handleProfileClick}>
+          {/* Hover Dropdown */}
+          <Box
+            sx={{ position: 'relative' }}
+            onMouseEnter={() => setIsHovering(true)}
+            onMouseLeave={() => setIsHovering(false)}
+          >
+            <IconButton color="inherit">
               <AccountCircleIcon />
             </IconButton>
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose}
-              PaperProps={{ elevation: 4, sx: { mt: 1 } }}
-            >
-              <MenuItem onClick={() => { navigate('/buyer-dashboard/profile'); handleMenuClose(); }}>
-                <ListItemIcon>
-                  <PersonIcon fontSize="small" />
-                </ListItemIcon>
-                Profile
-              </MenuItem>
-              <MenuItem onClick={handleLogout}>
-                <ListItemIcon>
-                  <LogoutIcon fontSize="small" />
-                </ListItemIcon>
-                Logout
-              </MenuItem>
-            </Menu>
+
+            {isHovering && (
+              <Paper
+                elevation={3}
+                sx={{
+                  position: 'absolute',
+                  right: 0,
+                  mt: 0,
+                  zIndex: 0,
+                  minWidth: 160,
+                  backgroundColor: 'background.paper',
+                }}
+              >
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    py: 1,
+                  }}
+                >
+                  <Button
+                    onClick={() => {
+                      navigate('/buyer-dashboard/profile');
+                      setIsHovering(false);
+                    }}
+                    sx={{ justifyContent: 'flex-start', px: 2 }}
+                    startIcon={<PersonIcon fontSize="small" />}
+                  >
+                    Profile
+                  </Button>
+                  <Button
+                    onClick={handleLogout}
+                    sx={{ justifyContent: 'flex-start', px: 2 }}
+                    startIcon={<LogoutIcon fontSize="small" />}
+                  >
+                    Logout
+                  </Button>
+                </Box>
+              </Paper>
+            )}
           </Box>
         </Box>
       </Toolbar>

@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { apiRequest } from '../../hooks/useApiRequest';
 
-const fetchProducts = createAsyncThunk(
+const fetchProductsAction = createAsyncThunk(
   'products/fetchProducts',
   async (_, { rejectWithValue }) => {
     try {
@@ -17,4 +17,4 @@ const fetchProducts = createAsyncThunk(
   }
 );
 
-export { fetchProducts };
+export { fetchProductsAction };

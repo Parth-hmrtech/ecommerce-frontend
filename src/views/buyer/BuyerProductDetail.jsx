@@ -1,22 +1,24 @@
+// src/views/buyer/BuyerProductDetail.jsx
+
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
-    fetchBuyerCart,
-    addToBuyerCart,
-    updateBuyerCart,
-    deleteBuyerCart,
+    fetchBuyerCartAction,
+    addToBuyerCartAction,
+    updateBuyerCartAction,
+    deleteBuyerCartAction,
 } from '../../store/actions/buyerCartAction';
-import { fetchBuyerProductById } from '../../store/actions/buyerProductAction';
+import { fetchBuyerProductByIdAction } from '../../store/actions/buyerProductAction';
 import {
-    fetchBuyerWishlist,
-    addToBuyerWishlist,
+    fetchBuyerWishlistAction,
+    addToBuyerWishlistAction,
 } from '../../store/actions/buyerWishlistAction';
 import {
-    fetchBuyerReviewByProductId,
-    updateBuyerReview,
-    deleteBuyerReview,
+    fetchBuyerReviewByProductIdAction,
+    updateBuyerReviewAction,
+    deleteBuyerReviewAction,
 } from '../../store/actions/buyerReviewAction';
 
 import {
@@ -44,21 +46,53 @@ import BuyerHeader from '../../components/common/BuyerHeader';
 import BuyerFooter from '../../components/common/BuyerFooter';
 
 const NextArrow = ({ onClick }) => (
-    <Box onClick={onClick} sx={{
-        position: 'absolute', top: '50%', right: -20, transform: 'translateY(-50%)',
-        width: 36, height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center',
-        bgcolor: 'white', borderTopLeftRadius: '30px', borderBottomLeftRadius: '30px',
-        boxShadow: 3, cursor: 'pointer', zIndex: 1,
-    }}>❯</Box>
+    <Box
+        onClick={onClick}
+        sx={{
+            position: 'absolute',
+            top: '50%',
+            right: -20,
+            transform: 'translateY(-50%)',
+            width: 36,
+            height: 60,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            bgcolor: 'white',
+            borderTopLeftRadius: '30px',
+            borderBottomLeftRadius: '30px',
+            boxShadow: 3,
+            cursor: 'pointer',
+            zIndex: 1,
+        }}
+    >
+        ❯
+    </Box>
 );
 
 const PrevArrow = ({ onClick }) => (
-    <Box onClick={onClick} sx={{
-        position: 'absolute', top: '50%', left: -20, transform: 'translateY(-50%)',
-        width: 36, height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center',
-        bgcolor: 'white', borderTopRightRadius: '30px', borderBottomRightRadius: '30px',
-        boxShadow: 3, cursor: 'pointer', zIndex: 1,
-    }}>❮</Box>
+    <Box
+        onClick={onClick}
+        sx={{
+            position: 'absolute',
+            top: '50%',
+            left: -20,
+            transform: 'translateY(-50%)',
+            width: 36,
+            height: 60,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            bgcolor: 'white',
+            borderTopRightRadius: '30px',
+            borderBottomRightRadius: '30px',
+            boxShadow: 3,
+            cursor: 'pointer',
+            zIndex: 1,
+        }}
+    >
+        ❮
+    </Box>
 );
 
 const BuyerProductDetail = () => {
@@ -70,7 +104,6 @@ const BuyerProductDetail = () => {
     const { items: wishlist = [] } = useSelector((state) => state.buyerWishlist);
     const { items: reviewResponses = [] } = useSelector((state) => state.buyerReview);
 
-    const [quantity, setQuantity] = useState(0);
     const [wishlisted, setWishlisted] = useState(false);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
 
@@ -80,24 +113,17 @@ const BuyerProductDetail = () => {
 
     useEffect(() => {
         if (productId) {
-            dispatch(fetchBuyerProductById(productId));
-            dispatch(fetchBuyerCart());
-            dispatch(fetchBuyerWishlist());
+            dispatch(fetchBuyerProductByIdAction(productId));
+            dispatch(fetchBuyerCartAction());
+            dispatch(fetchBuyerWishlistAction());
         }
     }, [dispatch, productId]);
 
     useEffect(() => {
         if (product?.id) {
-            dispatch(fetchBuyerReviewByProductId(product.id));
+            dispatch(fetchBuyerReviewByProductIdAction(product.id));
         }
     }, [dispatch, product?.id]);
-
-    useEffect(() => {
-        const existingItem = cart.find((item) => item.product_id === product?.id);
-        if (existingItem) {
-            setQuantity(existingItem.quantity);
-        }
-    }, [cart, product]);
 
     useEffect(() => {
         const alreadyWishlisted = wishlist.some((item) => item.product_id === product?.id);
@@ -107,27 +133,40 @@ const BuyerProductDetail = () => {
     const getImages = (imageString) => {
         try {
             const parsed = JSON.parse(imageString);
-            return Array.isArray(parsed) ? parsed.map((img) => img.image_url || img) : [];
+            return Array.isArray(parsed)
+                ? parsed.map((img) => img.image_url || img)
+                : typeof parsed === 'object' && parsed.image_url
+                    ? [parsed.image_url]
+                    : typeof parsed === 'string'
+                        ? [parsed]
+                        : [];
         } catch {
             return [];
         }
     };
 
-    const handleQuantityChange = (delta) => {
-        if (!product?.id) return;
+    const handleUpdateQuantity = (item, delta) => {
+        const newQty = item.quantity + delta;
 
-        const newQuantity = Math.max(0, quantity + delta);
-        setQuantity(newQuantity);
-        const existingItem = cart.find((item) => item.product_id === product.id);
-
-        if (newQuantity === 0 && existingItem) {
-            dispatch(deleteBuyerCart(existingItem.id)).then(() => dispatch(fetchBuyerCart()));
-        } else if (existingItem) {
-            dispatch(updateBuyerCart({ id: existingItem.id, quantity: newQuantity }))
-                .then(() => dispatch(fetchBuyerCart()));
+        if (newQty < 1) {
+            dispatch(deleteBuyerCartAction(item.id)).then(() =>
+                dispatch(fetchBuyerCartAction())
+            );
         } else {
-            dispatch(addToBuyerCart({ product_id: product.id, quantity: newQuantity }))
-                .then(() => dispatch(fetchBuyerCart()));
+            dispatch(updateBuyerCartAction({ id: item.id, quantity: newQty })).then(() =>
+                dispatch(fetchBuyerCartAction())
+            );
+        }
+    };
+
+    const handleAddToCart = () => {
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user?.id && product?.id) {
+            dispatch(addToBuyerCartAction({
+                buyer_id: user.id,
+                product_id: product.id,
+                quantity: 1,
+            })).then(() => dispatch(fetchBuyerCartAction()));
         }
     };
 
@@ -136,11 +175,10 @@ const BuyerProductDetail = () => {
         const buyer_id = user?.id;
 
         if (product && buyer_id) {
-            dispatch(addToBuyerWishlist({ buyer_id, product_id: product.id }))
-                .then(() => {
-                    setWishlisted(true);
-                    setSnackbarOpen(true);
-                });
+            dispatch(addToBuyerWishlistAction({ buyer_id, product_id: product.id })).then(() => {
+                setWishlisted(true);
+                setSnackbarOpen(true);
+            });
         }
     };
 
@@ -151,23 +189,27 @@ const BuyerProductDetail = () => {
     };
 
     const handleUpdateReview = (reviewId) => {
-        dispatch(updateBuyerReview({
-            id: reviewId,
-            rating: editedRating,
-            comment: editedComment,
-        })).then(() => {
+        dispatch(
+            updateBuyerReviewAction({
+                id: reviewId,
+                rating: editedRating,
+                comment: editedComment,
+            })
+        ).then(() => {
             setEditingReviewId(null);
-            dispatch(fetchBuyerReviewByProductId(product.id));
+            dispatch(fetchBuyerReviewByProductIdAction(product.id));
         });
     };
 
     const handleDeleteReview = (reviewId) => {
-        dispatch(deleteBuyerReview(reviewId)).then(() => {
-            dispatch(fetchBuyerReviewByProductId(product.id));
+        dispatch(deleteBuyerReviewAction(reviewId)).then(() => {
+            dispatch(fetchBuyerReviewByProductIdAction(product.id));
         });
     };
 
-    const images = getImages(product?.image_url);
+    const images = getImages(product?.image_urls || product?.image_url);
+    const cartItem = cart.find((item) => item.product_id === product?.id);
+    const quantity = cartItem?.quantity || 0;
     const totalPrice = (product?.price || 0) * quantity;
 
     const sliderSettings = {
@@ -183,9 +225,7 @@ const BuyerProductDetail = () => {
     };
 
     return (
-        <Box sx={{
-            display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#f4f6f8', marginBottom: '0px',
-        }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#f4f6f8' }}>
             <BuyerHeader />
 
             <Container sx={{ mt: 5, flex: 1 }}>
@@ -199,12 +239,7 @@ const BuyerProductDetail = () => {
                     <Typography>No product found.</Typography>
                 ) : (
                     <>
-                        {/* Product Detail Section */}
-                        <Box
-                            display="flex"
-                            flexDirection={{ xs: 'column', md: 'row' }}
-                            justifyContent="center"
-                        >
+                        <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} justifyContent="center">
                             <Card sx={{ flex: 1, p: 2, overflow: 'hidden', position: 'relative' }}>
                                 <IconButton
                                     onClick={handleWishlistClick}
@@ -289,11 +324,27 @@ const BuyerProductDetail = () => {
                                     </Typography>
 
                                     <Box display="flex" alignItems="center" mt={3}>
-                                        <IconButton onClick={() => handleQuantityChange(-1)} disabled={quantity === 0} color="primary">
+                                        <IconButton
+                                            onClick={() => {
+                                                if (cartItem) {
+                                                    handleUpdateQuantity(cartItem, -1);
+                                                }
+                                            }}
+                                        >
                                             <Remove />
                                         </IconButton>
-                                        <Typography variant="body1" sx={{ mx: 2 }}>{quantity}</Typography>
-                                        <IconButton onClick={() => handleQuantityChange(1)} color="primary">
+
+                                        <Typography>{quantity}</Typography>
+
+                                        <IconButton
+                                            onClick={() => {
+                                                if (cartItem) {
+                                                    handleUpdateQuantity(cartItem, 1);
+                                                } else {
+                                                    handleAddToCart();
+                                                }
+                                            }}
+                                        >
                                             <Add />
                                         </IconButton>
                                     </Box>
@@ -307,7 +358,6 @@ const BuyerProductDetail = () => {
                             </Card>
                         </Box>
 
-                        {/* Reviews Section (All in One Container) */}
                         {reviewResponses.length > 0 && (
                             <Box
                                 sx={{
@@ -345,11 +395,7 @@ const BuyerProductDetail = () => {
                                                         textAlign: 'left',
                                                     }}
                                                 >
-                                                    <Typography
-                                                        variant="caption"
-                                                        color="text.secondary"
-                                                        sx={{ fontWeight: 'bold' }}
-                                                    >
+                                                    <Typography variant="caption" color="text.secondary" fontWeight="bold">
                                                         {isOwnReview ? 'You' : `Buyer: ${review.buyer_id}`}
                                                     </Typography>
 
@@ -398,43 +444,18 @@ const BuyerProductDetail = () => {
                                                         </>
                                                     ) : (
                                                         <>
-                                                            <Box
-                                                                sx={{
-                                                                    display: 'flex',
-                                                                    alignItems: 'center',
-                                                                    gap: 1,
-                                                                    mt: 1,
-                                                                    flexWrap: 'wrap',
-                                                                }}
-                                                            >
-                                                                <Rating
-                                                                    value={review.rating}
-                                                                    readOnly
-                                                                    precision={0.5}
-                                                                    size="small"
-                                                                />
+                                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
+                                                                <Rating value={review.rating} readOnly precision={0.5} size="small" />
                                                                 <Typography variant="body1">{review.comment}</Typography>
                                                             </Box>
 
-                                                            <Typography
-                                                                variant="caption"
-                                                                color="text.secondary"
-                                                                sx={{
-                                                                    display: 'block',
-                                                                    mt: 0.5,
-                                                                    textAlign: isOwnReview ? 'right' : 'left',
-                                                                }}
-                                                            >
+                                                            <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5 }}>
                                                                 {new Date(review.created_at).toLocaleString('en-IN')}
                                                             </Typography>
 
                                                             {isOwnReview && (
                                                                 <Box sx={{ mt: 1, display: 'flex', gap: 1 }}>
-                                                                    <Button
-                                                                        variant="text"
-                                                                        size="small"
-                                                                        onClick={() => handleEditClick(review)}
-                                                                    >
+                                                                    <Button variant="text" size="small" onClick={() => handleEditClick(review)}>
                                                                         Edit
                                                                     </Button>
                                                                     <Button
@@ -474,7 +495,6 @@ const BuyerProductDetail = () => {
             <BuyerFooter />
         </Box>
     );
-
 };
 
 export default BuyerProductDetail;

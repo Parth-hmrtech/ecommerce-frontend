@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchBuyerProductById } from '../actions/buyerProductAction';
+import { fetchBuyerProductByIdAction } from '../actions/buyerProductAction';
 
 const initialState = {
   product: null,
@@ -13,15 +13,15 @@ const buyerProductSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchBuyerProductById.pending, (state) => {
+      .addCase(fetchBuyerProductByIdAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchBuyerProductById.fulfilled, (state, action) => {
+      .addCase(fetchBuyerProductByIdAction.fulfilled, (state, action) => {
         state.loading = false;
         state.product = action.payload;
       })
-      .addCase(fetchBuyerProductById.rejected, (state, action) => {
+      .addCase(fetchBuyerProductByIdAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

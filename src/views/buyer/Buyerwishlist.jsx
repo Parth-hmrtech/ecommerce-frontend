@@ -16,10 +16,10 @@ import { useNavigate } from 'react-router-dom';
 import BuyerHeader from '../../components/common/BuyerHeader';
 import BuyerFooter from '../../components/common/BuyerFooter';
 import {
-  fetchBuyerWishlist,
-  deleteFromBuyerWishlist,
+  fetchBuyerWishlistAction,
+  deleteFromBuyerWishlistAction,
 } from '../../store/actions/buyerWishlistAction';
-import { fetchProducts } from '../../store/actions/productActions';
+import { fetchProductsAction } from '../../store/actions/productActions';
 
 const BuyerWishlist = () => {
   const dispatch = useDispatch();
@@ -29,12 +29,12 @@ const BuyerWishlist = () => {
   const { products = [] } = useSelector((state) => state.product);
 
   useEffect(() => {
-    dispatch(fetchBuyerWishlist());
-    dispatch(fetchProducts());
+    dispatch(fetchBuyerWishlistAction());
+    dispatch(fetchProductsAction());
   }, [dispatch]);
 
   const handleDelete = (id) => {
-    dispatch(deleteFromBuyerWishlist(id)).then(() => dispatch(fetchBuyerWishlist()));
+    dispatch(deleteFromBuyerWishlistAction(id)).then(() => dispatch(fetchBuyerWishlistAction()));
   };
 
   const handleCardClick = (productId) => {

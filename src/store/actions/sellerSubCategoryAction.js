@@ -8,7 +8,7 @@ const getAuthHeaders = () => {
   };
 };
 
-const fetchAllSubCategories = createAsyncThunk(
+const fetchAllSubCategoriesAction = createAsyncThunk(
   'subcategories/fetchAll',
   async (_, { rejectWithValue }) => {
     try {
@@ -24,7 +24,7 @@ const fetchAllSubCategories = createAsyncThunk(
   }
 );
 
-const fetchAllSubCategoriesById = createAsyncThunk(
+const fetchAllSubCategoriesByIdAction = createAsyncThunk(
   'subcategories/fetchByCategoryId',
   async (categoryId, { rejectWithValue }) => {
     try {
@@ -91,9 +91,9 @@ const deleteSubCategoryAction = createAsyncThunk(
 );
 
 export {
-  fetchAllSubCategories,
-  fetchAllSubCategoriesById,
+  fetchAllSubCategoriesAction,
+  fetchAllSubCategoriesByIdAction,
   addSubCategoryAction,
   updateSubCategoryAction,
-  deleteSubCategoryAction
+  deleteSubCategoryAction,
 };

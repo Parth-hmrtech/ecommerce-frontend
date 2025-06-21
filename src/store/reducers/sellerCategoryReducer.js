@@ -1,7 +1,6 @@
-// src/store/reducers/sellerCategoryReducer.js
 import { createSlice } from '@reduxjs/toolkit';
 import {
-  fetchAllCategories,
+  fetchAllCategoriesAction,
   addCategoryAction,
   updateCategoryAction,
   deleteCategoryAction,
@@ -19,15 +18,15 @@ const categorySlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchAllCategories.pending, (state) => {
+      .addCase(fetchAllCategoriesAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchAllCategories.fulfilled, (state, action) => {
+      .addCase(fetchAllCategoriesAction.fulfilled, (state, action) => {
         state.loading = false;
         state.list = action.payload;
       })
-      .addCase(fetchAllCategories.rejected, (state, action) => {
+      .addCase(fetchAllCategoriesAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || 'Failed to load categories';
       })

@@ -19,23 +19,32 @@ const HomeView = () => {
     <Box>
       {/* Header */}
       <AppBar position="static" color="transparent" elevation={1}>
-        <Grid container alignItems="center" justifyContent="space-between" px={3} py={1}>
-          <Grid item display="flex" alignItems="center">
-            <img src={ecommerceLogo} alt="Logo" style={{ height: 80, marginRight: 12 }} />
-           
-          </Grid>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            px: 3,
+            py: 1,
+          }}
+        >
+          <Box display="flex" alignItems="center">
+            <img
+              src={ecommerceLogo}
+              alt="Logo"
+              style={{ height: 80, marginRight: 12 }}
+            />
+          </Box>
 
-          <Grid item>
-            <Box display="flex" gap={2}>
-              <Button variant="text" color="primary" onClick={() => navigate('/signup')}>
-                Sign Up
-              </Button>
-              <Button variant="contained" color="primary" onClick={() => navigate('/signin')}>
-                Sign In
-              </Button>
-            </Box>
-          </Grid>
-        </Grid>
+          <Box display="flex" gap={2}>
+            <Button variant="text" color="primary" onClick={() => navigate('/signup')}>
+              Sign Up
+            </Button>
+            <Button variant="contained" color="primary" onClick={() => navigate('/signin')}>
+              Sign In
+            </Button>
+          </Box>
+        </Box>
       </AppBar>
 
       {/* Product Section */}

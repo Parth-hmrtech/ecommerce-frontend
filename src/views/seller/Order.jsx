@@ -18,7 +18,7 @@ import {
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchSellerOrdersAction, updateOrderStatusAction } from '../../store/actions/sellerOrderAction';
-import { fetchAllProducts } from '../../store/actions/sellerProductAction';
+import { fetchAllProductsAction } from '../../store/actions/sellerProductAction';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Header from '../../components/common/Header';
@@ -35,7 +35,7 @@ const SellerOrderList = () => {
 
     useEffect(() => {
         dispatch(fetchSellerOrdersAction());
-        dispatch(fetchAllProducts());
+        dispatch(fetchAllProductsAction());
     }, [dispatch]);
 
     const handleToggleSidebar = () => {

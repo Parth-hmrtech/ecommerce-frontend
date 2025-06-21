@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { apiRequest } from '../../hooks/useApiRequest';
 
-const signUpUser = createAsyncThunk(
+const signUpUserAction = createAsyncThunk(
   'auth/signUpUser',
   async (userData, { rejectWithValue }) => {
     try {
@@ -17,7 +17,7 @@ const signUpUser = createAsyncThunk(
   }
 );
 
-const signInUser = createAsyncThunk(
+const signInUserAction = createAsyncThunk(
   'auth/signInUser',
   async (credentials, { rejectWithValue }) => {
     try {
@@ -33,7 +33,7 @@ const signInUser = createAsyncThunk(
   }
 );
 
-const forgotPassword = createAsyncThunk(
+const forgotPasswordAction = createAsyncThunk(
   'auth/forgotPassword',
   async (email, { rejectWithValue }) => {
     try {
@@ -49,4 +49,4 @@ const forgotPassword = createAsyncThunk(
   }
 );
 
-export { signUpUser, signInUser, forgotPassword };
+export { signUpUserAction, signInUserAction, forgotPasswordAction };

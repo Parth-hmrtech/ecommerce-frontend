@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
-  fetchAllProducts,
+  fetchAllProductsAction,
   addProductAction,
   updateProductAction,
   deleteProductAction,
@@ -29,15 +29,15 @@ const productSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchAllProducts.pending, (state) => {
+      .addCase(fetchAllProductsAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchAllProducts.fulfilled, (state, action) => {
+      .addCase(fetchAllProductsAction.fulfilled, (state, action) => {
         state.loading = false;
         state.list = action.payload;
       })
-      .addCase(fetchAllProducts.rejected, (state, action) => {
+      .addCase(fetchAllProductsAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

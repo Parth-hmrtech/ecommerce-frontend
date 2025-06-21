@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { forgotPassword } from '../../store/actions/authActions';
+import { forgotPasswordAction } from '../../store/actions/authActions';
 import { resetAuthState } from '../../store/reducers/authReducer';
 
 const ForgotPassword = () => {
@@ -23,7 +23,7 @@ const { loading, error, message } = useSelector((state) => state.auth);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(forgotPassword(email));
+    dispatch(forgotPasswordAction(email));
   };
 
   // Cleanup when component unmounts

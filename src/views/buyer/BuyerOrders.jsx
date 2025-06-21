@@ -1,4 +1,3 @@
-// [All imports remain the same]
 import React, { useEffect, useState } from 'react';
 import {
   Box,
@@ -34,22 +33,24 @@ import BuyerHeader from '../../components/common/BuyerHeader';
 import BuyerFooter from '../../components/common/BuyerFooter';
 
 import {
-  fetchBuyerOrders,
-  deleteBuyerOrder,
-  updateBuyerOrderAddress,
+  fetchBuyerOrdersAction,
+  deleteBuyerOrderAction,
+  updateBuyerOrderAddressAction,
 } from '../../store/actions/buyerOrderAction';
-import {
-  buyerCheckoutPayment,
-  buyerVerifyPayment,
-  buyerCheckPaymentStatus,
-} from '../../store/actions/buyerPaymentAction';
-import { fetchProducts } from '../../store/actions/productActions';
 
 import {
-  addBuyerReview,
-  updateBuyerReview,
-  deleteBuyerReview,
-  fetchBuyerReviewByProductId,
+  buyerCheckoutPaymentAction,
+  buyerVerifyPaymentAction,
+  buyerCheckPaymentStatusAction,
+} from '../../store/actions/buyerPaymentAction';
+
+import { fetchProductsAction } from '../../store/actions/productActions';
+
+import {
+  addBuyerReviewAction,
+  updateBuyerReviewAction,
+  deleteBuyerReviewAction,
+  fetchBuyerReviewByProductIdAction,
 } from '../../store/actions/buyerReviewAction';
 
 const BuyerOrders = () => {
@@ -73,9 +74,9 @@ const BuyerOrders = () => {
   const [reviewInputs, setReviewInputs] = useState({});
 
   useEffect(() => {
-    dispatch(fetchBuyerOrders());
-    dispatch(fetchProducts());
-    dispatch(buyerCheckPaymentStatus());
+    dispatch(fetchBuyerOrdersAction());
+    dispatch(fetchProductsAction());
+    dispatch(buyerCheckPaymentStatusAction());
   }, [dispatch, location]);
 
   useEffect(() => {
@@ -90,20 +91,18 @@ const BuyerOrders = () => {
     });
 
     uniqueProductIds.forEach((productId) => {
-      dispatch(fetchBuyerReviewByProductId(productId));
+      dispatch(fetchBuyerReviewByProductIdAction(productId));
     });
   }, [orders, dispatch]);
-
-  // console.log("buyerReview items:", reviewResponses);
 
   const handleToggleRow = (orderId) => {
     setOpenRows((prev) => ({ ...prev, [orderId]: !prev[orderId] }));
   };
 
   const handleDelete = (orderId) => {
-    dispatch(deleteBuyerOrder(orderId)).then(() => {
-      dispatch(fetchBuyerOrders());
-      dispatch(buyerCheckPaymentStatus());
+    dispatch(deleteBuyerOrderAction(orderId)).then(() => {
+      dispatch(fetchBuyerOrdersAction());
+      dispatch(buyerCheckPaymentStatusAction());
     });
   };
 
@@ -114,9 +113,9 @@ const BuyerOrders = () => {
 
   const handleSaveAddress = (orderId) => {
     if (!newAddress.trim()) return alert('Address cannot be empty.');
-    dispatch(updateBuyerOrderAddress({ orderId, delivery_address: newAddress })).then(() => {
+    dispatch(updateBuyerOrderAddressAction({ orderId, delivery_address: newAddress })).then(() => {
       setEditAddressRow(null);
-      dispatch(fetchBuyerOrders());
+      dispatch(fetchBuyerOrdersAction());
     });
   };
 
@@ -141,7 +140,7 @@ const BuyerOrders = () => {
     setPayingOrderId(selectedOrder.id);
     try {
       await dispatch(
-        buyerCheckoutPayment({
+        buyerCheckoutPaymentAction({
           order_id: selectedOrder.id,
           seller_id: selectedOrder.seller_id,
           amount: totalAmount,
@@ -152,14 +151,14 @@ const BuyerOrders = () => {
       setOpenSnackbar(true);
       setSuccessMessage(`Checkout initiated for Order #${selectedOrder.id}`);
       await dispatch(
-        buyerVerifyPayment({
+        buyerVerifyPaymentAction({
           status: 'success',
           transaction_id: transactionId,
         })
       );
       setSuccessMessage(`Payment verified for Order #${selectedOrder.id}`);
-      await dispatch(fetchBuyerOrders());
-      await dispatch(buyerCheckPaymentStatus());
+      await dispatch(fetchBuyerOrdersAction());
+      await dispatch(buyerCheckPaymentStatusAction());
       setPaymentModalOpen(false);
       setSelectedOrder(null);
     } catch (error) {
@@ -190,7 +189,7 @@ const BuyerOrders = () => {
     const { comment, rating } = reviewInputs[order.id] || {};
     if (!comment || !rating || !productId) return alert('Please enter rating, comment, and product');
     await dispatch(
-      addBuyerReview({
+      addBuyerReviewAction({
         order_id: order.id,
         product_id: productId,
         buyer_id: order.buyer_id,
@@ -200,8 +199,9 @@ const BuyerOrders = () => {
       })
     );
     setReviewInputs((prev) => ({ ...prev, [order.id]: {} }));
-    dispatch(fetchBuyerReviewByProductId(productId));
+    dispatch(fetchBuyerReviewByProductIdAction(productId));
   };
+
   const handleUpdateReview = async (reviewId, orderId) => {
     const { rating, comment, product_id } = reviewInputs[orderId] || {};
 
@@ -211,19 +211,17 @@ const BuyerOrders = () => {
     }
 
     try {
-      await dispatch(updateBuyerReview({ id: reviewId, rating, comment }));
-      dispatch(fetchBuyerReviewByProductId(product_id));
-      console.log('Review updated:', { reviewId, rating, comment });
+      await dispatch(updateBuyerReviewAction({ id: reviewId, rating, comment }));
+      dispatch(fetchBuyerReviewByProductIdAction(product_id));
     } catch (error) {
       console.error('Failed to update review:', error);
       alert('Something went wrong while updating the review.');
     }
   };
 
-
   const handleDeleteReview = async (reviewId, productId) => {
-    await dispatch(deleteBuyerReview(reviewId));
-    await dispatch(fetchBuyerReviewByProductId(productId)); // re-fetch updated reviews for this product
+    await dispatch(deleteBuyerReviewAction(reviewId));
+    await dispatch(fetchBuyerReviewByProductIdAction(productId));
   };
 
 
@@ -237,7 +235,7 @@ const BuyerOrders = () => {
           </Alert>
         </Snackbar>
 
-        <Typography   variant="h5" gutterBottom>My Orders</Typography>
+        <Typography variant="h5" gutterBottom>My Orders</Typography>
 
         {loading ? (
           <Box display="flex" justifyContent="center" mt={4}><CircularProgress /></Box>

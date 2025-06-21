@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { apiRequest } from '../../hooks/useApiRequest';
 
-const fetchBuyerProductById = createAsyncThunk(
+const fetchBuyerProductByIdAction = createAsyncThunk(
   'buyer/fetchBuyerProductById',
   async (productId, { rejectWithValue }) => {
     try {
@@ -18,4 +18,4 @@ const fetchBuyerProductById = createAsyncThunk(
   }
 );
 
-export { fetchBuyerProductById };
+export { fetchBuyerProductByIdAction };

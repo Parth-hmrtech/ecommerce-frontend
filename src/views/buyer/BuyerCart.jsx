@@ -18,12 +18,12 @@ import { useNavigate } from 'react-router-dom';
 import BuyerHeader from '../../components/common/BuyerHeader';
 import BuyerFooter from '../../components/common/BuyerFooter';
 import {
-  fetchBuyerCart,
-  updateBuyerCart,
-  deleteBuyerCart,
+  fetchBuyerCartAction,
+  updateBuyerCartAction,
+  deleteBuyerCartAction,
 } from '../../store/actions/buyerCartAction';
-import { fetchProducts } from '../../store/actions/productActions';
-import { placeBuyerOrder } from '../../store/actions/buyerOrderAction';
+import { fetchProductsAction } from '../../store/actions/productActions';
+import { placeBuyerOrderAction } from '../../store/actions/buyerOrderAction';
 
 const BuyerCart = () => {
   const dispatch = useDispatch();
@@ -37,20 +37,23 @@ const BuyerCart = () => {
   const [placingOrder, setPlacingOrder] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchBuyerCart());
-    dispatch(fetchProducts());
+    dispatch(fetchBuyerCartAction());
+    dispatch(fetchProductsAction());
   }, [dispatch]);
 
-  const handleUpdateQuantity = (item, delta) => {
+  const handleUpdateQuantity = (item, delta, id) => {
     const newQty = item.quantity + delta;
-    if (newQty < 1) return;
-    dispatch(updateBuyerCart({ id: item.id, quantity: newQty })).then(() =>
-      dispatch(fetchBuyerCart())
+    if (newQty === 0) {
+      dispatch(deleteBuyerCartAction(id)).then(() => dispatch(fetchBuyerCartAction()));
+
+    }
+    dispatch(updateBuyerCartAction({ id: item.id, quantity: newQty })).then(() =>
+      dispatch(fetchBuyerCartAction())
     );
   };
 
   const handleDeleteItem = (id) => {
-    dispatch(deleteBuyerCart(id)).then(() => dispatch(fetchBuyerCart()));
+    dispatch(deleteBuyerCartAction(id)).then(() => dispatch(fetchBuyerCartAction()));
   };
 
   const handleCardClick = (productId) => {
@@ -74,21 +77,19 @@ const BuyerCart = () => {
       alert('Please enter your address.');
       return;
     }
+
     const orderData = {
       delivery_address: address,
-      products: cart
-        .filter((item) => products.some((p) => p.id === item.product_id)) 
-        .map((item) => ({
-          product_id: item.product_id,
-          quantity: item.quantity,
-        })),
+      products: cart.map((item) => ({
+        product_id: item.product_id,
+        quantity: item.quantity,
+      })),
     };
-
 
     setPlacingOrder(true);
 
     try {
-      const res = await dispatch(placeBuyerOrder(orderData));
+      const res = await dispatch(placeBuyerOrderAction(orderData));
       if (res.type === 'buyerOrder/placeBuyerOrder/fulfilled') {
         setAddress('');
         setShowPlaceOrder(false);
@@ -103,7 +104,6 @@ const BuyerCart = () => {
       setPlacingOrder(false);
     }
   };
-
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#f4f6f8' }}>
       <BuyerHeader />
@@ -185,8 +185,7 @@ const BuyerCart = () => {
                       >
                         <Box display="flex" alignItems="center">
                           <IconButton
-                            onClick={() => handleUpdateQuantity(item, -1)}
-                            disabled={item.quantity <= 1}
+                            onClick={() => handleUpdateQuantity(item, -1, item.id)}
                           >
                             <Remove />
                           </IconButton>

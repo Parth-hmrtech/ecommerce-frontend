@@ -21,7 +21,7 @@ import Footer from '../../components/common/Footer';
 import Sidebar from '../../components/common/Sidebar';
 
 import { fetchSellerReviewsAction } from '../../store/actions/sellerReviewAction';
-import { fetchAllProducts } from '../../store/actions/sellerProductAction';
+import { fetchAllProductsAction } from '../../store/actions/sellerProductAction';
 import {
   fetchSellerPaymentsAction,
   fetchSellerEarningsAction,
@@ -38,7 +38,7 @@ const SellerDashboard = () => {
 
   useEffect(() => {
     dispatch(fetchSellerReviewsAction());
-    dispatch(fetchAllProducts());
+    dispatch(fetchAllProductsAction());
     dispatch(fetchSellerPaymentsAction());
     dispatch(fetchSellerEarningsAction());
   }, [dispatch]);

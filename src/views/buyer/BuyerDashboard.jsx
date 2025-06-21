@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import {
-    Box,
-    Container,
-    Typography,
-    Card,
-    CardMedia,
-    CardContent,
-    IconButton,
-    CircularProgress,
-    TextField,
-    Button,
+  Box,
+  Container,
+  Typography,
+  Card,
+  CardMedia,
+  CardContent,
+  IconButton,
+  CircularProgress,
+  TextField,
+  Button,
 } from '@mui/material';
 import { Add, Remove } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,80 +18,80 @@ import { useNavigate } from 'react-router-dom';
 import BuyerHeader from '../../components/common/BuyerHeader';
 import BuyerFooter from '../../components/common/BuyerFooter';
 
-import { fetchProducts } from '../../store/actions/productActions';
+import { fetchProductsAction } from '../../store/actions/productActions';
 import {
-    fetchBuyerCart,
-    addToBuyerCart,
-    updateBuyerCart,
-    deleteBuyerCart,
+  fetchBuyerCartAction,
+  addToBuyerCartAction,
+  updateBuyerCartAction,
+  deleteBuyerCartAction,
 } from '../../store/actions/buyerCartAction';
 
 const BuyerDashboard = () => {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-    const { products = [], loading, error } = useSelector((state) => state.product);
-    const { cart = [] } = useSelector((state) => state.buyerCart);
+  const { products = [], loading, error } = useSelector((state) => state.product);
+  const { cart = [] } = useSelector((state) => state.buyerCart);
 
-    const [quantities, setQuantities] = useState({});
-    const [search, setSearch] = useState('');
+  const [quantities, setQuantities] = useState({});
+  const [search, setSearch] = useState('');
 
-    useEffect(() => {
-        dispatch(fetchProducts());
-        dispatch(fetchBuyerCart());
-    }, [dispatch]);
+  useEffect(() => {
+    dispatch(fetchProductsAction());
+    dispatch(fetchBuyerCartAction());
+  }, [dispatch]);
 
-    useEffect(() => {
-        const qtyMap = {};
-        cart.forEach((item) => {
-            qtyMap[item.product_id] = item.quantity;
-        });
-        setQuantities(qtyMap);
-    }, [cart]);
+  useEffect(() => {
+    const qtyMap = {};
+    cart.forEach((item) => {
+      qtyMap[item.product_id] = item.quantity;
+    });
+    setQuantities(qtyMap);
+  }, [cart]);
 
-    const handleQuantityChange = (productId, delta) => {
-        const currentQty = quantities[productId] || 0;
-        const newQty = Math.max(0, currentQty + delta);
+  const handleQuantityChange = (productId, delta) => {
+    const currentQty = quantities[productId] || 0;
+    const newQty = Math.max(0, currentQty + delta);
 
-        setQuantities((prev) => ({
-            ...prev,
-            [productId]: newQty,
-        }));
+    setQuantities((prev) => ({
+      ...prev,
+      [productId]: newQty,
+    }));
 
-        const cartItem = cart.find((item) => item.product_id === productId);
+    const cartItem = cart.find((item) => item.product_id === productId);
 
-        if (newQty === 0 && cartItem) {
-            dispatch(deleteBuyerCart(cartItem.id));
-            dispatch(fetchProducts());
-            dispatch(fetchBuyerCart());
-            return;
-        }
+    if (newQty === 0 && cartItem) {
+      dispatch(deleteBuyerCartAction(cartItem.id)).then(() => {
+        dispatch(fetchBuyerCartAction());
+      });
+      return;
+    }
 
-        if (cartItem) {
-            dispatch(updateBuyerCart({ id: cartItem.id, quantity: newQty }));
-        } else if (newQty > 0) {
-            dispatch(addToBuyerCart({ product_id: productId, quantity: newQty }));
-        }
-    };
+    if (cartItem) {
+      dispatch(updateBuyerCartAction({ id: cartItem.id, quantity: newQty }));
+    } else if (newQty > 0) {
+      dispatch(addToBuyerCartAction({ product_id: productId, quantity: newQty }));
+    }
+  };
 
-    const handleCardClick = (productId) => {
-        navigate(`/buyer-dashboard/product-details/${productId}`);
-    };
+  const handleCardClick = (productId) => {
+    navigate(`/buyer-dashboard/product-details/${productId}`);
+  };
 
-    const getImageArray = (imageData) => {
-        try {
-            const parsed = JSON.parse(imageData);
-            if (Array.isArray(parsed)) return parsed.map((img) => img.image_url || img);
-            if (typeof parsed === 'object' && parsed.image_url) return [parsed.image_url];
-            if (typeof parsed === 'string') return [parsed];
-        } catch {
-            return [imageData || '/default-product.jpg'];
-        }
-    };
+  const getImageArray = (imageData) => {
+    try {
+      const parsed = JSON.parse(imageData);
+      if (Array.isArray(parsed)) return parsed.map((img) => img.image_url || img);
+      if (typeof parsed === 'object' && parsed.image_url) return [parsed.image_url];
+      if (typeof parsed === 'string') return [parsed];
+    } catch {
+      return [imageData || '/default-product.jpg'];
+    }
+  };
 
-    const filteredProducts = products.filter((product) =>
-        product.product_name?.toLowerCase().includes(search.toLowerCase())
-    );
+  const filteredProducts = products.filter((product) =>
+    product.product_name?.toLowerCase().includes(search.toLowerCase())
+  );
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#f4f6f8' }}>

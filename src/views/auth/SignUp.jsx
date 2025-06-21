@@ -18,7 +18,7 @@ import {
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { signUpUser } from '../../store/actions/authActions';
+import { signUpUserAction } from '../../store/actions/authActions';
 import { resetAuthState } from '../../store/reducers/authReducer';
 
 const SignUp = () => {
@@ -61,7 +61,7 @@ const SignUp = () => {
     }
 
     const jsonPayload = JSON.stringify(formData);
-    dispatch(signUpUser(jsonPayload));
+    dispatch(signUpUserAction(jsonPayload));
   };
 
   useEffect(() => {

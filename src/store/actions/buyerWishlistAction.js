@@ -8,7 +8,7 @@ const getTokenHeader = () => {
   };
 };
 
-const fetchBuyerWishlist = createAsyncThunk(
+const fetchBuyerWishlistAction = createAsyncThunk(
   'buyerWishlist/fetchBuyerWishlist',
   async (_, { rejectWithValue }) => {
     try {
@@ -26,7 +26,7 @@ const fetchBuyerWishlist = createAsyncThunk(
   }
 );
 
-const addToBuyerWishlist = createAsyncThunk(
+const addToBuyerWishlistAction = createAsyncThunk(
   'buyerWishlist/addToBuyerWishlist',
   async ({ buyer_id, product_id }, { rejectWithValue }) => {
     try {
@@ -45,7 +45,7 @@ const addToBuyerWishlist = createAsyncThunk(
   }
 );
 
-const deleteFromBuyerWishlist = createAsyncThunk(
+const deleteFromBuyerWishlistAction = createAsyncThunk(
   'buyerWishlist/deleteFromBuyerWishlist',
   async (wishlistId, { rejectWithValue }) => {
     try {
@@ -67,7 +67,7 @@ const deleteFromBuyerWishlist = createAsyncThunk(
 );
 
 export {
-  fetchBuyerWishlist,
-  addToBuyerWishlist,
-  deleteFromBuyerWishlist
+  fetchBuyerWishlistAction,
+  addToBuyerWishlistAction,
+  deleteFromBuyerWishlistAction,
 };

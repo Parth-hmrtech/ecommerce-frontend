@@ -8,7 +8,7 @@ const getTokenHeader = () => {
   };
 };
 
-const fetchAllCategories = createAsyncThunk(
+const fetchAllCategoriesAction = createAsyncThunk(
   'categories/fetchAll',
   async (_, { rejectWithValue }) => {
     try {
@@ -75,7 +75,7 @@ const deleteCategoryAction = createAsyncThunk(
 );
 
 export {
-  fetchAllCategories,
+  fetchAllCategoriesAction,
   addCategoryAction,
   updateCategoryAction,
   deleteCategoryAction

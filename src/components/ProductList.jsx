@@ -15,7 +15,7 @@ import { Grid } from "@mui/material";
 
 
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProducts } from '../store/actions/productActions';
+import { fetchProductsAction } from '../store/actions/productActions';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -80,7 +80,7 @@ const ProductList = () => {
   const [expandedCards, setExpandedCards] = useState({});
 
   useEffect(() => {
-    dispatch(fetchProducts());
+    dispatch(fetchProductsAction());
   }, [dispatch]);
 
   const handleLoadMore = () => {
@@ -140,7 +140,7 @@ const ProductList = () => {
             const isExpanded = expandedCards[product.id];
 
             return (
-              <Grid key={product.id}>
+<Box key={product.id}>
                 <Card
                   sx={{
                     maxWidth: 345,
@@ -215,7 +215,7 @@ const ProductList = () => {
                     )}
                   </CardActions>
                 </Card>
-              </Grid>
+              </Box>
             );
           })}
         </Grid>
