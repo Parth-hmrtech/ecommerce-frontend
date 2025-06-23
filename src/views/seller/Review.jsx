@@ -30,6 +30,7 @@ import Sidebar from '../../components/common/Sidebar';
 import { fetchSellerReviewsAction, deleteSellerReviewAction } from '../../store/actions/sellerReviewAction';
 import { fetchAllProductsAction } from '../../store/actions/sellerProductAction';
 
+
 const SellerReview = () => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [confirmOpen, setConfirmOpen] = useState(false);
@@ -68,6 +69,11 @@ const SellerReview = () => {
         setSelectedReviewId(null);
     };
 
+    // ✅ Only show reviews for current seller’s products
+    const filteredReviews = reviews?.filter((review) =>
+        productList.some((product) => product.id === review.product_id)
+    ) || [];
+
     return (
         <Box sx={{ display: 'flex', minHeight: '100vh', flexDirection: 'column' }}>
             <Header sidebarOpen={sidebarOpen} onToggleSidebar={handleToggleSidebar} />
@@ -82,7 +88,7 @@ const SellerReview = () => {
                         <CircularProgress />
                     ) : error ? (
                         <Typography color="error">{error}</Typography>
-                    ) : reviews && reviews.length > 0 ? (
+                    ) : filteredReviews.length > 0 ? (
                         <TableContainer component={Paper}>
                             <Table>
                                 <TableHead>
@@ -96,7 +102,7 @@ const SellerReview = () => {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {reviews.map((review) => (
+                                    {filteredReviews.map((review) => (
                                         <TableRow key={review.id}>
                                             <TableCell>{getProductName(review.product_id)}</TableCell>
                                             <TableCell><Rating value={review.rating} readOnly /></TableCell>
@@ -109,9 +115,9 @@ const SellerReview = () => {
                                                     color="error"
                                                     size="small"
                                                     onClick={() => handleDeleteClick(review.id)}
-                                                            startIcon={<DeleteIcon />}
-
+                                                    startIcon={<DeleteIcon />}
                                                 >
+                                                    Delete
                                                 </Button>
                                             </TableCell>
                                         </TableRow>
@@ -120,7 +126,7 @@ const SellerReview = () => {
                             </Table>
                         </TableContainer>
                     ) : (
-                        <Typography>No reviews found.</Typography>
+                        <Typography>No reviews found for your products.</Typography>
                     )}
                 </Box>
             </Box>

@@ -9,7 +9,14 @@ import {
   Paper,
   CircularProgress,
   Alert,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  InputAdornment,
+  IconButton,
 } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { signInUserAction } from '../../store/actions/authActions';
@@ -25,16 +32,16 @@ const SignIn = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
+    role: '',
   });
 
-  useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem('user'));
-    const role = userData?.role;
+  const [showPassword, setShowPassword] = useState(false); // password hidden by default
 
+  useEffect(() => {
     if (success && user) {
-      if (role === 'buyer') {
+      if (user.role === 'buyer') {
         navigate('/buyer-dashboard');
-      } else if (role === 'seller') {
+      } else if (user.role === 'seller') {
         navigate('/seller-dashboard');
       } else {
         navigate('/');
@@ -47,14 +54,21 @@ const SignIn = () => {
   }, [success, user, navigate, dispatch]);
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!formData.role) {
+      alert('Please select a role.');
+      return;
+    }
+
     dispatch(signInUserAction(formData));
   };
 
@@ -94,18 +108,48 @@ const SignIn = () => {
               onChange={handleChange}
               required
             />
+
             <TextField
               fullWidth
-              type="password"
               label="Password"
               name="password"
+              type={showPassword ? 'text' : 'password'}
               value={formData.password}
               onChange={handleChange}
               required
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      edge="end"
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
 
+            <FormControl fullWidth required>
+              <InputLabel>Role</InputLabel>
+              <Select
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+                label="Role"
+              >
+                <MenuItem value="buyer">Buyer</MenuItem>
+                <MenuItem value="seller">Seller</MenuItem>
+              </Select>
+            </FormControl>
+
             <Box textAlign="right">
-              <Link component="button" variant="body2" onClick={() => navigate('/forgot-password')}>
+              <Link
+                component="button"
+                variant="body2"
+                onClick={() => navigate('/forgot-password')}
+              >
                 Forgot password?
               </Link>
             </Box>
@@ -115,7 +159,7 @@ const SignIn = () => {
               fullWidth
               type="submit"
               disabled={loading}
-              startIcon={loading && <CircularProgress size={20} />}
+              startIcon={loading ? <CircularProgress size={20} color="inherit" /> : null}
             >
               {loading ? 'Logging in...' : 'Login'}
             </Button>

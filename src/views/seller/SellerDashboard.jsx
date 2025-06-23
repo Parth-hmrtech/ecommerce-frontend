@@ -9,7 +9,6 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-// MUI Icons
 import StoreIcon from '@mui/icons-material/Store';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
@@ -35,6 +34,7 @@ const SellerDashboard = () => {
   const { reviews = [], loading: reviewLoading } = useSelector((state) => state.sellerReviews || {});
   const { list: products = [], loading: productLoading } = useSelector((state) => state.sellerProduct || {});
   const { payments = [], earnings = {}, loading: paymentLoading } = useSelector((state) => state.sellerPayments || {});
+  const { list: orders = [], loading: orderLoading } = useSelector((state) => state.sellerOrders || {});
 
   useEffect(() => {
     dispatch(fetchSellerReviewsAction());
@@ -47,17 +47,26 @@ const SellerDashboard = () => {
     setSidebarOpen((prev) => !prev);
   };
 
-  // Metrics
-  const totalReviews = reviews.length;
-  const totalProducts = products.length;
+  const sellerProductIds = products.map((p) => p.id);
 
-  const totalRating = reviews.reduce((sum, review) => sum + parseFloat(review.rating || 0), 0);
+  const filteredReviews = reviews.filter((review) =>
+    sellerProductIds.includes(review.product_id)
+  );
+
+  const totalReviews = filteredReviews.length;
+  const totalRating = filteredReviews.reduce((sum, review) => sum + parseFloat(review.rating || 0), 0);
   const averageRating = totalReviews > 0 ? (totalRating / totalReviews).toFixed(1) : '0.0';
 
-  const totalOrders = earnings?.total_orders || 0;
+  const totalProducts = products.length;
+
+  const filteredOrders = orders.filter((order) =>
+    order.order_items?.some((item) => sellerProductIds.includes(item.product_id))
+  );
+
+  const totalOrders = filteredOrders.length;
   const totalEarnings = earnings?.total_earnings || 0;
 
-  const isLoading = reviewLoading || productLoading || paymentLoading;
+  const isLoading = reviewLoading || productLoading || paymentLoading || orderLoading;
 
   const CardBox = ({ icon, title, value, bg }) => (
     <Card sx={{ p: 2, textAlign: 'center', backgroundColor: bg }}>

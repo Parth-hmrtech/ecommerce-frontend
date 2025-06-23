@@ -1,9 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-// Auth
 import authReducer from './reducers/authReducer';
 
-// Seller
 import sellerProductReducer from './reducers/sellerProductReducer';
 import categoryReducer from './reducers/sellerCategoryReducer';
 import subCategoryReducer from './reducers/sellerSubCategoryReducer';
@@ -12,7 +10,6 @@ import sellerPaymentReducer from './reducers/sellerPaymentReducer';
 import sellerReviewReducer from './reducers/sellerReviewReducer';
 import sellerProfileReducer from './reducers/sellerProfileReducer';
 
-// Buyer
 import buyerReducer from './reducers/buyerReducer';
 import buyerProductReducer from './reducers/buyerProductReducer';
 import buyerCartReducer from './reducers/buyerCartReducer';
@@ -22,15 +19,14 @@ import buyerWishlistReducer from './reducers/buyerwishlistReducer';
 import buyerReviewReducer from './reducers/buyerReviewReducer';
 import buyerProfileReducer from './reducers/buyerProfileReducer';
 
-// Product
+
 import productReducer from './reducers/productReducer';
 
 const store = configureStore({
   reducer: {
-    // Auth
+    
     auth: authReducer,
 
-    // Seller
     sellerProduct: sellerProductReducer,
     categories: categoryReducer,
     subcategories: subCategoryReducer,
@@ -39,7 +35,6 @@ const store = configureStore({
     sellerReviews: sellerReviewReducer,
     sellerProfile: sellerProfileReducer,
 
-    // Buyer
     buyer: buyerReducer,
     buyerProduct: buyerProductReducer,
     buyerCart: buyerCartReducer,
@@ -49,7 +44,6 @@ const store = configureStore({
     buyerReview: buyerReviewReducer,
     buyerProfile: buyerProfileReducer,
 
-    // Product (shared/global)
     product: productReducer,
   },
 });

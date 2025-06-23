@@ -36,8 +36,8 @@ const SignUp = () => {
   });
 
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);     // password hidden by default
+  const [showConfirm, setShowConfirm] = useState(false);       // confirm password hidden by default
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -83,6 +83,7 @@ const SignUp = () => {
             <TextField label="Email" name="email" type="email" value={formData.email} onChange={handleChange} fullWidth required />
             <TextField label="Phone Number" name="phone_number" value={formData.phone_number} onChange={handleChange} fullWidth required />
 
+            {/* Password Field */}
             <TextField
               label="Password"
               name="password_hash"
@@ -95,13 +96,14 @@ const SignUp = () => {
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
                     </IconButton>
                   </InputAdornment>
                 ),
               }}
             />
 
+            {/* Confirm Password Field */}
             <TextField
               label="Confirm Password"
               name="confirm_password"
@@ -114,7 +116,7 @@ const SignUp = () => {
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton onClick={() => setShowConfirm(!showConfirm)} edge="end">
-                      {showConfirm ? <VisibilityOff /> : <Visibility />}
+                      {showConfirm ? <Visibility /> : <VisibilityOff />}
                     </IconButton>
                   </InputAdornment>
                 ),
