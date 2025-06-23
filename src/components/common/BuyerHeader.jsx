@@ -1,4 +1,3 @@
-// src/views/buyer/BuyerHeader.jsx
 import React, { useState } from 'react';
 import {
   AppBar,
@@ -52,7 +51,6 @@ const BuyerHeader = () => {
             <ShoppingCartIcon />
           </IconButton>
 
-          {/* Hover Dropdown */}
           <Box
             sx={{ position: 'relative' }}
             onMouseEnter={() => setIsHovering(true)}

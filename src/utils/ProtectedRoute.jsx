@@ -8,7 +8,7 @@ const ProtectedRoute = ({ requiredRole }) => {
   }
 
   if (requiredRole && user.role !== requiredRole) {
-    return <Navigate to="/" />; // or a 403 page
+    return <Navigate to="/" />; 
   }
 
   return <Outlet />;

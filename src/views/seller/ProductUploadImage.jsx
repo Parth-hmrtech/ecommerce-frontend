@@ -1,4 +1,3 @@
-// src/views/seller/ProductUploadImage.jsx
 import React, { useEffect, useState } from 'react';
 import {
     Box,
@@ -99,7 +98,7 @@ const SellerProductImages = () => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [file, setFile] = useState(null);
     const [productId, setProductId] = useState('');
-    const [visibleCount, setVisibleCount] = useState(20); // Show 20 products at a time
+    const [visibleCount, setVisibleCount] = useState(20); 
 
     useEffect(() => {
         dispatch(fetchAllProductsAction());
@@ -210,7 +209,7 @@ const SellerProductImages = () => {
                             <Box
                                 sx={{
                                     display: 'grid',
-                                    gridTemplateColumns: 'repeat(5, 1fr)', // 👈 5 columns (5 products per row)
+                                    gridTemplateColumns: 'repeat(5, 1fr)',
                                     gap: 2,
                                 }}
                             >

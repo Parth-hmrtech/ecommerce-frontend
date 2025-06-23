@@ -31,7 +31,6 @@ const SellerOrderList = () => {
 
     const { list: orders = [], loading } = useSelector((state) => state.sellerOrders || {});
     const { list: productList = [] } = useSelector((state) => state.sellerProduct || {});
-    console.log(orders);
 
     useEffect(() => {
         dispatch(fetchSellerOrdersAction());

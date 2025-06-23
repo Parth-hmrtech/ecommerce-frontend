@@ -120,7 +120,6 @@ const SellerProfile = () => {
                         <CircularProgress />
                     ) : (
                         <Paper sx={{ p: 4, maxWidth: '100%', display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-                            {/* Profile Update Section */}
                             <Box sx={{ flex: 1, minWidth: 300 }}>
                                 <Typography variant="h6" gutterBottom>
                                     Update Profile
@@ -177,7 +176,6 @@ const SellerProfile = () => {
                                 </Button>
                             </Box>
 
-                            {/* Password Reset Section */}
                             <Box sx={{ flex: 1, minWidth: 300 }}>
                                 <Typography variant="h6" gutterBottom>
                                     Reset Password

@@ -198,7 +198,7 @@ const SellerProduct = () => {
 
                     {showAddForm && (
                         <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-                                                       <FormControl size="small" sx={{ minWidth: 150 }}>
+                            <FormControl size="small" sx={{ minWidth: 150 }}>
                                 <InputLabel>Category</InputLabel>
                                 <Select
                                     value={formData.category_id}
@@ -354,46 +354,46 @@ const SellerProduct = () => {
                                                 <TableCell>{new Date(product.createdAt).toLocaleString()}</TableCell>
                                                 <TableCell>{new Date(product.updatedAt).toLocaleString()}</TableCell>
 
-<TableCell align="right">
-  {isEditing ? (
-    <>
-      <Button
-        variant="contained" // ✅ for filled green
-        size="small"
-        color="success"
-        sx={{ mr: 1 }}
-        onClick={handleEditSave}
-      >
-        Save
-      </Button>
-      <Button
-        variant="outlined"
-        size="small"
-        onClick={handleEditCancel}
-      >
-        Cancel
-      </Button>
-    </>
-  ) : (
-    <>
-      <Button
-        variant="outlined"
-        size="small"
-        color="primary"
-        sx={{ mr: 1 }}
-        startIcon={<EditIcon />}
-        onClick={() => handleEditClick(product)}
-      />
-      <Button
-        variant="outlined"
-        size="small"
-        color="error"
-        startIcon={<DeleteIcon />}
-        onClick={() => handleDeleteClick(product.id)}
-      />
-    </>
-  )}
-</TableCell>
+                                                <TableCell align="right">
+                                                    {isEditing ? (
+                                                        <>
+                                                            <Button
+                                                                variant="contained" 
+                                                                size="small"
+                                                                color="success"
+                                                                sx={{ mr: 1 }}
+                                                                onClick={handleEditSave}
+                                                            >
+                                                                Save
+                                                            </Button>
+                                                            <Button
+                                                                variant="outlined"
+                                                                size="small"
+                                                                onClick={handleEditCancel}
+                                                            >
+                                                                Cancel
+                                                            </Button>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <Button
+                                                                variant="outlined"
+                                                                size="small"
+                                                                color="primary"
+                                                                sx={{ mr: 1 }}
+                                                                startIcon={<EditIcon />}
+                                                                onClick={() => handleEditClick(product)}
+                                                            />
+                                                            <Button
+                                                                variant="outlined"
+                                                                size="small"
+                                                                color="error"
+                                                                startIcon={<DeleteIcon />}
+                                                                onClick={() => handleDeleteClick(product.id)}
+                                                            />
+                                                        </>
+                                                    )}
+                                                </TableCell>
 
                                             </TableRow>
                                         );

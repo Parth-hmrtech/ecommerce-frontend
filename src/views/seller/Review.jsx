@@ -69,7 +69,6 @@ const SellerReview = () => {
         setSelectedReviewId(null);
     };
 
-    // ✅ Only show reviews for current seller’s products
     const filteredReviews = reviews?.filter((review) =>
         productList.some((product) => product.id === review.product_id)
     ) || [];
@@ -133,7 +132,6 @@ const SellerReview = () => {
 
             <Footer />
 
-            {/* Confirmation Dialog */}
             <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
                 <DialogTitle>Delete Confirmation</DialogTitle>
                 <DialogContent>

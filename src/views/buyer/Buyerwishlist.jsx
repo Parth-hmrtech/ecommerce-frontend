@@ -41,7 +41,6 @@ const BuyerWishlist = () => {
     navigate(`/buyer-dashboard/product-details/${productId}`);
   };
 
-  // Remove duplicates based on product_id
   const uniqueWishlist = Array.from(
     new Map(wishlist.map((item) => [item.product_id, item])).values()
   );

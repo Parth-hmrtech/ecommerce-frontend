@@ -1,4 +1,3 @@
-// src/components/common/Header.jsx
 import React, { useState } from 'react';
 import {
   AppBar,
@@ -7,8 +6,8 @@ import {
   Box,
   IconButton,
   Avatar,
-  Menu,
-  MenuItem,
+  Button,
+  Paper,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -18,16 +17,8 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from 'react-router-dom';
 
 const Header = ({ sidebarOpen, onToggleSidebar }) => {
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [showOptions, setShowOptions] = useState(false);
   const navigate = useNavigate();
-
-  const handleAvatarClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
 
   const handleLogout = () => {
     localStorage.removeItem('user');
@@ -35,7 +26,6 @@ const Header = ({ sidebarOpen, onToggleSidebar }) => {
   };
 
   const handleProfileClick = () => {
-    handleMenuClose();
     navigate('/seller-dashboard/profile');
   };
 
@@ -64,31 +54,49 @@ const Header = ({ sidebarOpen, onToggleSidebar }) => {
           </Typography>
         </Box>
 
-        <IconButton onClick={handleAvatarClick}>
-          <Avatar alt="User" src="/path/to/user-image.jpg" />
-        </IconButton>
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleMenuClose}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
+        <Box
+          position="relative"
+          onMouseEnter={() => setShowOptions(true)}
+          onMouseLeave={() => setShowOptions(false)}
         >
-          <MenuItem onClick={handleProfileClick}>
-            <AccountCircleIcon sx={{ mr: 1 }} />
-            My Profile
-          </MenuItem>
-          <MenuItem onClick={handleLogout}>
-            <LogoutIcon sx={{ mr: 1 }} />
-            Logout
-          </MenuItem>
-        </Menu>
+          <IconButton>
+            <Avatar alt="User" src="/path/to/user-image.jpg" />
+          </IconButton>
+
+          {showOptions && (
+            <Paper
+              elevation={3}
+              sx={{
+                position: 'absolute',
+                top: '100%',
+                right: 0,
+                mt: 0,
+                p: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 1,
+                minWidth: 150,
+              }}
+            >
+              <Button
+                onClick={handleProfileClick}
+                startIcon={<AccountCircleIcon />}
+                fullWidth
+                variant="text"
+              >
+                My Profile
+              </Button>
+              <Button
+                onClick={handleLogout}
+                startIcon={<LogoutIcon />}
+                fullWidth
+                variant="text"
+              >
+                Logout
+              </Button>
+            </Paper>
+          )}
+        </Box>
       </Toolbar>
     </AppBar>
   );

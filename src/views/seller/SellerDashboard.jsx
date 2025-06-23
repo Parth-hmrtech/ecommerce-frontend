@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   Box,
   Typography,
-  Grid,
   Card,
   CircularProgress,
 } from '@mui/material';
@@ -14,6 +13,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import RateReviewIcon from '@mui/icons-material/RateReview';
 import StarIcon from '@mui/icons-material/Star';
+import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 
 import Header from '../../components/common/Header';
 import Footer from '../../components/common/Footer';
@@ -25,6 +25,7 @@ import {
   fetchSellerPaymentsAction,
   fetchSellerEarningsAction,
 } from '../../store/actions/sellerPaymentAction';
+import { fetchSellerOrdersAction } from '../../store/actions/sellerOrderAction'; // ✅ Added
 
 const SellerDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -41,6 +42,7 @@ const SellerDashboard = () => {
     dispatch(fetchAllProductsAction());
     dispatch(fetchSellerPaymentsAction());
     dispatch(fetchSellerEarningsAction());
+    dispatch(fetchSellerOrdersAction()); // ✅ Added
   }, [dispatch]);
 
   const handleToggleSidebar = () => {
@@ -91,48 +93,59 @@ const SellerDashboard = () => {
           {isLoading ? (
             <CircularProgress />
           ) : (
-            <Grid container spacing={3} sx={{ mb: 3 }}>
-              <Grid item xs={12} sm={6} md={2.4}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 3,
+                mb: 3,
+              }}
+            >
+              <Box sx={{ flex: '1 1 200px', maxWidth: '250px' }}>
                 <CardBox
                   icon={<StoreIcon fontSize="large" color="secondary" />}
                   title="Total Products"
                   value={totalProducts}
                   bg="#f3e5f5"
                 />
-              </Grid>
-              <Grid item xs={12} sm={6} md={2.4}>
+              </Box>
+
+              <Box sx={{ flex: '1 1 200px', maxWidth: '250px' }}>
                 <CardBox
                   icon={<ShoppingCartIcon fontSize="large" color="success" />}
                   title="Total Orders"
                   value={totalOrders}
                   bg="#e8f5e9"
                 />
-              </Grid>
-              <Grid item xs={12} sm={6} md={2.4}>
+              </Box>
+
+              <Box sx={{ flex: '1 1 200px', maxWidth: '250px' }}>
                 <CardBox
-                  icon={<AttachMoneyIcon fontSize="large" color="success" />}
+                  icon={<CurrencyRupeeIcon fontSize="large" color="success" />}
                   title="Total Earnings"
-                  value={`₹${totalEarnings.toFixed(2)}`}
+                  value={`${totalEarnings.toFixed(2)}`}
                   bg="#c8e6c9"
                 />
-              </Grid>
-              <Grid item xs={12} sm={6} md={2.4}>
+              </Box>
+
+              <Box sx={{ flex: '1 1 200px', maxWidth: '250px' }}>
                 <CardBox
                   icon={<RateReviewIcon fontSize="large" color="warning" />}
                   title="Total Reviews"
                   value={totalReviews}
                   bg="#fff8e1"
                 />
-              </Grid>
-              <Grid item xs={12} sm={6} md={2.4}>
+              </Box>
+
+              <Box sx={{ flex: '1 1 200px', maxWidth: '250px' }}>
                 <CardBox
                   icon={<StarIcon fontSize="large" color="primary" />}
                   title="Avg. Rating"
                   value={averageRating}
                   bg="#e1f5fe"
                 />
-              </Grid>
-            </Grid>
+              </Box>
+            </Box>
           )}
         </Box>
       </Box>

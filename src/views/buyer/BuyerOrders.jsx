@@ -399,12 +399,10 @@ const BuyerOrders = () => {
                                     ));
                                   })()}
 
-                                  {/* Add/ Review */}
                                   {order.status === 'delivered' && (
                                     <TableRow>
                                       <TableCell colSpan={4}>
                                         <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
-                                          {/* Product Select Dropdown */}
                                           <FormControl size="small" sx={{ minWidth: 220 }}>
                                             <InputLabel id={`select-product-label-${order.id}`}></InputLabel>
                                             <Select
@@ -440,7 +438,6 @@ const BuyerOrders = () => {
                                             </Select>
                                           </FormControl>
 
-                                          {/* Rating Field */}
                                           <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                             <Typography variant="body2" sx={{ mr: 1 }}>
                                               Rating:
@@ -456,7 +453,6 @@ const BuyerOrders = () => {
                                           </Box>
 
 
-                                          {/* Comment Field */}
                                           <TextField
                                             label="Comment"
                                             size="small"
@@ -467,7 +463,6 @@ const BuyerOrders = () => {
                                             }
                                           />
 
-                                          {/* Add/Send Button */}
                                           <Button
                                             size="small"
                                             variant="contained"
@@ -478,7 +473,6 @@ const BuyerOrders = () => {
                                             Send
                                           </Button>
 
-                                          {/* Edit Button (Only if review_id exists) */}
                                           {reviewInputs[order.id]?.review_id && (
                                             <Button
                                               size="small"
@@ -514,7 +508,6 @@ const BuyerOrders = () => {
         )}
       </Container>
 
-      {/* Payment Modal */}
       <Modal open={paymentModalOpen} onClose={() => setPaymentModalOpen(false)}>
         <Box
           sx={{

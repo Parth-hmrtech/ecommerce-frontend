@@ -51,7 +51,6 @@ const Sidebar = ({ open }) => {
 
             <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', mt: 2 }}>
                 <List>
-                    {/* Dashboard */}
                     <ListItem disablePadding>
                         <ListItemButton onClick={() => navigate('/seller-dashboard')}>
                             <ListItemIcon><DashboardIcon /></ListItemIcon>
@@ -59,7 +58,6 @@ const Sidebar = ({ open }) => {
                         </ListItemButton>
                     </ListItem>
 
-                    {/* Categories */}
                     <ListItem disablePadding>
                         <ListItemButton onClick={() => navigate('/seller-dashboard/categories')}>
                             <ListItemIcon><CategoryIcon /></ListItemIcon>
@@ -67,7 +65,6 @@ const Sidebar = ({ open }) => {
                         </ListItemButton>
                     </ListItem>
 
-                    {/* Sub Categories */}
                     <ListItem disablePadding>
                         <ListItemButton onClick={() => navigate('/seller-dashboard/sub-categories')}>
                             <ListItemIcon><SubtitlesIcon /></ListItemIcon>
@@ -75,7 +72,6 @@ const Sidebar = ({ open }) => {
                         </ListItemButton>
                     </ListItem>
 
-                    {/* Products + Upload Submenu on Hover */}
                     <ListItem
                         disablePadding
                         onMouseEnter={() => setShowUpload(true)}
@@ -110,7 +106,6 @@ const Sidebar = ({ open }) => {
                         </Box>
                     </ListItem>
 
-                    {/* Orders */}
                     <ListItem disablePadding>
                         <ListItemButton onClick={() => navigate('/seller-dashboard/orders')}>
                             <ListItemIcon><ReceiptLongIcon /></ListItemIcon>
@@ -118,7 +113,6 @@ const Sidebar = ({ open }) => {
                         </ListItemButton>
                     </ListItem>
 
-                    {/* Payments */}
                     <ListItem disablePadding>
                         <ListItemButton onClick={() => navigate('/seller-dashboard/payments')}>
                             <ListItemIcon><PaymentIcon /></ListItemIcon>
@@ -126,7 +120,6 @@ const Sidebar = ({ open }) => {
                         </ListItemButton>
                     </ListItem>
 
-                    {/* Reviews */}
                     <ListItem disablePadding>
                         <ListItemButton onClick={() => navigate('/seller-dashboard/reviews')}>
                             <ListItemIcon><ReviewsIcon /></ListItemIcon>
@@ -134,7 +127,6 @@ const Sidebar = ({ open }) => {
                         </ListItemButton>
                     </ListItem>
 
-                    {/* Logout */}
                     <ListItem disablePadding>
                         <ListItemButton
                             onClick={() => {

@@ -15,10 +15,8 @@ const SellerLayout = ({ children }) => {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      {/* Header */}
       <Header toggleSidebar={toggleSidebar} />
 
-      {/* Main Content Area */}
       <Box sx={{ display: 'flex', flexGrow: 1 }}>
         <Sidebar open={sidebarOpen} />
         <Box component="main" sx={{ flexGrow: 1, mt: '64px' }}>
@@ -26,7 +24,6 @@ const SellerLayout = ({ children }) => {
         </Box>
       </Box>
 
-      {/* Footer */}
       <Footer />
     </Box>
   );

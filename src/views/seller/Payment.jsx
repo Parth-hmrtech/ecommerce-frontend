@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
     Box,
     Typography,
-    Grid,
     Card,
     CardContent,
     CircularProgress,
@@ -31,8 +30,9 @@ const SellerPayments = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    // Grab everything from sellerPayments reducer
-    const { payments, earnings, loading, error } = useSelector((state) => state.sellerPayments);
+    const { payments = [], earnings = {}, loading, error } = useSelector(
+        (state) => state.sellerPayments || {}
+    );
 
     useEffect(() => {
         dispatch(fetchSellerPaymentsAction());
@@ -43,8 +43,14 @@ const SellerPayments = () => {
         setSidebarOpen((prev) => !prev);
     };
 
-    const totalOrders = earnings?.total_orders || 0;
-    const totalEarnings = earnings?.total_earnings || 0;
+    // ✅ Calculate total unique orders and earnings from payments
+    const uniqueOrderIds = new Set(payments.map((p) => p.order_id));
+    const totalOrders = uniqueOrderIds.size;
+
+    const totalEarnings = payments.reduce(
+        (sum, p) => sum + parseFloat(p.amount || 0),
+        0
+    );
 
     return (
         <Box sx={{ display: 'flex', minHeight: '100vh', flexDirection: 'column' }}>
@@ -62,25 +68,32 @@ const SellerPayments = () => {
                         <Typography color="error">{error}</Typography>
                     ) : (
                         <>
-                            {/* Summary Cards */}
-                            <Grid container spacing={2} mb={2}>
-                                <Grid item xs={12} sm={6}>
+                            {/* Summary Cards using Box instead of Grid */}
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexWrap: 'wrap',
+                                    gap: 2,
+                                    mb: 2,
+                                }}
+                            >
+                                <Box sx={{ flex: '1 1 200px', maxWidth: '300px' }}>
                                     <Card sx={{ backgroundColor: '#e0f7fa' }}>
                                         <CardContent>
                                             <Typography variant="h6">Total Orders</Typography>
                                             <Typography variant="h5">{totalOrders}</Typography>
                                         </CardContent>
                                     </Card>
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
+                                </Box>
+                                <Box sx={{ flex: '1 1 200px', maxWidth: '300px' }}>
                                     <Card sx={{ backgroundColor: '#f1f8e9' }}>
                                         <CardContent>
                                             <Typography variant="h6">Total Earnings</Typography>
                                             <Typography variant="h5">₹{totalEarnings.toFixed(2)}</Typography>
                                         </CardContent>
                                     </Card>
-                                </Grid>
-                            </Grid>
+                                </Box>
+                            </Box>
 
                             {/* Payments Table */}
                             <TableContainer component={Paper}>

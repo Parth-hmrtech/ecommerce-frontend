@@ -68,9 +68,7 @@ const deleteBuyerCartAction = createAsyncThunk(
         method: 'DELETE',
         url: `${BASE_ENDPOINT}/${id}`,
         headers: getAuthHeaders(),
-      });
-      console.log(response);
-      
+      });      
       return response.data?.data;
     } catch (err) {
       return rejectWithValue(err?.response?.data?.message || 'Failed to delete item');

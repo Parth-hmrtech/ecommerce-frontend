@@ -1,12 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-// Public Pages
 import Home from "../pages/home";
 import SignIn from "../pages/auth/signIn";
 import SignUp from "../pages/auth/signUp";
 import ForgotPassword from "../pages/auth/forgotPassword";
 
-// Buyer Pages
 import BuyerDashboard from "../views/buyer/BuyerDashboard";
 import BuyerProductDetail from "../views/buyer/BuyerProductDetail";
 import BuyerCart from "../views/buyer/BuyerCart";
@@ -14,7 +12,6 @@ import BuyerOrders from "../views/buyer/BuyerOrders";
 import BuyerWishlist from "../views/buyer/Buyerwishlist";
 import BuyerProfile from "../views/buyer/BuyerProfile";
 
-// Seller Pages
 import SellerDashboard from "../pages/seller/sellerDashboard";
 import SellerCategory from "../views/seller/Category";
 import SellerSubCategory from "../views/seller/SubCategory";
@@ -24,21 +21,18 @@ import SellerProductImages from "../views/seller/ProductUploadImage";
 import SellerPayments from "../views/seller/Payment";
 import SellerReview from "../views/seller/Review";
 import SellerProfile from '../views/seller/Profile';
-
-// Utilities
 import ProtectedRoute from "../utils/ProtectedRoute";
 
 const AppRoutes = () => {
   return (
     <Router>
       <Routes>
-        {/* Public Routes */}
+
         <Route path="/" element={<Home />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
 
-        {/* Protected Buyer Routes */}
         <Route element={<ProtectedRoute requiredRole="buyer" />}>
           <Route path="/buyer-dashboard" element={<BuyerDashboard />} />
           <Route path="/buyer-dashboard/product-details/:productId" element={<BuyerProductDetail />} />
@@ -49,7 +43,6 @@ const AppRoutes = () => {
 
         </Route>
 
-        {/* Protected Seller Routes */}
         <Route element={<ProtectedRoute requiredRole="seller" />}>
           <Route path="/seller-dashboard/" element={<SellerDashboard />} />
           <Route path="/seller-dashboard/categories" element={<SellerCategory />} />
