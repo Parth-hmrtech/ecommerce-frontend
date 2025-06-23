@@ -61,16 +61,16 @@ const updateBuyerCartAction = createAsyncThunk(
 );
 
 const deleteBuyerCartAction = createAsyncThunk(
-  'buyerCart/delete',
+  'buyerCart/deleteItem',
   async (id, { rejectWithValue }) => {
     try {
-      console.log(id);
-      
       const response = await apiRequest({
         method: 'DELETE',
         url: `${BASE_ENDPOINT}/${id}`,
         headers: getAuthHeaders(),
       });
+      console.log(response);
+      
       return response.data?.data;
     } catch (err) {
       return rejectWithValue(err?.response?.data?.message || 'Failed to delete item');
@@ -78,4 +78,32 @@ const deleteBuyerCartAction = createAsyncThunk(
   }
 );
 
-export { fetchBuyerCartAction, addToBuyerCartAction, updateBuyerCartAction, deleteBuyerCartAction };
+const deleteBuyerIdCartAction = createAsyncThunk(
+  'buyerCart/deleteAllByBuyerId',
+  async (buyerId, { rejectWithValue }) => {
+    try {
+      const response = await apiRequest({
+        method: 'DELETE',
+        url: `${BASE_ENDPOINT}/buyerId/${buyerId}`, 
+        headers: getAuthHeaders(),
+      });
+      if (response?.data?.success) {
+        return response.data;
+      } else {
+        return rejectWithValue(response?.data?.message || 'Cart deletion failed');
+      }
+
+    } catch (err) {
+      console.error('Delete buyer cart error:', err);
+      return rejectWithValue(err?.response?.data?.message || err?.message || 'Failed to delete buyer cart');
+    }
+  }
+);
+
+export {
+  fetchBuyerCartAction,
+  addToBuyerCartAction,
+  updateBuyerCartAction,
+  deleteBuyerCartAction,
+  deleteBuyerIdCartAction,
+};

@@ -21,6 +21,7 @@ import {
   fetchBuyerCartAction,
   updateBuyerCartAction,
   deleteBuyerCartAction,
+  deleteBuyerIdCartAction
 } from '../../store/actions/buyerCartAction';
 import { fetchProductsAction } from '../../store/actions/productActions';
 import { placeBuyerOrderAction } from '../../store/actions/buyerOrderAction';
@@ -92,9 +93,14 @@ const BuyerCart = () => {
     };
 
     setPlacingOrder(true);
-
     try {
       const res = await dispatch(placeBuyerOrderAction(orderData));
+      const buyerId = JSON.parse(localStorage.getItem('user'))?.id;
+
+      if (buyerId) {
+        await dispatch(deleteBuyerIdCartAction(buyerId));
+      }
+
       if (res.type === 'buyerOrder/placeBuyerOrder/fulfilled') {
         setAddress('');
         setShowPlaceOrder(false);
@@ -149,7 +155,7 @@ const BuyerCart = () => {
                   if (Array.isArray(parsed) && parsed.length > 0) {
                     imageUrl = parsed[0]?.image_url || imageUrl;
                   }
-                } catch {}
+                } catch { }
 
                 return (
                   <Card

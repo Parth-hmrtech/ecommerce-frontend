@@ -44,56 +44,64 @@ import 'slick-carousel/slick/slick-theme.css';
 
 import BuyerHeader from '../../components/common/BuyerHeader';
 import BuyerFooter from '../../components/common/BuyerFooter';
-
 const NextArrow = ({ onClick }) => (
-    <Box
-        onClick={onClick}
-        sx={{
-            position: 'absolute',
-            top: '50%',
-            right: -20,
-            transform: 'translateY(-50%)',
-            width: 36,
-            height: 60,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            bgcolor: 'white',
-            borderTopLeftRadius: '30px',
-            borderBottomLeftRadius: '30px',
-            boxShadow: 3,
-            cursor: 'pointer',
-            zIndex: 1,
-        }}
-    >
-        ❯
-    </Box>
+  <Box
+    onClick={onClick}
+    sx={{
+      position: 'absolute',
+      top: '50%',
+      right: -20,
+      transform: 'translateY(-50%)',
+      width: 36,
+      height: 60,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      bgcolor: 'white',
+      borderTopLeftRadius: '30px',
+      borderBottomLeftRadius: '30px',
+      boxShadow: 3,
+      cursor: 'pointer',
+      zIndex: 1,
+      transition: 'box-shadow 0.3s ease-in-out',
+      '&:hover': {
+        boxShadow: '0 0 20px rgba(0, 123, 255, 0.4)',
+      },
+    }}
+  >
+    ❯
+  </Box>
 );
 
 const PrevArrow = ({ onClick }) => (
-    <Box
-        onClick={onClick}
-        sx={{
-            position: 'absolute',
-            top: '50%',
-            left: -20,
-            transform: 'translateY(-50%)',
-            width: 36,
-            height: 60,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            bgcolor: 'white',
-            borderTopRightRadius: '30px',
-            borderBottomRightRadius: '30px',
-            boxShadow: 3,
-            cursor: 'pointer',
-            zIndex: 1,
-        }}
-    >
-        ❮
-    </Box>
+  <Box
+    onClick={onClick}
+    sx={{
+      position: 'absolute',
+      top: '50%',
+      left: -20,
+      transform: 'translateY(-50%)',
+      width: 36,
+      height: 60,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      bgcolor: 'white',
+      borderTopRightRadius: '30px',
+      borderBottomRightRadius: '30px',
+      boxShadow: 3,
+      cursor: 'pointer',
+      zIndex: 1,
+      transition: 'box-shadow 0.3s ease-in-out',
+      '&:hover': {
+        boxShadow: '0 0 20px rgba(0, 123, 255, 0.4)',
+      },
+    }}
+  >
+    ❮
+  </Box>
 );
+
 
 const BuyerProductDetail = () => {
     const { productId } = useParams();

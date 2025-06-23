@@ -4,6 +4,7 @@ import {
   addToBuyerCartAction,
   updateBuyerCartAction,
   deleteBuyerCartAction,
+  deleteBuyerIdCartAction, // <- include this
 } from '../actions/buyerCartAction';
 
 const buyerCartSlice = createSlice({
@@ -20,6 +21,7 @@ const buyerCartSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Fetch
       .addCase(fetchBuyerCartAction.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -33,6 +35,7 @@ const buyerCartSlice = createSlice({
         state.error = action.payload;
       })
 
+      // Add
       .addCase(addToBuyerCartAction.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -46,6 +49,7 @@ const buyerCartSlice = createSlice({
         state.error = action.payload;
       })
 
+      // Update
       .addCase(updateBuyerCartAction.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -62,18 +66,31 @@ const buyerCartSlice = createSlice({
         state.error = action.payload;
       })
 
+      // Delete single item
       .addCase(deleteBuyerCartAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(deleteBuyerCartAction.fulfilled, (state, action) => {
         state.loading = false;
-        // Assuming action.payload contains the id of the deleted item
         state.cart = state.cart.filter((item) => item.id !== action.payload);
       })
       .addCase(deleteBuyerCartAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+
+      .addCase(deleteBuyerIdCartAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteBuyerIdCartAction.fulfilled, (state) => {
+        state.loading = false;
+        state.cart = []; 
+      })
+      .addCase(deleteBuyerIdCartAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || 'Failed to delete buyer cart';
       });
   },
 });
