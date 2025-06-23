@@ -35,18 +35,19 @@ const signInUserAction = createAsyncThunk(
 
 const forgotPasswordAction = createAsyncThunk(
   'auth/forgotPassword',
-  async (email, { rejectWithValue }) => {
+  async ({ email, role }, { rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'POST',
         url: '/auth/forgot-password',
-        data: { email },
+        data: { email, role }, // send both email and role
       });
       return response.data;
     } catch (err) {
-      return rejectWithValue(err?.response?.data?.message || err.message || 'Password reset failed');
+      return rejectWithValue(
+        err?.response?.data?.message || err.message || 'Password reset failed'
+      );
     }
   }
 );
-
 export { signUpUserAction, signInUserAction, forgotPasswordAction };

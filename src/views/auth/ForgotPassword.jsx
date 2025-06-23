@@ -8,6 +8,7 @@ import {
   Link,
   Stack,
   Alert,
+  MenuItem,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -19,26 +20,26 @@ const ForgotPassword = () => {
   const dispatch = useDispatch();
 
   const [email, setEmail] = useState('');
-const { loading, error, message } = useSelector((state) => state.auth);
+  const [role, setRole] = useState('buyer'); // default role
+
+  const { loading, error, message } = useSelector((state) => state.auth);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(forgotPasswordAction(email));
+    dispatch(forgotPasswordAction({ email, role }));
   };
 
-  // Cleanup when component unmounts
   useEffect(() => {
     return () => {
       dispatch(resetAuthState());
     };
   }, [dispatch]);
 
-  // Auto-dismiss message after 1 second
   useEffect(() => {
     if (message) {
       const timer = setTimeout(() => {
         dispatch(resetAuthState());
-      }, 1000); // 1 second
+      }, 1000);
       return () => clearTimeout(timer);
     }
   }, [message, dispatch]);
@@ -63,6 +64,18 @@ const { loading, error, message } = useSelector((state) => state.auth);
             {message && <Alert severity="success">{message}</Alert>}
 
             <TextField
+              select
+              label="Select Role"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              fullWidth
+              required
+            >
+              <MenuItem value="buyer">Buyer</MenuItem>
+              <MenuItem value="seller">Seller</MenuItem>
+            </TextField>
+
+            <TextField
               type="email"
               label="Enter your registered email"
               fullWidth
@@ -75,14 +88,15 @@ const { loading, error, message } = useSelector((state) => state.auth);
             <Button type="submit" variant="contained" fullWidth disabled={loading}>
               {loading ? 'Sending...' : 'Send Reset Link'}
             </Button>
-
-            <Typography variant="body2" align="center">
-              <Link component="button" onClick={() => navigate('/signin')}>
-                Back to Sign In
-              </Link>
-            </Typography>
           </Stack>
         </form>
+
+        {/* Moved outside the form to avoid accidental submission */}
+        <Typography variant="body2" align="center" sx={{ mt: 2 }}>
+          <Link component="button" onClick={() => navigate('/signin')}>
+            Back to Sign In
+          </Link>
+        </Typography>
       </Paper>
     </Box>
   );
