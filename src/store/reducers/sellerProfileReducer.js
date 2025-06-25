@@ -64,6 +64,8 @@ const sellerProfileSlice = createSlice({
       .addCase(resetSellerPasswordAction.fulfilled, (state, action) => {
         state.passwordResetLoading = false;
         state.passwordResetSuccess = action.payload;
+        console.log(action.payload);
+        
       })
       .addCase(resetSellerPasswordAction.rejected, (state, action) => {
         state.passwordResetLoading = false;

@@ -10,8 +10,9 @@ const initialState = {
   loading: false,
   error: null,
   updateSuccess: false,
+
   passwordResetLoading: false,
-  passwordResetSuccess: '',
+  passwordResetSuccess: null, // Now holds full payload (can be object)
   passwordResetError: '',
 };
 
@@ -22,12 +23,13 @@ const buyerProfileSlice = createSlice({
     clearProfileMessages: (state) => {
       state.error = null;
       state.updateSuccess = false;
-      state.passwordResetSuccess = '';
+      state.passwordResetSuccess = null;
       state.passwordResetError = '';
     },
   },
   extraReducers: (builder) => {
     builder
+      // --- Fetch Buyer Profile ---
       .addCase(fetchBuyerProfileAction.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -41,6 +43,7 @@ const buyerProfileSlice = createSlice({
         state.error = action.payload;
       })
 
+      // --- Update Buyer Profile ---
       .addCase(updateBuyerProfileAction.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -56,14 +59,16 @@ const buyerProfileSlice = createSlice({
         state.error = action.payload;
       })
 
+      // --- Reset Password ---
       .addCase(resetBuyerPasswordAction.pending, (state) => {
         state.passwordResetLoading = true;
-        state.passwordResetSuccess = '';
+        state.passwordResetSuccess = null;
         state.passwordResetError = '';
       })
       .addCase(resetBuyerPasswordAction.fulfilled, (state, action) => {
         state.passwordResetLoading = false;
-        state.passwordResetSuccess = action.payload;
+        state.passwordResetSuccess = action.payload; // Store full payload object
+        console.log('Password reset success payload:', action.payload);
       })
       .addCase(resetBuyerPasswordAction.rejected, (state, action) => {
         state.passwordResetLoading = false;

@@ -20,12 +20,33 @@ const ForgotPassword = () => {
   const dispatch = useDispatch();
 
   const [email, setEmail] = useState('');
-  const [role, setRole] = useState('buyer'); // default role
+  const [role, setRole] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [roleError, setRoleError] = useState('');
 
   const { loading, error, message } = useSelector((state) => state.auth);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    let isValid = true;
+
+    if (!email.trim()) {
+      setEmailError('Email is required');
+      isValid = false;
+    } else {
+      setEmailError('');
+    }
+
+    if (!role) {
+      setRoleError('Role is required');
+      isValid = false;
+    } else {
+      setRoleError('');
+    }
+
+    if (!isValid) return;
+
     dispatch(forgotPasswordAction({ email, role }));
   };
 
@@ -69,7 +90,9 @@ const ForgotPassword = () => {
               value={role}
               onChange={(e) => setRole(e.target.value)}
               fullWidth
-              required
+              error={!!roleError}
+              helperText={roleError}
+              disabled={loading}
             >
               <MenuItem value="buyer">Buyer</MenuItem>
               <MenuItem value="seller">Seller</MenuItem>
@@ -79,10 +102,11 @@ const ForgotPassword = () => {
               type="email"
               label="Enter your registered email"
               fullWidth
-              required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
+              error={!!emailError}
+              helperText={emailError}
             />
 
             <Button type="submit" variant="contained" fullWidth disabled={loading}>
@@ -91,7 +115,6 @@ const ForgotPassword = () => {
           </Stack>
         </form>
 
-        {/* Moved outside the form to avoid accidental submission */}
         <Typography variant="body2" align="center" sx={{ mt: 2 }}>
           <Link component="button" onClick={() => navigate('/signin')}>
             Back to Sign In

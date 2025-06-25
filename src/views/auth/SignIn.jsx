@@ -8,13 +8,13 @@ import {
   Link,
   Paper,
   CircularProgress,
-  Alert,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
   InputAdornment,
   IconButton,
+  Alert,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
@@ -35,7 +35,13 @@ const SignIn = () => {
     role: '',
   });
 
-  const [showPassword, setShowPassword] = useState(false); // password hidden by default
+  const [showPassword, setShowPassword] = useState(false);
+
+  const [fieldErrors, setFieldErrors] = useState({
+    email: '',
+    password: '',
+    role: '',
+  });
 
   useEffect(() => {
     if (success && user) {
@@ -61,13 +67,41 @@ const SignIn = () => {
     }));
   };
 
+  const showFieldError = (field, message) => {
+    setFieldErrors((prev) => ({
+      ...prev,
+      [field]: message,
+    }));
+
+    setTimeout(() => {
+      setFieldErrors((prev) => ({
+        ...prev,
+        [field]: '',
+      }));
+    }, 3000); // Hide after 3 seconds
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!formData.role) {
-      alert('Please select a role.');
-      return;
+    let hasError = false;
+
+    if (!formData.email.trim()) {
+      showFieldError('email', 'Email is required');
+      hasError = true;
     }
+
+    if (!formData.password.trim()) {
+      showFieldError('password', 'Password is required');
+      hasError = true;
+    }
+
+    if (!formData.role) {
+      showFieldError('role', 'Please select role');
+      hasError = true;
+    }
+
+    if (hasError) return;
 
     dispatch(signInUserAction(formData));
   };
@@ -106,7 +140,8 @@ const SignIn = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              required
+              error={!!fieldErrors.email}
+              helperText={fieldErrors.email}
             />
 
             <TextField
@@ -116,7 +151,8 @@ const SignIn = () => {
               type={showPassword ? 'text' : 'password'}
               value={formData.password}
               onChange={handleChange}
-              required
+              error={!!fieldErrors.password}
+              helperText={fieldErrors.password}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -131,7 +167,7 @@ const SignIn = () => {
               }}
             />
 
-            <FormControl fullWidth required>
+            <FormControl fullWidth error={!!fieldErrors.role}>
               <InputLabel>Role</InputLabel>
               <Select
                 name="role"
@@ -142,6 +178,11 @@ const SignIn = () => {
                 <MenuItem value="buyer">Buyer</MenuItem>
                 <MenuItem value="seller">Seller</MenuItem>
               </Select>
+              {fieldErrors.role && (
+                <Typography variant="caption" color="error">
+                  {fieldErrors.role}
+                </Typography>
+              )}
             </FormControl>
 
             <Box textAlign="right">
@@ -164,14 +205,15 @@ const SignIn = () => {
               {loading ? 'Logging in...' : 'Login'}
             </Button>
 
+          </Stack>
+        </form>
+
             <Typography variant="body2" align="center">
               Don’t have an account yet?{' '}
               <Link component="button" onClick={() => navigate('/signup')}>
                 Sign Up
               </Link>
             </Typography>
-          </Stack>
-        </form>
       </Paper>
     </Box>
   );

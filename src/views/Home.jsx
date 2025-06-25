@@ -4,7 +4,6 @@ import {
   Box,
   Container,
   AppBar,
-  Grid,
   Button,
   Typography,
   Card,
@@ -153,7 +152,17 @@ const HomeView = () => {
           </Box>
         ) : (
           <>
-            <Grid container spacing={3}>
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: {
+                  xs: '1fr',
+                  sm: '1fr 1fr',
+                  md: '1fr 1fr 1fr',
+                },
+                gap: 3,
+              }}
+            >
               {visibleProducts.map((product) => {
                 let images = [];
 
@@ -173,7 +182,7 @@ const HomeView = () => {
                 const isExpanded = expandedCards[product.id];
 
                 return (
-                  <Grid item xs={12} sm={6} md={4} key={product.id}>
+                  <Box key={product.id}>
                     <Card
                       sx={{
                         maxWidth: 345,
@@ -248,10 +257,10 @@ const HomeView = () => {
                         )}
                       </CardActions>
                     </Card>
-                  </Grid>
+                  </Box>
                 );
               })}
-            </Grid>
+            </Box>
 
             {visibleProducts.length < products.length && (
               <Box display="flex" justifyContent="center" mt={4}>

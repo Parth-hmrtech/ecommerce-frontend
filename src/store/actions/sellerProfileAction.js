@@ -51,7 +51,7 @@ const resetSellerPasswordAction = createAsyncThunk(
         data: { oldPassword, newPassword },
         headers: getAuthHeaders(),
       });
-      return response.data.message;
+      return response.data;
     } catch (err) {
       return rejectWithValue(err?.response?.data?.message || 'Password reset failed');
     }
