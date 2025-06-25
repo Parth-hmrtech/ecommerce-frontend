@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   Box,
   Typography,
@@ -18,7 +18,13 @@ import BuyerFooter from '../../components/common/BuyerFooter';
 import useBuyerProfile from '@/hooks/buyer/useBuyerProfile';
 
 const BuyerProfile = () => {
-  const id = JSON.parse(localStorage.getItem('user'))?.id;
+  const userId = useMemo(() => {
+    try {
+      return JSON.parse(localStorage.getItem('user'))?.id || null;
+    } catch {
+      return null;
+    }
+  }, []);
 
   const {
     profile,
@@ -46,8 +52,8 @@ const BuyerProfile = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
 
   useEffect(() => {
-    fetchProfile(id);
-  }, [fetchProfile, id]);
+    if (userId) fetchProfile(userId);
+  }, [fetchProfile, userId]);
 
   useEffect(() => {
     if (profile?.user) {
@@ -97,7 +103,7 @@ const BuyerProfile = () => {
     setSuccessMsg('');
     setUpdating(true);
 
-    updateProfile({ id, data: formData })
+    updateProfile({ id: userId, data: formData })
       .unwrap()
       .then(() => {
         setSuccessMsg('Profile updated successfully');
