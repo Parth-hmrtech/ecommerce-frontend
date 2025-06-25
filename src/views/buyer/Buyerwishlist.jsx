@@ -18,7 +18,7 @@ import BuyerFooter from '../../components/common/BuyerFooter';
 import {
   fetchBuyerWishlistAction,
   deleteFromBuyerWishlistAction,
-} from '../../store/actions/buyerWishlistAction';
+} from '../../store/actions/buyer/buyerWishlistAction';
 import { fetchProductsAction } from '../../store/actions/productActions';
 
 const BuyerWishlist = () => {

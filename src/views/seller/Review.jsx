@@ -27,8 +27,8 @@ import Header from '../../components/common/Header';
 import Footer from '../../components/common/Footer';
 import Sidebar from '../../components/common/Sidebar';
 
-import { fetchSellerReviewsAction, deleteSellerReviewAction } from '../../store/actions/sellerReviewAction';
-import { fetchAllProductsAction } from '../../store/actions/sellerProductAction';
+import { fetchSellerReviewsAction, deleteSellerReviewAction } from '../../store/actions/seller/sellerReviewAction';
+import { fetchAllProductsAction } from '../../store/actions/seller/sellerProductAction';
 
 
 const SellerReview = () => {

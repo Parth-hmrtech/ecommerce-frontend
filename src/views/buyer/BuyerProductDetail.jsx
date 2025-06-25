@@ -9,17 +9,17 @@ import {
     addToBuyerCartAction,
     updateBuyerCartAction,
     deleteBuyerCartAction,
-} from '../../store/actions/buyerCartAction';
-import { fetchBuyerProductByIdAction } from '../../store/actions/buyerProductAction';
+} from '../../store/actions/buyer/buyerCartAction';
+import { fetchBuyerProductByIdAction } from '../../store/actions/buyer/buyerProductAction';
 import {
     fetchBuyerWishlistAction,
     addToBuyerWishlistAction,
-} from '../../store/actions/buyerWishlistAction';
+} from '../../store/actions/buyer/buyerWishlistAction';
 import {
     fetchBuyerReviewByProductIdAction,
     updateBuyerReviewAction,
     deleteBuyerReviewAction,
-} from '../../store/actions/buyerReviewAction';
+} from '../../store/actions/buyer/buyerReviewAction';
 
 import {
     Box,

@@ -5,9 +5,9 @@ import {
     addProductAction,
     deleteProductAction,
     updateProductAction,
-} from '../../store/actions/sellerProductAction';
-import { fetchAllCategoriesAction } from '../../store/actions/sellerCategoryAction';
-import { fetchAllSubCategoriesByIdAction } from '../../store/actions/sellerSubCategoryAction';
+} from '../../store/actions/seller/sellerProductAction';
+import { fetchAllCategoriesAction } from '../../store/actions/seller/sellerCategoryAction';
+import { fetchAllSubCategoriesByIdAction } from '../../store/actions/seller/sellerSubCategoryAction';
 
 import {
     Box,
@@ -42,8 +42,8 @@ const SellerProduct = () => {
     const dispatch = useDispatch();
 
     const { list: products, loading, error } = useSelector((state) => state.sellerProduct);
-    const { list: categories } = useSelector((state) => state.categories);
-    const { list: subcategories } = useSelector((state) => state.subcategories);
+    const { list: categories } = useSelector((state) => state.sellerCategories);
+    const { list: subcategories } = useSelector((state) => state.sellerSubcategories);
 
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');

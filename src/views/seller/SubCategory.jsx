@@ -5,8 +5,8 @@ import {
   addSubCategoryAction,
   updateSubCategoryAction,
   deleteSubCategoryAction,
-} from '../../store/actions/sellerSubCategoryAction';
-import { fetchAllCategoriesAction } from '../../store/actions/sellerCategoryAction';
+} from '../../store/actions/seller/sellerSubCategoryAction';
+import { fetchAllCategoriesAction } from '../../store/actions/seller/sellerCategoryAction';
 
 import {
   Box,
@@ -41,8 +41,8 @@ import Footer from '../../components/common/Footer';
 
 const SellerSubCategory = () => {
   const dispatch = useDispatch();
-  const { list, loading, error } = useSelector((state) => state.subcategories);
-  const { list: categoryList } = useSelector((state) => state.categories);
+  const { list, loading, error } = useSelector((state) => state.sellerSubcategories);
+  const { list: categoryList } = useSelector((state) => state.sellerCategories);
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');

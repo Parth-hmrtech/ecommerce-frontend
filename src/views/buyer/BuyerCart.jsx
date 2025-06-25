@@ -22,9 +22,9 @@ import {
   updateBuyerCartAction,
   deleteBuyerCartAction,
   deleteBuyerIdCartAction
-} from '../../store/actions/buyerCartAction';
+} from '../../store/actions/buyer/buyerCartAction';
 import { fetchProductsAction } from '../../store/actions/productActions';
-import { placeBuyerOrderAction } from '../../store/actions/buyerOrderAction';
+import { placeBuyerOrderAction } from '../../store/actions/buyer/buyerOrderAction';
 
 const BuyerCart = () => {
   const dispatch = useDispatch();

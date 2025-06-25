@@ -4,23 +4,43 @@ import {
   TextField,
   Button,
   Typography,
-  InputAdornment,
-  IconButton,
-  Select,
-  MenuItem,
   FormControl,
   InputLabel,
+  Select,
+  MenuItem,
   Paper,
   Stack,
   Link,
   CircularProgress,
   Alert,
+  IconButton,
+  FormHelperText,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { signUpUserAction } from '../../store/actions/authActions';
-import { resetAuthState } from '../../store/reducers/authReducer';
+import { signUpUserAction } from '../../store/actions/auth/authActions';
+import { resetAuthState } from '../../store/reducers/auth/authReducer';
+
+const PasswordField = ({ label, name, value, onChange, show, toggleShow, error, helperText }) => (
+  <TextField
+    label={label}
+    name={name}
+    type={show ? 'text' : 'password'}
+    value={value}
+    onChange={onChange}
+    fullWidth
+    error={!!error}
+    helperText={helperText}
+    InputProps={{
+      endAdornment: (
+        <IconButton onClick={toggleShow} edge="end" size="small">
+          {show ? <Visibility /> : <VisibilityOff />}
+        </IconButton>
+      ),
+    }}
+  />
+);
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -46,7 +66,6 @@ const SignUp = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setErrors((prev) => ({ ...prev, [name]: '' }));
-
     if (name === 'confirm_password') {
       setConfirmPassword(value);
     } else {
@@ -66,8 +85,7 @@ const SignUp = () => {
     if (!formData.password_hash) {
       newErrors.password_hash = 'Password is required';
     } else if (!strongPasswordRegex.test(formData.password_hash)) {
-      newErrors.password_hash =
-        'Password must be at least 8 characters and include one uppercase, one number, and one special character.';
+      newErrors.password_hash = 'Password must be 8+ chars, include uppercase, number, special char.';
     }
     if (!confirmPassword) {
       newErrors.confirm_password = 'Confirm password is required';
@@ -83,9 +101,7 @@ const SignUp = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validate()) return;
-
-    const jsonPayload = JSON.stringify(formData);
-    dispatch(signUpUserAction(jsonPayload));
+    dispatch(signUpUserAction(JSON.stringify(formData)));
   };
 
   useEffect(() => {
@@ -110,7 +126,6 @@ const SignUp = () => {
               value={formData.first_name}
               onChange={handleChange}
               fullWidth
-              
               error={!!errors.first_name}
               helperText={errors.first_name}
             />
@@ -121,7 +136,6 @@ const SignUp = () => {
               value={formData.last_name}
               onChange={handleChange}
               fullWidth
-              
               error={!!errors.last_name}
               helperText={errors.last_name}
             />
@@ -133,7 +147,6 @@ const SignUp = () => {
               value={formData.email}
               onChange={handleChange}
               fullWidth
-              
               error={!!errors.email}
               helperText={errors.email}
             />
@@ -144,51 +157,30 @@ const SignUp = () => {
               value={formData.phone_number}
               onChange={handleChange}
               fullWidth
-              
               error={!!errors.phone_number}
               helperText={errors.phone_number}
             />
 
-            <TextField
+            <PasswordField
               label="Password"
               name="password_hash"
-              type={showPassword ? 'text' : 'password'}
               value={formData.password_hash}
               onChange={handleChange}
-              fullWidth
-              
-              error={!!errors.password_hash}
+              show={showPassword}
+              toggleShow={() => setShowPassword((prev) => !prev)}
+              error={errors.password_hash}
               helperText={errors.password_hash}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
             />
 
-            <TextField
+            <PasswordField
               label="Confirm Password"
               name="confirm_password"
-              type={showConfirm ? 'text' : 'password'}
               value={confirmPassword}
               onChange={handleChange}
-              fullWidth
-              
-              error={!!errors.confirm_password}
+              show={showConfirm}
+              toggleShow={() => setShowConfirm((prev) => !prev)}
+              error={errors.confirm_password}
               helperText={errors.confirm_password}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={() => setShowConfirm(!showConfirm)} edge="end">
-                      {showConfirm ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
             />
 
             <FormControl fullWidth error={!!errors.role}>
@@ -203,24 +195,19 @@ const SignUp = () => {
                 <MenuItem value="buyer">Buyer</MenuItem>
                 <MenuItem value="seller">Seller</MenuItem>
               </Select>
-              {errors.role && (
-                <Typography variant="caption" color="error">
-                  {errors.role}
-                </Typography>
-              )}
+              {errors.role && <FormHelperText>{errors.role}</FormHelperText>}
             </FormControl>
 
             <Button variant="contained" fullWidth type="submit" disabled={loading}>
               {loading ? <CircularProgress size={24} color="inherit" /> : 'Sign Up'}
             </Button>
-
           </Stack>
         </form>
 
-            <Typography variant="body2" align="center">
-              Already have an account?{' '}
-              <Link component="button" onClick={() => navigate('/signin')}>Sign in</Link>
-            </Typography>
+        <Typography variant="body2" align="center" mt={2}>
+          Already have an account?{' '}
+          <Link component="button" onClick={() => navigate('/signin')}>Sign in</Link>
+        </Typography>
       </Paper>
     </Box>
   );

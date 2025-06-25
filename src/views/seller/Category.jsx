@@ -5,7 +5,7 @@ import {
     addCategoryAction,
     deleteCategoryAction,
     updateCategoryAction,
-} from '../../store/actions/sellerCategoryAction';
+} from '../../store/actions/seller/sellerCategoryAction';
 
 import {
     Box,
@@ -37,7 +37,7 @@ import Sidebar from '../../components/common/Sidebar';
 
 const SellerCategory = () => {
     const dispatch = useDispatch();
-    const { list, loading, error } = useSelector((state) => state.categories);
+    const { list, loading, error } = useSelector((state) => state.sellerCategories);
 
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');

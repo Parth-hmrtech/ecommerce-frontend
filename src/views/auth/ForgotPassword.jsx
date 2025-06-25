@@ -12,8 +12,8 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { forgotPasswordAction } from '../../store/actions/authActions';
-import { resetAuthState } from '../../store/reducers/authReducer';
+import { forgotPasswordAction } from '../../store/actions/auth/authActions';
+import { resetAuthState } from '../../store/reducers/auth/authReducer';
 
 const ForgotPassword = () => {
   const navigate = useNavigate();

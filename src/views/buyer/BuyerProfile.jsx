@@ -20,7 +20,7 @@ import {
   fetchBuyerProfileAction,
   updateBuyerProfileAction,
   resetBuyerPasswordAction,
-} from '../../store/actions/buyerProfileAction';
+} from '../../store/actions/buyer/buyerProfileAction';
 
 const BuyerProfile = () => {
   const id = JSON.parse(localStorage.getItem('user'))?.id;

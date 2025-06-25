@@ -36,13 +36,13 @@ import {
   fetchBuyerOrdersAction,
   deleteBuyerOrderAction,
   updateBuyerOrderAddressAction,
-} from '../../store/actions/buyerOrderAction';
+} from '../../store/actions/buyer/buyerOrderAction';
 
 import {
   buyerCheckoutPaymentAction,
   buyerVerifyPaymentAction,
   buyerCheckPaymentStatusAction,
-} from '../../store/actions/buyerPaymentAction';
+} from '../../store/actions/buyer/buyerPaymentAction';
 
 import { fetchProductsAction } from '../../store/actions/productActions';
 
@@ -51,7 +51,7 @@ import {
   updateBuyerReviewAction,
   deleteBuyerReviewAction,
   fetchBuyerReviewByProductIdAction,
-} from '../../store/actions/buyerReviewAction';
+} from '../../store/actions/buyer/buyerReviewAction';
 
 const BuyerOrders = () => {
   const dispatch = useDispatch();

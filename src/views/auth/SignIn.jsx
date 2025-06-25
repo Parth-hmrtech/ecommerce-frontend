@@ -15,12 +15,13 @@ import {
   InputAdornment,
   IconButton,
   Alert,
+  FormHelperText,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { signInUserAction } from '../../store/actions/authActions';
-import { resetAuthState } from '../../store/reducers/authReducer';
+import { signInUserAction } from '../../store/actions/auth/authActions';
+import { resetAuthState } from '../../store/reducers/auth/authReducer';
 import ecommerceLogo from '../../assets/images/ecommerce-logo.png';
 
 const SignIn = () => {
@@ -78,7 +79,7 @@ const SignIn = () => {
         ...prev,
         [field]: '',
       }));
-    }, 3000); // Hide after 3 seconds
+    }, 3000);
   };
 
   const handleSubmit = (e) => {
@@ -126,11 +127,11 @@ const SignIn = () => {
 
       <Paper elevation={3} sx={{ p: 4, width: '100%', maxWidth: 400 }}>
         <form onSubmit={handleSubmit}>
-          <Typography variant="h5" gutterBottom>
-            Sign In
-          </Typography>
-
           <Stack spacing={2}>
+            <Typography variant="h5" gutterBottom>
+              Sign In
+            </Typography>
+
             {error && <Alert severity="error">{error}</Alert>}
 
             <TextField
@@ -179,15 +180,14 @@ const SignIn = () => {
                 <MenuItem value="seller">Seller</MenuItem>
               </Select>
               {fieldErrors.role && (
-                <Typography variant="caption" color="error">
-                  {fieldErrors.role}
-                </Typography>
+                <FormHelperText>{fieldErrors.role}</FormHelperText>
               )}
             </FormControl>
 
             <Box textAlign="right">
               <Link
                 component="button"
+                type="button"
                 variant="body2"
                 onClick={() => navigate('/forgot-password')}
               >
@@ -195,25 +195,28 @@ const SignIn = () => {
               </Link>
             </Box>
 
+
             <Button
               variant="contained"
               fullWidth
               type="submit"
               disabled={loading}
-              startIcon={loading ? <CircularProgress size={20} color="inherit" /> : null}
+              startIcon={
+                loading ? <CircularProgress size={20} color="inherit" /> : null
+              }
             >
               {loading ? 'Logging in...' : 'Login'}
             </Button>
 
+
           </Stack>
         </form>
-
-            <Typography variant="body2" align="center">
-              Don’t have an account yet?{' '}
-              <Link component="button" onClick={() => navigate('/signup')}>
-                Sign Up
-              </Link>
-            </Typography>
+        <Typography variant="body2" align="center" mt={2}>
+          Don’t have an account yet?{' '}
+          <Link component="button" onClick={() => navigate('/signup')}>
+            Sign Up
+          </Link>
+        </Typography>
       </Paper>
     </Box>
   );

@@ -24,7 +24,7 @@ import {
   addToBuyerCartAction,
   updateBuyerCartAction,
   deleteBuyerCartAction,
-} from '../../store/actions/buyerCartAction';
+} from '../../store/actions/buyer/buyerCartAction';
 
 const BuyerDashboard = () => {
   const dispatch = useDispatch();
