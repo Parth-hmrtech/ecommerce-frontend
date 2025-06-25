@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchBuyerCategoriesAction } from '../../actions/buyer/buyer.action';
+import { fetchBuyerCategoriesAction } from '../../actions/buyer/buyer-category.action';
 
 const buyerSlice = createSlice({
   name: 'buyer',

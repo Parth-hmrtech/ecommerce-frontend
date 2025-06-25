@@ -3,16 +3,22 @@ import { apiRequest } from '../../hooks/useApiRequest';
 
 const fetchProductsAction = createAsyncThunk(
   'products/fetchProducts',
-  async (_, { rejectWithValue }) => {
+  async (_, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'GET',
         url: '/buyer/products',
       });
-      return response.data?.data || [];
+
+      if (response?.status !== 200) {
+        return rejectWithValue(new Error("Something is wrong here"));
+      }
+
+      return fulfillWithValue(response?.data?.data || []);
     } catch (error) {
-      const message = error?.response?.data?.message || error.message || 'Failed to fetch products';
-      return rejectWithValue(message);
+      return rejectWithValue(
+        new Error(error?.data?.message || "Something is wrong here")
+      );
     }
   }
 );

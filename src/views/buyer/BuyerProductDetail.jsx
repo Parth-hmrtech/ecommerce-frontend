@@ -190,7 +190,16 @@ const BuyerProductDetail = () => {
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#f4f6f8' }}>
             <BuyerHeader />
-
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={2000}
+                onClose={() => setSnackbarOpen(false)}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }} 
+            >
+                <Alert severity="success" onClose={() => setSnackbarOpen(false)}>
+                    Added to wishlist!
+                </Alert>
+            </Snackbar>
             <Container sx={{ mt: 5, flex: 1 }}>
                 {loading ? (
                     <Box display="flex" justifyContent="center" mt={4}>
@@ -444,16 +453,6 @@ const BuyerProductDetail = () => {
                 )}
             </Container>
 
-            <Snackbar
-                open={snackbarOpen}
-                autoHideDuration={3000}
-                onClose={() => setSnackbarOpen(false)}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-            >
-                <Alert severity="success" onClose={() => setSnackbarOpen(false)}>
-                    Added to wishlist!
-                </Alert>
-            </Snackbar>
 
             <BuyerFooter />
         </Box>

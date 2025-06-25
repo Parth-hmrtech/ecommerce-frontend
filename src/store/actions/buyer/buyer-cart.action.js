@@ -12,23 +12,28 @@ const getAuthHeaders = () => {
 
 const fetchBuyerCartAction = createAsyncThunk(
   'buyerCart/fetch',
-  async (_, { rejectWithValue }) => {
+  async (_, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'GET',
         url: BASE_ENDPOINT,
         headers: getAuthHeaders(),
       });
-      return response.data?.data || [];
-    } catch (err) {
-      return rejectWithValue(err?.response?.data?.message || 'Failed to fetch cart');
+
+      if (response?.status !== 200) {
+        return rejectWithValue(new Error('Something went wrong'));
+      }
+
+      return fulfillWithValue(response?.data?.data || []);
+    } catch (error) {
+        new Error(error?.data?.message || "Something is wrong here")
     }
   }
 );
 
 const addToBuyerCartAction = createAsyncThunk(
   'buyerCart/add',
-  async ({ product_id, quantity }, { rejectWithValue }) => {
+  async ({ product_id, quantity }, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'POST',
@@ -36,16 +41,21 @@ const addToBuyerCartAction = createAsyncThunk(
         headers: getAuthHeaders(),
         data: { product_id, quantity },
       });
-      return response.data?.data;
-    } catch (err) {
-      return rejectWithValue(err?.response?.data?.message || 'Failed to add item to cart');
+
+      if (response?.status !== 200) {
+        return rejectWithValue(new Error('Something went wrong'));
+      }
+
+      return fulfillWithValue(response?.data?.data);
+    } catch (error) {
+        new Error(error?.data?.message || "Something is wrong here")
     }
   }
 );
 
 const updateBuyerCartAction = createAsyncThunk(
   'buyerCart/update',
-  async ({ id, quantity }, { rejectWithValue }) => {
+  async ({ id, quantity }, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'PUT',
@@ -53,47 +63,56 @@ const updateBuyerCartAction = createAsyncThunk(
         headers: getAuthHeaders(),
         data: { quantity: String(quantity) },
       });
-      return response.data?.data;
-    } catch (err) {
-      return rejectWithValue(err?.response?.data?.message || 'Failed to update cart');
+
+      if (response?.status !== 200) {
+        return rejectWithValue(new Error('Something went wrong'));
+      }
+
+      return fulfillWithValue(response?.data?.data);
+    } catch (error) {
+        new Error(error?.data?.message || "Something is wrong here")
     }
   }
 );
 
 const deleteBuyerCartAction = createAsyncThunk(
   'buyerCart/deleteItem',
-  async (id, { rejectWithValue }) => {
+  async (id, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'DELETE',
         url: `${BASE_ENDPOINT}/${id}`,
         headers: getAuthHeaders(),
-      });      
-      return response.data?.data;
-    } catch (err) {
-      return rejectWithValue(err?.response?.data?.message || 'Failed to delete item');
+      });
+
+      if (response?.status !== 200) {
+        return rejectWithValue(new Error('Something went wrong'));
+      }
+
+      return fulfillWithValue(response?.data?.data);
+    } catch (error) {
+        new Error(error?.data?.message || "Something is wrong here")
     }
   }
 );
 
 const deleteBuyerIdCartAction = createAsyncThunk(
   'buyerCart/deleteAllByBuyerId',
-  async (buyerId, { rejectWithValue }) => {
+  async (buyerId, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'DELETE',
-        url: `${BASE_ENDPOINT}/buyerId/${buyerId}`, 
+        url: `${BASE_ENDPOINT}/buyerId/${buyerId}`,
         headers: getAuthHeaders(),
       });
-      if (response?.data?.success) {
-        return response.data;
-      } else {
-        return rejectWithValue(response?.data?.message || 'Cart deletion failed');
+
+      if (response?.status !== 200 || response?.data?.success === false) {
+        return rejectWithValue(new Error('Something went wrong'));
       }
 
-    } catch (err) {
-      console.error('Delete buyer cart error:', err);
-      return rejectWithValue(err?.response?.data?.message || err?.message || 'Failed to delete buyer cart');
+      return fulfillWithValue(response?.data?.data);
+    } catch (error) {
+        new Error(error?.data?.message || "Something is wrong here")
     }
   }
 );

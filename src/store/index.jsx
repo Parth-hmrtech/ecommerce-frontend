@@ -10,7 +10,7 @@ import sellerPaymentReducer from './reducers/seller/seller-payment.reducer';
 import sellerReviewReducer from './reducers/seller/seller-review.reducer';
 import sellerProfileReducer from './reducers/seller/seller-profile.reducer';
 
-import buyerReducer from './reducers/buyer/buyer.reducer';
+import buyerReducer from './reducers/buyer/buyer-category.reducer';
 import buyerProductReducer from './reducers/buyer/buyer-product.reducer';
 import buyerCartReducer from './reducers/buyer/buyer-cart.reducer';
 import buyerOrderReducer from './reducers/buyer/buyer-order.reducer';
