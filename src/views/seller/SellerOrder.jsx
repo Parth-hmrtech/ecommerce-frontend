@@ -16,8 +16,8 @@ import {
     CircularProgress,
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchSellerOrdersAction, updateOrderStatusAction } from '../../store/actions/seller/sellerOrderAction';
-import { fetchAllProductsAction } from '../../store/actions/seller/sellerProductAction';
+import { fetchSellerOrdersAction, updateOrderStatusAction } from '../../store/actions/seller/seller-order.action';
+import { fetchAllProductsAction } from '../../store/actions/seller/seller-product.action';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Header from '../../components/common/Header';

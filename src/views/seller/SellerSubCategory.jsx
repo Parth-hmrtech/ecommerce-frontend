@@ -5,8 +5,8 @@ import {
   addSubCategoryAction,
   updateSubCategoryAction,
   deleteSubCategoryAction,
-} from '../../store/actions/seller/sellerSubCategoryAction';
-import { fetchAllCategoriesAction } from '../../store/actions/seller/sellerCategoryAction';
+} from '../../store/actions/seller/seller-sub-category.action';
+import { fetchAllCategoriesAction } from '../../store/actions/seller/seller-category.action';
 
 import {
   Box,

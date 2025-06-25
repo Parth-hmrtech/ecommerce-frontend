@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 
 import Home from "../pages/home";
 import SignIn from "../pages/auth/signIn";
@@ -13,51 +13,104 @@ import BuyerWishlist from "../views/buyer/Buyerwishlist";
 import BuyerProfile from "../views/buyer/BuyerProfile";
 
 import SellerDashboard from "../pages/seller/sellerDashboard";
-import SellerCategory from "../views/seller/Category";
-import SellerSubCategory from "../views/seller/SubCategory";
-import SellerProducts from "../views/seller/Product";
-import SellerOrderList from "../views/seller/Order";
-import SellerProductImages from "../views/seller/ProductUploadImage";
-import SellerPayments from "../views/seller/Payment";
-import SellerReview from "../views/seller/Review";
-import SellerProfile from '../views/seller/Profile';
+import SellerCategory from "../views/seller/SellerCategory";
+import SellerSubCategory from "../views/seller/SellerSubCategory";
+import SellerProducts from "../views/seller/SellerProduct";
+import SellerOrderList from "../views/seller/SellerOrder";
+import SellerProductImages from "../views/seller/SellerProductUploadImage";
+import SellerPayments from "../views/seller/SellerPayment";
+import SellerReview from "../views/seller/SellerReview";
+import SellerProfile from "../views/seller/SellerProfile";
+
 import ProtectedRoute from "../utils/ProtectedRoute";
 
-const AppRoutes = () => {
-  return (
-    <Router>
-      <Routes>
-
-        <Route path="/" element={<Home />} />
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-
-        <Route element={<ProtectedRoute requiredRole="buyer" />}>
-          <Route path="/buyer-dashboard" element={<BuyerDashboard />} />
-          <Route path="/buyer-dashboard/product-details/:productId" element={<BuyerProductDetail />} />
-          <Route path="/buyer-dashboard/cart" element={<BuyerCart />} />
-          <Route path="/buyer-dashboard/orders" element={<BuyerOrders />} />
-          <Route path="/buyer-dashboard/wishlist" element={<BuyerWishlist />} />
-          <Route path="/buyer-dashboard/profile" element={<BuyerProfile />} />
-
-        </Route>
-
-        <Route element={<ProtectedRoute requiredRole="seller" />}>
-          <Route path="/seller-dashboard/" element={<SellerDashboard />} />
-          <Route path="/seller-dashboard/categories" element={<SellerCategory />} />
-          <Route path="/seller-dashboard/sub-categories" element={<SellerSubCategory />} />
-          <Route path="/seller-dashboard/products" element={<SellerProducts />} />
-          <Route path="/seller-dashboard/products/upload-images" element={<SellerProductImages />} />
-          <Route path="/seller-dashboard/orders" element={<SellerOrderList />} />
-          <Route path="/seller-dashboard/payments" element={<SellerPayments />} />
-          <Route path="/seller-dashboard/reviews" element={<SellerReview />} />
-          <Route path="/seller-dashboard/profile" element={<SellerProfile />} />
-
-        </Route>
-      </Routes>
-    </Router>
-  );
-};
+const AppRoutes = createBrowserRouter([
+  {
+    path: "/",
+    element: <Home />,
+  },
+  {
+    path: "/signin",
+    element: <SignIn />,
+  },
+  {
+    path: "/signup",
+    element: <SignUp />,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPassword />,
+  },
+  {
+    element: <ProtectedRoute requiredRole="buyer" />,
+    children: [
+      {
+        path: "/buyer-dashboard",
+        element: <BuyerDashboard />,
+      },
+      {
+        path: "/buyer-dashboard/product-details/:productId",
+        element: <BuyerProductDetail />,
+      },
+      {
+        path: "/buyer-dashboard/cart",
+        element: <BuyerCart />,
+      },
+      {
+        path: "/buyer-dashboard/orders",
+        element: <BuyerOrders />,
+      },
+      {
+        path: "/buyer-dashboard/wishlist",
+        element: <BuyerWishlist />,
+      },
+      {
+        path: "/buyer-dashboard/profile",
+        element: <BuyerProfile />,
+      },
+    ],
+  },
+  {
+    element: <ProtectedRoute requiredRole="seller" />,
+    children: [
+      {
+        path: "/seller-dashboard",
+        element: <SellerDashboard />,
+      },
+      {
+        path: "/seller-dashboard/categories",
+        element: <SellerCategory />,
+      },
+      {
+        path: "/seller-dashboard/sub-categories",
+        element: <SellerSubCategory />,
+      },
+      {
+        path: "/seller-dashboard/products",
+        element: <SellerProducts />,
+      },
+      {
+        path: "/seller-dashboard/products/upload-images",
+        element: <SellerProductImages />,
+      },
+      {
+        path: "/seller-dashboard/orders",
+        element: <SellerOrderList />,
+      },
+      {
+        path: "/seller-dashboard/payments",
+        element: <SellerPayments />,
+      },
+      {
+        path: "/seller-dashboard/reviews",
+        element: <SellerReview />,
+      },
+      {
+        path: "/seller-dashboard/profile",
+        element: <SellerProfile />,
+      },
+    ],
+  },
+]);
 
 export default AppRoutes;

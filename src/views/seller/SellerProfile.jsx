@@ -21,7 +21,7 @@ import {
   fetchSellerProfileAction,
   updateSellerProfileAction,
   resetSellerPasswordAction,
-} from '../../store/actions/seller/sellerProfileAction';
+} from '../../store/actions/seller/seller-profile.action';
 
 const SellerProfile = () => {
   const id = JSON.parse(localStorage.getItem('user'))?.id;

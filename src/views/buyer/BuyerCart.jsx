@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Container,
@@ -12,65 +12,56 @@ import {
   TextField,
 } from '@mui/material';
 import { Add, Remove, Delete } from '@mui/icons-material';
-import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import BuyerHeader from '../../components/common/BuyerHeader';
 import BuyerFooter from '../../components/common/BuyerFooter';
-import {
-  fetchBuyerCartAction,
-  updateBuyerCartAction,
-  deleteBuyerCartAction,
-  deleteBuyerIdCartAction
-} from '../../store/actions/buyer/buyerCartAction';
-import { fetchProductsAction } from '../../store/actions/productActions';
-import { placeBuyerOrderAction } from '../../store/actions/buyer/buyerOrderAction';
+
+import useBuyerCart from '@/hooks/buyer/useBuyerCart';
 
 const BuyerCart = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { cart = [], loading, error } = useSelector((state) => state.buyerCart);
-  const { products = [] } = useSelector((state) => state.product);
+  const {
+    cart,
+    loading,
+    error,
+    products,
+    fetchCart,
+    updateCartItem,
+    deleteCartItem,
+    deleteCartByBuyerId,
+    placeOrder,
+  } = useBuyerCart();
 
   const [showPlaceOrder, setShowPlaceOrder] = useState(false);
   const [address, setAddress] = useState('');
   const [placingOrder, setPlacingOrder] = useState(false);
 
-  useEffect(() => {
-    dispatch(fetchBuyerCartAction());
-    dispatch(fetchProductsAction());
-  }, [dispatch]);
-
   const handleUpdateQuantity = (item, delta) => {
     const newQty = item.quantity + delta;
 
     if (newQty < 1) {
-      dispatch(deleteBuyerCartAction(item.id)).then(() =>
-        dispatch(fetchBuyerCartAction())
-      );
+      deleteCartItem(item.id).then(fetchCart);
     } else {
-      dispatch(updateBuyerCartAction({ id: item.id, quantity: newQty })).then(() =>
-        dispatch(fetchBuyerCartAction())
-      );
+      updateCartItem({ id: item.id, quantity: newQty }).then(fetchCart);
     }
   };
 
   const handleDeleteItem = (id) => {
-    dispatch(deleteBuyerCartAction(id)).then(() => dispatch(fetchBuyerCartAction()));
+    deleteCartItem(id).then(fetchCart);
   };
 
   const handleCardClick = (productId) => {
     navigate(`/buyer-dashboard/product-details/${productId}`);
   };
 
-  const calculateTotal = () => {
-    return cart.reduce((total, item) => {
+  const calculateTotal = () =>
+    cart.reduce((total, item) => {
       const product = products.find((p) => p.id === item.product_id);
       if (!product || isNaN(Number(product.price))) return total;
       return total + item.quantity * Number(product.price);
     }, 0);
-  };
 
   const handlePlaceOrderClick = () => {
     setShowPlaceOrder(true);
@@ -94,11 +85,11 @@ const BuyerCart = () => {
 
     setPlacingOrder(true);
     try {
-      const res = await dispatch(placeBuyerOrderAction(orderData));
+      const res = await placeOrder(orderData);
       const buyerId = JSON.parse(localStorage.getItem('user'))?.id;
 
       if (buyerId) {
-        await dispatch(deleteBuyerIdCartAction(buyerId));
+        await deleteCartByBuyerId(buyerId);
       }
 
       if (res.type === 'buyerOrder/placeBuyerOrder/fulfilled') {
@@ -155,7 +146,7 @@ const BuyerCart = () => {
                   if (Array.isArray(parsed) && parsed.length > 0) {
                     imageUrl = parsed[0]?.image_url || imageUrl;
                   }
-                } catch { }
+                } catch {}
 
                 return (
                   <Card

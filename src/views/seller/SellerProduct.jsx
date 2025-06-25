@@ -5,9 +5,9 @@ import {
     addProductAction,
     deleteProductAction,
     updateProductAction,
-} from '../../store/actions/seller/sellerProductAction';
-import { fetchAllCategoriesAction } from '../../store/actions/seller/sellerCategoryAction';
-import { fetchAllSubCategoriesByIdAction } from '../../store/actions/seller/sellerSubCategoryAction';
+} from '../../store/actions/seller/seller-product.action';
+import { fetchAllCategoriesAction } from '../../store/actions/seller/seller-category.action';
+import { fetchAllSubCategoriesByIdAction } from '../../store/actions/seller/seller-sub-category.action';
 
 import {
     Box,

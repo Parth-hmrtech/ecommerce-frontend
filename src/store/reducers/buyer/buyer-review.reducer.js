@@ -4,7 +4,7 @@ import {
   addBuyerReviewAction,
   updateBuyerReviewAction,
   deleteBuyerReviewAction,
-} from '../../actions/buyer/buyerReviewAction';
+} from '../../actions/buyer/buyer-review.action';
 
 const buyerReviewSlice = createSlice({
   name: 'buyerReview',

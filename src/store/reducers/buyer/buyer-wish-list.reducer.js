@@ -4,7 +4,7 @@ import {
   fetchBuyerWishlistAction,
   addToBuyerWishlistAction,
   deleteFromBuyerWishlistAction,
-} from '../../actions/buyer/buyerWishlistAction';
+} from '../../actions/buyer/buyer-wishlist.action';
 
 const buyerWishlistSlice = createSlice({
   name: 'buyerWishlist',

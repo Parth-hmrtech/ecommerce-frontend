@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchProductsAction } from '../actions/productActions';
+import { fetchProductsAction } from '../actions/product.actions';
 
 const productSlice = createSlice({
   name: 'products',

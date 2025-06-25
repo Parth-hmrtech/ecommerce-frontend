@@ -10,6 +10,7 @@ export default defineConfig({
         __dirname,
         'node_modules/@mui/material/Unstable_Grid2'
       ),
+      '@': path.resolve(__dirname, './src'),
     },
   },
 });

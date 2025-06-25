@@ -23,7 +23,7 @@ import Footer from '../../components/common/Footer';
 import {
     fetchAllProductsAction,
     uploadProductImageAction,
-} from '../../store/actions/seller/sellerProductAction';
+} from '../../store/actions/seller/seller-product.action';
 
 const NextArrow = ({ onClick }) => (
     <Box

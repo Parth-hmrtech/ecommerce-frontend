@@ -11,20 +11,22 @@ import {
   MenuItem,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { forgotPasswordAction } from '../../store/actions/auth/authActions';
-import { resetAuthState } from '../../store/reducers/auth/authReducer';
+import useAuthentication from '@/hooks/auth/useAuthentication';
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const {
+    forgotPassword,
+    resetAuth,
+    loading,
+    error,
+    message
+  } = useAuthentication();
 
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('');
   const [emailError, setEmailError] = useState('');
   const [roleError, setRoleError] = useState('');
-
-  const { loading, error, message } = useSelector((state) => state.auth);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -47,23 +49,23 @@ const ForgotPassword = () => {
 
     if (!isValid) return;
 
-    dispatch(forgotPasswordAction({ email, role }));
+    forgotPassword({ email, role });
   };
 
   useEffect(() => {
     return () => {
-      dispatch(resetAuthState());
+      resetAuth();
     };
-  }, [dispatch]);
+  }, [resetAuth]);
 
   useEffect(() => {
     if (message) {
       const timer = setTimeout(() => {
-        dispatch(resetAuthState());
+        resetAuth();
       }, 1000);
       return () => clearTimeout(timer);
     }
-  }, [message, dispatch]);
+  }, [message, resetAuth]);
 
   return (
     <Box

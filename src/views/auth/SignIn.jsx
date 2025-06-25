@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   TextField,
@@ -19,16 +19,19 @@ import {
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { signInUserAction } from '../../store/actions/auth/authActions';
-import { resetAuthState } from '../../store/reducers/auth/authReducer';
-import ecommerceLogo from '../../assets/images/ecommerce-logo.png';
+
+import useAuthentication from '@/hooks/auth/useAuthentication';
+import ecommerceLogo from '@/assets/images/ecommerce-logo.png';
 
 const SignIn = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  const { user, loading, error, success } = useSelector((state) => state.auth);
+  const {
+    user,
+    loading,
+    error,
+    success,
+    signIn,
+  } = useAuthentication();
 
   const [formData, setFormData] = useState({
     email: '',
@@ -37,7 +40,6 @@ const SignIn = () => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
-
   const [fieldErrors, setFieldErrors] = useState({
     email: '',
     password: '',
@@ -54,11 +56,7 @@ const SignIn = () => {
         navigate('/');
       }
     }
-
-    return () => {
-      dispatch(resetAuthState());
-    };
-  }, [success, user, navigate, dispatch]);
+  }, [success, user, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -73,7 +71,6 @@ const SignIn = () => {
       ...prev,
       [field]: message,
     }));
-
     setTimeout(() => {
       setFieldErrors((prev) => ({
         ...prev,
@@ -104,7 +101,7 @@ const SignIn = () => {
 
     if (hasError) return;
 
-    dispatch(signInUserAction(formData));
+    signIn(formData);
   };
 
   return (
@@ -195,7 +192,6 @@ const SignIn = () => {
               </Link>
             </Box>
 
-
             <Button
               variant="contained"
               fullWidth
@@ -207,10 +203,9 @@ const SignIn = () => {
             >
               {loading ? 'Logging in...' : 'Login'}
             </Button>
-
-
           </Stack>
         </form>
+
         <Typography variant="body2" align="center" mt={2}>
           Don’t have an account yet?{' '}
           <Link component="button" onClick={() => navigate('/signup')}>

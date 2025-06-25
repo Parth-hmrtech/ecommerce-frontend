@@ -18,9 +18,8 @@ import {
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { signUpUserAction } from '../../store/actions/auth/authActions';
-import { resetAuthState } from '../../store/reducers/auth/authReducer';
+import useAuthentication from '@/hooks/auth/useAuthentication';
+import { InputAdornment } from '@mui/material';
 
 const PasswordField = ({ label, name, value, onChange, show, toggleShow, error, helperText }) => (
   <TextField
@@ -44,8 +43,7 @@ const PasswordField = ({ label, name, value, onChange, show, toggleShow, error, 
 
 const SignUp = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { loading, error, success } = useSelector((state) => state.auth);
+  const { signUp, loading, error, success, resetAuth } = useAuthentication();
 
   const [formData, setFormData] = useState({
     first_name: '',
@@ -101,15 +99,15 @@ const SignUp = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validate()) return;
-    dispatch(signUpUserAction(JSON.stringify(formData)));
+    signUp(formData);
   };
 
   useEffect(() => {
     if (success) {
       navigate('/signin');
-      dispatch(resetAuthState());
+      resetAuth();
     }
-  }, [success, navigate, dispatch]);
+  }, [success, navigate, resetAuth]);
 
   return (
     <Box minHeight="100vh" display="flex" justifyContent="center" alignItems="center" bgcolor="#f9f9f9" px={2}>

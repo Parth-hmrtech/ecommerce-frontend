@@ -11,20 +11,22 @@ import {
   IconButton,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { useDispatch, useSelector } from 'react-redux';
 
 import BuyerHeader from '../../components/common/BuyerHeader';
 import BuyerFooter from '../../components/common/BuyerFooter';
 
-import {
-  fetchBuyerProfileAction,
-  updateBuyerProfileAction,
-  resetBuyerPasswordAction,
-} from '../../store/actions/buyer/buyerProfileAction';
+import useBuyerProfile from '@/hooks/buyer/useBuyerProfile';
 
 const BuyerProfile = () => {
   const id = JSON.parse(localStorage.getItem('user'))?.id;
-  const dispatch = useDispatch();
+
+  const {
+    profile,
+    loading,
+    fetchProfile,
+    updateProfile,
+    resetPassword,
+  } = useBuyerProfile();
 
   const [formData, setFormData] = useState(null);
   const [formErrors, setFormErrors] = useState({});
@@ -43,11 +45,9 @@ const BuyerProfile = () => {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
 
-  const { profile, loading } = useSelector((state) => state.buyerProfile);
-
   useEffect(() => {
-    dispatch(fetchBuyerProfileAction(id));
-  }, [dispatch, id]);
+    fetchProfile(id);
+  }, [fetchProfile, id]);
 
   useEffect(() => {
     if (profile?.user) {
@@ -97,7 +97,7 @@ const BuyerProfile = () => {
     setSuccessMsg('');
     setUpdating(true);
 
-    dispatch(updateBuyerProfileAction({ id, data: formData }))
+    updateProfile({ id, data: formData })
       .unwrap()
       .then(() => {
         setSuccessMsg('Profile updated successfully');
@@ -120,18 +120,18 @@ const BuyerProfile = () => {
     setPasswordResetMessage('');
     setPasswordResetSeverity('error');
 
-    dispatch(resetBuyerPasswordAction({ oldPassword, newPassword }))
+    resetPassword({ oldPassword, newPassword })
       .unwrap()
       .then((res) => {
         const message =
           res?.data?.data?.message || res?.data?.message || res?.message || '';
 
-        const isErrorMessage =
+        const isError =
           message.toLowerCase().includes('incorrect') ||
           message.toLowerCase().includes('not match') ||
           message.toLowerCase().includes('wrong');
 
-        if (isErrorMessage) {
+        if (isError) {
           setPasswordResetSeverity('warning');
         } else {
           setPasswordResetSeverity('success');
@@ -166,7 +166,7 @@ const BuyerProfile = () => {
           <CircularProgress />
         ) : (
           <Paper sx={{ p: 4, maxWidth: '100%', display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-            {/* Update Profile Section */}
+            {/* Update Profile */}
             <Box sx={{ flex: 1, minWidth: 300 }}>
               <Typography variant="h6" gutterBottom>
                 Update Profile
@@ -227,7 +227,7 @@ const BuyerProfile = () => {
               </Button>
             </Box>
 
-            {/* Reset Password Section */}
+            {/* Reset Password */}
             <Box sx={{ flex: 1, minWidth: 300 }}>
               <Typography variant="h6" gutterBottom>
                 Reset Password

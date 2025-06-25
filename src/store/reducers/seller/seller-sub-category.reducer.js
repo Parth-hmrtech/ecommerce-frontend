@@ -5,7 +5,7 @@ import {
   updateSubCategoryAction,
   deleteSubCategoryAction,
   fetchAllSubCategoriesByIdAction,
-} from '../../actions/seller/sellerSubCategoryAction';
+} from '../../actions/seller/seller-sub-category.action';
 
 const subCategorySlice = createSlice({
   name: 'subcategories',

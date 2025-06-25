@@ -1,66 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Box,
-  Typography,
-  Container,
-  CircularProgress,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  IconButton,
-  Collapse,
-  TableContainer,
-  Paper,
-  Button,
-  TextField,
-  Modal,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Snackbar,
-  Alert,
-  Rating
+  Box, Typography, Container, CircularProgress, Table, TableBody, TableCell, TableHead, TableRow,
+  IconButton, Collapse, TableContainer, Paper, Button, TextField, Modal, FormControl,
+  InputLabel, Select, MenuItem, Snackbar, Alert, Rating,
 } from '@mui/material';
-
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
-import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 
 import BuyerHeader from '../../components/common/BuyerHeader';
 import BuyerFooter from '../../components/common/BuyerFooter';
 
-import {
-  fetchBuyerOrdersAction,
-  deleteBuyerOrderAction,
-  updateBuyerOrderAddressAction,
-} from '../../store/actions/buyer/buyerOrderAction';
-
-import {
-  buyerCheckoutPaymentAction,
-  buyerVerifyPaymentAction,
-  buyerCheckPaymentStatusAction,
-} from '../../store/actions/buyer/buyerPaymentAction';
-
-import { fetchProductsAction } from '../../store/actions/productActions';
-
-import {
-  addBuyerReviewAction,
-  updateBuyerReviewAction,
-  deleteBuyerReviewAction,
-  fetchBuyerReviewByProductIdAction,
-} from '../../store/actions/buyer/buyerReviewAction';
+import { fetchProductsAction } from '@/store/actions/product.actions';
+import useBuyerOrder from '@/hooks/buyer/useBuyerOrder';
 
 const BuyerOrders = () => {
-  const dispatch = useDispatch();
   const location = useLocation();
+  const dispatch = useDispatch();
 
-  const { orders = [], loading, error } = useSelector((state) => state.buyerOrder);
+  const {
+    orders,
+    loading,
+    error,
+    buyerCheckPayments,
+    reviewResponses,
+    fetchOrders,
+    deleteOrder,
+    updateOrderAddress,
+    fetchPaymentStatus,
+    checkoutPayment,
+    verifyPayment,
+    addReview,
+    updateReview,
+    deleteReview,
+    fetchReviewsByProductId,
+  } = useBuyerOrder();
+
   const { products = [] } = useSelector((state) => state.product);
-  const { buyerCheckPayments = [] } = useSelector((state) => state.buyerPayment);
-  const { items: reviewResponses = [] } = useSelector((state) => state.buyerReview);
 
   const [openRows, setOpenRows] = useState({});
   const [editAddressRow, setEditAddressRow] = useState(null);
@@ -74,14 +50,11 @@ const BuyerOrders = () => {
   const [reviewInputs, setReviewInputs] = useState({});
 
   useEffect(() => {
-    dispatch(fetchBuyerOrdersAction());
     dispatch(fetchProductsAction());
-    dispatch(buyerCheckPaymentStatusAction());
   }, [dispatch, location]);
 
   useEffect(() => {
     const uniqueProductIds = new Set();
-
     orders.forEach((order) => {
       order.order_items?.forEach((item) => {
         if (item.product_id) {
@@ -91,19 +64,18 @@ const BuyerOrders = () => {
     });
 
     uniqueProductIds.forEach((productId) => {
-      dispatch(fetchBuyerReviewByProductIdAction(productId));
+      fetchReviewsByProductId(productId);
     });
-  }, [orders, dispatch]);
+  }, [orders]);
 
   const handleToggleRow = (orderId) => {
     setOpenRows((prev) => ({ ...prev, [orderId]: !prev[orderId] }));
   };
 
-  const handleDelete = (orderId) => {
-    dispatch(deleteBuyerOrderAction(orderId)).then(() => {
-      dispatch(fetchBuyerOrdersAction());
-      dispatch(buyerCheckPaymentStatusAction());
-    });
+  const handleDelete = async (orderId) => {
+    await deleteOrder(orderId);
+    fetchOrders();
+    fetchPaymentStatus();
   };
 
   const handleEditAddress = (orderId, currentAddress) => {
@@ -111,12 +83,11 @@ const BuyerOrders = () => {
     setNewAddress(currentAddress);
   };
 
-  const handleSaveAddress = (orderId) => {
+  const handleSaveAddress = async (orderId) => {
     if (!newAddress.trim()) return alert('Address cannot be empty.');
-    dispatch(updateBuyerOrderAddressAction({ orderId, delivery_address: newAddress })).then(() => {
-      setEditAddressRow(null);
-      dispatch(fetchBuyerOrdersAction());
-    });
+    await updateOrderAddress({ orderId, delivery_address: newAddress });
+    setEditAddressRow(null);
+    fetchOrders();
   };
 
   const getProductName = (product_id) => {
@@ -138,29 +109,28 @@ const BuyerOrders = () => {
     const totalAmount = calculateOrderTotal(selectedOrder?.order_items || []);
     const transactionId = `txn_${Date.now()}_${selectedOrder.id}`;
     setPayingOrderId(selectedOrder.id);
+
     try {
-      await dispatch(
-        buyerCheckoutPaymentAction({
-          order_id: selectedOrder.id,
-          seller_id: selectedOrder.seller_id,
-          amount: totalAmount,
-          payment_method: paymentMethod,
-          transaction_id: transactionId,
-        })
-      );
-      setOpenSnackbar(true);
+      await checkoutPayment({
+        order_id: selectedOrder.id,
+        seller_id: selectedOrder.seller_id,
+        amount: totalAmount,
+        payment_method: paymentMethod,
+        transaction_id: transactionId,
+      });
       setSuccessMessage(`Checkout initiated for Order #${selectedOrder.id}`);
-      await dispatch(
-        buyerVerifyPaymentAction({
-          status: 'success',
-          transaction_id: transactionId,
-        })
-      );
+      setOpenSnackbar(true);
+
+      await verifyPayment({
+        status: 'success',
+        transaction_id: transactionId,
+      });
+
       setSuccessMessage(`Payment verified for Order #${selectedOrder.id}`);
-      await dispatch(fetchBuyerOrdersAction());
-      await dispatch(buyerCheckPaymentStatusAction());
       setPaymentModalOpen(false);
       setSelectedOrder(null);
+      fetchOrders();
+      fetchPaymentStatus();
     } catch (error) {
       console.error('Payment error:', error);
       setSuccessMessage(`Payment failed for Order #${selectedOrder.id}`);
@@ -187,32 +157,29 @@ const BuyerOrders = () => {
 
   const handleAddReview = async (order, productId) => {
     const { comment, rating } = reviewInputs[order.id] || {};
-    if (!comment || !rating || !productId) return alert('Please enter rating, comment, and product');
-    await dispatch(
-      addBuyerReviewAction({
-        order_id: order.id,
-        product_id: productId,
-        buyer_id: order.buyer_id,
-        seller_id: order.seller_id,
-        rating,
-        comment,
-      })
-    );
+    if (!comment || !rating) return alert('Please enter rating and comment');
+    await addReview({
+      order_id: order.id,
+      product_id: productId,
+      buyer_id: order.buyer_id,
+      seller_id: order.seller_id,
+      rating,
+      comment,
+    });
     setReviewInputs((prev) => ({ ...prev, [order.id]: {} }));
-    dispatch(fetchBuyerReviewByProductIdAction(productId));
+    fetchReviewsByProductId(productId);
   };
 
   const handleUpdateReview = async (reviewId, orderId) => {
     const { rating, comment, product_id } = reviewInputs[orderId] || {};
-
     if (!reviewId || !rating || !comment) {
-      alert('Please select a review to edit and fill in all details.');
+      alert('Please fill in all review details.');
       return;
     }
 
     try {
-      await dispatch(updateBuyerReviewAction({ id: reviewId, rating, comment }));
-      dispatch(fetchBuyerReviewByProductIdAction(product_id));
+      await updateReview({ id: reviewId, rating, comment });
+      fetchReviewsByProductId(product_id);
     } catch (error) {
       console.error('Failed to update review:', error);
       alert('Something went wrong while updating the review.');
@@ -220,10 +187,9 @@ const BuyerOrders = () => {
   };
 
   const handleDeleteReview = async (reviewId, productId) => {
-    await dispatch(deleteBuyerReviewAction(reviewId));
-    await dispatch(fetchBuyerReviewByProductIdAction(productId));
+    await deleteReview(reviewId);
+    fetchReviewsByProductId(productId);
   };
-
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#f4f6f8' }}>

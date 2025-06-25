@@ -1,9 +1,10 @@
 import React from "react";
-import AppRoutes from "./routes"; // Assuming ./routes/index.jsx
+import { RouterProvider } from "react-router-dom";
+import AppRoutes from "./routes"; // This is the object created by createBrowserRouter
 import './App.css';
 
 function App() {
-  return <AppRoutes />;
+  return <RouterProvider router={AppRoutes} />;
 }
 
 export default App;

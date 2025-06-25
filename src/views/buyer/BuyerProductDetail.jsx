@@ -1,26 +1,5 @@
-// src/views/buyer/BuyerProductDetail.jsx
-
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-
-import {
-    fetchBuyerCartAction,
-    addToBuyerCartAction,
-    updateBuyerCartAction,
-    deleteBuyerCartAction,
-} from '../../store/actions/buyer/buyerCartAction';
-import { fetchBuyerProductByIdAction } from '../../store/actions/buyer/buyerProductAction';
-import {
-    fetchBuyerWishlistAction,
-    addToBuyerWishlistAction,
-} from '../../store/actions/buyer/buyerWishlistAction';
-import {
-    fetchBuyerReviewByProductIdAction,
-    updateBuyerReviewAction,
-    deleteBuyerReviewAction,
-} from '../../store/actions/buyer/buyerReviewAction';
-
 import {
     Box,
     Typography,
@@ -37,105 +16,91 @@ import {
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { Add, Remove } from '@mui/icons-material';
-
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-import BuyerHeader from '../../components/common/BuyerHeader';
-import BuyerFooter from '../../components/common/BuyerFooter';
+import BuyerHeader from '@/components/common/BuyerHeader';
+import BuyerFooter from '@/components/common/BuyerFooter';
+import useBuyerProductDetail from '@/hooks/buyer/useBuyerProductDetail';
+
 const NextArrow = ({ onClick }) => (
-  <Box
-    onClick={onClick}
-    sx={{
-      position: 'absolute',
-      top: '50%',
-      right: -20,
-      transform: 'translateY(-50%)',
-      width: 36,
-      height: 60,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      bgcolor: 'white',
-      borderTopLeftRadius: '30px',
-      borderBottomLeftRadius: '30px',
-      boxShadow: 3,
-      cursor: 'pointer',
-      zIndex: 1,
-      transition: 'box-shadow 0.3s ease-in-out',
-      '&:hover': {
-        boxShadow: '0 0 20px rgba(0, 123, 255, 0.4)',
-      },
-    }}
-  >
-    ❯
-  </Box>
+    <Box
+        onClick={onClick}
+        sx={{
+            position: 'absolute',
+            top: '50%',
+            right: -20,
+            transform: 'translateY(-50%)',
+            width: 36,
+            height: 60,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            bgcolor: 'white',
+            borderTopLeftRadius: '30px',
+            borderBottomLeftRadius: '30px',
+            boxShadow: 3,
+            cursor: 'pointer',
+            zIndex: 1,
+        }}
+    >
+        ❯
+    </Box>
 );
 
 const PrevArrow = ({ onClick }) => (
-  <Box
-    onClick={onClick}
-    sx={{
-      position: 'absolute',
-      top: '50%',
-      left: -20,
-      transform: 'translateY(-50%)',
-      width: 36,
-      height: 60,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      bgcolor: 'white',
-      borderTopRightRadius: '30px',
-      borderBottomRightRadius: '30px',
-      boxShadow: 3,
-      cursor: 'pointer',
-      zIndex: 1,
-      transition: 'box-shadow 0.3s ease-in-out',
-      '&:hover': {
-        boxShadow: '0 0 20px rgba(0, 123, 255, 0.4)',
-      },
-    }}
-  >
-    ❮
-  </Box>
+    <Box
+        onClick={onClick}
+        sx={{
+            position: 'absolute',
+            top: '50%',
+            left: -20,
+            transform: 'translateY(-50%)',
+            width: 36,
+            height: 60,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            bgcolor: 'white',
+            borderTopRightRadius: '30px',
+            borderBottomRightRadius: '30px',
+            boxShadow: 3,
+            cursor: 'pointer',
+            zIndex: 1,
+        }}
+    >
+        ❮
+    </Box>
 );
-
 
 const BuyerProductDetail = () => {
     const { productId } = useParams();
-    const dispatch = useDispatch();
-
-    const { product, loading, error } = useSelector((state) => state.buyerProduct);
-    const { cart = [] } = useSelector((state) => state.buyerCart);
-    const { items: wishlist = [] } = useSelector((state) => state.buyerWishlist);
-    const { items: reviewResponses = [] } = useSelector((state) => state.buyerReview);
+    const {
+        product,
+        loading,
+        error,
+        cart,
+        fetchCart,
+        wishlist,
+        fetchReviews,
+        reviewResponses,
+        addToCart,
+        updateCart,
+        deleteCartItem,
+        addToWishlist,
+        updateReview,
+        deleteReview,
+    } = useBuyerProductDetail(productId);
 
     const [wishlisted, setWishlisted] = useState(false);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
-
     const [editingReviewId, setEditingReviewId] = useState(null);
     const [editedRating, setEditedRating] = useState(0);
     const [editedComment, setEditedComment] = useState('');
 
     useEffect(() => {
-        if (productId) {
-            dispatch(fetchBuyerProductByIdAction(productId));
-            dispatch(fetchBuyerCartAction());
-            dispatch(fetchBuyerWishlistAction());
-        }
-    }, [dispatch, productId]);
-
-    useEffect(() => {
-        if (product?.id) {
-            dispatch(fetchBuyerReviewByProductIdAction(product.id));
-        }
-    }, [dispatch, product?.id]);
-
-    useEffect(() => {
-        const alreadyWishlisted = wishlist.some((item) => item.product_id === product?.id);
-        setWishlisted(alreadyWishlisted);
+        setWishlisted(wishlist.some((item) => item.product_id === product?.id));
     }, [wishlist, product]);
 
     const getImages = (imageString) => {
@@ -153,40 +118,35 @@ const BuyerProductDetail = () => {
         }
     };
 
-    const handleUpdateQuantity = (item, delta) => {
+    const handleUpdateQuantity = async (item, delta) => {
         const newQty = item.quantity + delta;
 
         if (newQty < 1) {
-            dispatch(deleteBuyerCartAction(item.id)).then(() =>
-                dispatch(fetchBuyerCartAction())
-            );
+            await deleteCartItem(item.id);
         } else {
-            dispatch(updateBuyerCartAction({ id: item.id, quantity: newQty })).then(() =>
-                dispatch(fetchBuyerCartAction())
-            );
+            await updateCart({ id: item.id, quantity: newQty });
         }
+
+        fetchCart(); // ✅ update cart in Redux + UI
     };
 
     const handleAddToCart = () => {
         const user = JSON.parse(localStorage.getItem('user'));
         if (user?.id && product?.id) {
-            dispatch(addToBuyerCartAction({
+            addToCart({
                 buyer_id: user.id,
                 product_id: product.id,
                 quantity: 1,
-            })).then(() => dispatch(fetchBuyerCartAction()));
+            });
         }
     };
 
     const handleWishlistClick = () => {
         const user = JSON.parse(localStorage.getItem('user'));
-        const buyer_id = user?.id;
-
-        if (product && buyer_id) {
-            dispatch(addToBuyerWishlistAction({ buyer_id, product_id: product.id })).then(() => {
-                setWishlisted(true);
-                setSnackbarOpen(true);
-            });
+        if (user?.id && product?.id) {
+            addToWishlist({ buyer_id: user.id, product_id: product.id });
+            setWishlisted(true);
+            setSnackbarOpen(true);
         }
     };
 
@@ -196,23 +156,19 @@ const BuyerProductDetail = () => {
         setEditedComment(review.comment);
     };
 
-    const handleUpdateReview = (reviewId) => {
-        dispatch(
-            updateBuyerReviewAction({
-                id: reviewId,
-                rating: editedRating,
-                comment: editedComment,
-            })
-        ).then(() => {
-            setEditingReviewId(null);
-            dispatch(fetchBuyerReviewByProductIdAction(product.id));
+    const handleUpdateReview = async (reviewId) => {
+        await updateReview({
+            id: reviewId,
+            rating: editedRating,
+            comment: editedComment,
         });
-    };
 
-    const handleDeleteReview = (reviewId) => {
-        dispatch(deleteBuyerReviewAction(reviewId)).then(() => {
-            dispatch(fetchBuyerReviewByProductIdAction(product.id));
-        });
+        setEditingReviewId(null);
+        fetchReviews(product.id);
+    };
+    const handleDeleteReview = async (reviewId) => {
+        await deleteReview(reviewId);
+        fetchReviews(product.id);
     };
 
     const images = getImages(product?.image_urls || product?.image_url);
@@ -231,7 +187,6 @@ const BuyerProductDetail = () => {
         nextArrow: <NextArrow />,
         prevArrow: <PrevArrow />,
     };
-
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#f4f6f8' }}>
             <BuyerHeader />

@@ -5,7 +5,7 @@ import {
     addCategoryAction,
     deleteCategoryAction,
     updateCategoryAction,
-} from '../../store/actions/seller/sellerCategoryAction';
+} from '../../store/actions/seller/seller-category.action';
 
 import {
     Box,

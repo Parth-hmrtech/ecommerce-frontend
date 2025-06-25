@@ -5,7 +5,7 @@ import {
   updateBuyerCartAction,
   deleteBuyerCartAction,
   deleteBuyerIdCartAction, 
-} from '../../actions/buyer/buyerCartAction';
+} from '../../actions/buyer/buyer-cart.action';
 
 const buyerCartSlice = createSlice({
   name: 'buyerCart',

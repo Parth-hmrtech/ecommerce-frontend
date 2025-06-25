@@ -19,13 +19,13 @@ import Header from '../../components/common/Header';
 import Footer from '../../components/common/Footer';
 import Sidebar from '../../components/common/Sidebar';
 
-import { fetchSellerReviewsAction } from '../../store/actions/seller/sellerReviewAction';
-import { fetchAllProductsAction } from '../../store/actions/seller/sellerProductAction';
+import { fetchSellerReviewsAction } from '../../store/actions/seller/seller-review.action';
+import { fetchAllProductsAction } from '../../store/actions/seller/seller-product.action';
 import {
   fetchSellerPaymentsAction,
   fetchSellerEarningsAction,
-} from '../../store/actions/seller/sellerPaymentAction';
-import { fetchSellerOrdersAction } from '../../store/actions/seller/sellerOrderAction'; 
+} from '../../store/actions/seller/seller-payment.action';
+import { fetchSellerOrdersAction } from '../../store/actions/seller/seller-order.action'; 
 
 const SellerDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);

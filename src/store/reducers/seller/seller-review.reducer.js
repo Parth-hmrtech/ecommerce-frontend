@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchSellerReviewsAction, deleteSellerReviewAction } from '../../actions/seller/sellerReviewAction';
+import { fetchSellerReviewsAction, deleteSellerReviewAction } from '../../actions/seller/seller-review.action';
 
 const sellerReviewsSlice = createSlice({
   name: 'sellerReviews',

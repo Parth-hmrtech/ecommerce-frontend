@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import {
   fetchSellerPaymentsAction,
   fetchSellerEarningsAction,
-} from '../../actions/seller/sellerPaymentAction';
+} from '../../actions/seller/seller-payment.action';
 
 const sellerPaymentSlice = createSlice({
   name: 'sellerPayments',

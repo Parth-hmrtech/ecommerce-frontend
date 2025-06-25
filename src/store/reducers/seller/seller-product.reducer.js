@@ -5,7 +5,7 @@ import {
   updateProductAction,
   deleteProductAction,
   uploadProductImageAction,
-} from '../../actions/seller/sellerProductAction';
+} from '../../actions/seller/seller-product.action';
 
 const initialState = {
   list: [],

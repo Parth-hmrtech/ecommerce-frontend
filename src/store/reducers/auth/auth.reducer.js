@@ -3,7 +3,7 @@ import {
   signUpUserAction,
   signInUserAction,
   forgotPasswordAction,
-} from '../../actions/auth/authActions';
+} from '../../actions/auth/auth.actions';
 
 const authSlice = createSlice({
   name: 'auth',

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   Box,
   Container,
@@ -10,40 +10,26 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { Delete } from '@mui/icons-material';
-import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import BuyerHeader from '../../components/common/BuyerHeader';
 import BuyerFooter from '../../components/common/BuyerFooter';
-import {
-  fetchBuyerWishlistAction,
-  deleteFromBuyerWishlistAction,
-} from '../../store/actions/buyer/buyerWishlistAction';
-import { fetchProductsAction } from '../../store/actions/productActions';
+import useBuyerWishlist from '../../hooks/buyer/useBuyerWiahlist';
 
 const BuyerWishlist = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { items: wishlist = [], loading, error } = useSelector((state) => state.buyerWishlist);
-  const { products = [] } = useSelector((state) => state.product);
-
-  useEffect(() => {
-    dispatch(fetchBuyerWishlistAction());
-    dispatch(fetchProductsAction());
-  }, [dispatch]);
-
-  const handleDelete = (id) => {
-    dispatch(deleteFromBuyerWishlistAction(id)).then(() => dispatch(fetchBuyerWishlistAction()));
-  };
+  const {
+    wishlist,
+    wishlistLoading,
+    wishlistError,
+    products,
+    deleteFromWishlist,
+  } = useBuyerWishlist();
 
   const handleCardClick = (productId) => {
     navigate(`/buyer-dashboard/product-details/${productId}`);
   };
-
-  const uniqueWishlist = Array.from(
-    new Map(wishlist.map((item) => [item.product_id, item])).values()
-  );
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#f4f6f8' }}>
@@ -54,13 +40,13 @@ const BuyerWishlist = () => {
           My Wishlist
         </Typography>
 
-        {loading ? (
+        {wishlistLoading ? (
           <Box display="flex" justifyContent="center" mt={4}>
             <CircularProgress />
           </Box>
-        ) : error ? (
-          <Typography color="error">{error}</Typography>
-        ) : uniqueWishlist.length === 0 ? (
+        ) : wishlistError ? (
+          <Typography color="error">{wishlistError}</Typography>
+        ) : wishlist.length === 0 ? (
           <Typography>No items in wishlist.</Typography>
         ) : (
           <Box
@@ -73,7 +59,7 @@ const BuyerWishlist = () => {
             }}
             gap={3}
           >
-            {uniqueWishlist.map((item) => {
+            {wishlist.map((item) => {
               const product = products.find((p) => p.id === item.product_id);
               if (!product) return null;
 
@@ -117,7 +103,7 @@ const BuyerWishlist = () => {
                       <IconButton
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleDelete(item.product_id);
+                          deleteFromWishlist(item.product_id);
                         }}
                         color="error"
                       >

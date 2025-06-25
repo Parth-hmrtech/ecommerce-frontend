@@ -23,7 +23,7 @@ import Sidebar from '../../components/common/Sidebar';
 import {
     fetchSellerPaymentsAction,
     fetchSellerEarningsAction,
-} from '../../store/actions/seller/sellerPaymentAction';
+} from '../../store/actions/seller/seller-payment.action';
 
 const SellerPayments = () => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
