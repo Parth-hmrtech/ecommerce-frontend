@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:3009/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -15,10 +15,11 @@ export const apiRequest = async ({ method, url, headers = {}, data = null, param
       headers,
       params,
     };
+    console.log(url);
+  if (['POST', 'PUT'] && data) {
+  config.data = data;
+}
 
-    if (['post', 'put', 'patch'].includes(method.toLowerCase()) && data) {
-      config.data = data;
-    }
 
     const response = await axiosInstance(config);
     return response;
