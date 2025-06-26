@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: 'http://localhost:3009/api',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -10,7 +10,7 @@ const axiosInstance = axios.create({
 export const apiRequest = async ({ method, url, headers = {}, data = null, params = null }) => {
   try {
     const config = {
-      method: method,
+      method: method.toLowerCase(),
       url,
       headers,
       params,
