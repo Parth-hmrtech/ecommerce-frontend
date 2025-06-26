@@ -8,9 +8,7 @@ const fetchProductsAction = createAsyncThunk(
       const response = await apiRequest({
         method: 'GET',
         url: '/buyer/products',
-      });
-      console.log(response);
-      
+      });      
       return fulfillWithValue(response?.data?.data || []);
     } catch (error) {
       return rejectWithValue('Something is wrong here');
