@@ -10,7 +10,7 @@ import { resetAuthState } from '@/store/reducers/auth/auth.reducer';
 const useAuthentication = () => {
   const dispatch = useDispatch();
 
-  const { user, loading, error, success, message } = useSelector((state) => state.auth);
+  const { user, loading, error, message } = useSelector((state) => state.auth);
 
   const signUp = (data) => {
     dispatch(signUpUserAction(JSON.stringify(data)));
@@ -38,7 +38,6 @@ const useAuthentication = () => {
     user,
     loading,
     error,
-    success,
     message,
     signUp,
     signIn,

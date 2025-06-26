@@ -29,7 +29,6 @@ const SignIn = () => {
     user,
     loading,
     error,
-    success,
     signIn,
   } = useAuthentication();
 
@@ -60,7 +59,7 @@ const SignIn = () => {
         navigate('/');
       }
     }
-  }, [success, user, navigate]);
+  }, [user, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
