@@ -10,15 +10,16 @@ const axiosInstance = axios.create({
 export const apiRequest = async ({ method, url, headers = {}, data = null, params = null }) => {
   try {
     const config = {
-      method: method.toLowerCase(),
+      method: method,
       url,
       headers,
       params,
     };
-    console.log(url);
-  if (['POST', 'PUT'] && data) {
-  config.data = data;
-}
+
+    if ((method === 'POST' || method === 'PUT') && data) {
+      config.data = data;
+    }
+
 
 
     const response = await axiosInstance(config);

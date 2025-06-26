@@ -10,11 +10,11 @@ const initialState = {
   error: false,
 };
 
-const buyerSlice = createSlice({
-  name: 'buyer',
+const buyerCategorySlice = createSlice({
+  name: 'buyerCategory',
   initialState,
   reducers: {
-    clearBuyerState: (state) => {
+    clearBuyerCategoryState: (state) => {
       state.error = false;
       state.message = '';
       state.alertType = '';
@@ -23,27 +23,27 @@ const buyerSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchBuyerCategoriesAction.pending, (state) => {
-      state.apiName = "buyer/fetchCategories";
-      state.loading = "buyer/fetchCategories";
-    });
-
-    builder.addCase(fetchBuyerCategoriesAction.fulfilled, (state, { payload }) => {
-      state.loading = "";
-      state.alertType = "success";
-      state.message = "Categories fetched successfully";
-      state.categories = payload || [];
-    });
-
-    builder.addCase(fetchBuyerCategoriesAction.rejected, (state, { payload }) => {
-      state.loading = "";
-      state.alertType = "error";
-      if (payload) {
-        state.message = payload.message;
-      }
-    });
+    builder
+      .addCase(fetchBuyerCategoriesAction.pending, (state) => {
+        state.apiName = "buyer/fetchCategories";
+        state.loading = "buyer/fetchCategories";
+      })
+      .addCase(fetchBuyerCategoriesAction.fulfilled, (state, { payload }) => {
+        state.loading = "";
+        state.apiName = "";
+        state.alertType = "success";
+        state.message = "Categories fetched successfully";
+        state.categories = payload?.categories || [];
+      })
+      .addCase(fetchBuyerCategoriesAction.rejected, (state, { payload }) => {
+        state.loading = "";
+        state.apiName = "";
+        state.alertType = "error";
+        state.message = payload?.message || "Failed to fetch categories";
+        state.error = true;
+      });
   },
 });
 
-export const { clearBuyerState } = buyerSlice.actions;
-export default buyerSlice.reducer;
+export const { clearBuyerCategoryState } = buyerCategorySlice.actions;
+export default buyerCategorySlice.reducer;

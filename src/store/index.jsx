@@ -10,7 +10,7 @@ import sellerPaymentReducer from '@/store/reducers/seller/seller-payment.reducer
 import sellerReviewReducer from '@/store/reducers/seller/seller-review.reducer';
 import sellerProfileReducer from '@/store/reducers/seller/seller-profile.reducer';
 
-import buyerReducer from '@/store/reducers/buyer/buyer-category.reducer';
+import buyerCategoryReducer from '@/store/reducers/buyer/buyer-category.reducer';
 import buyerProductReducer from '@/store/reducers/buyer/buyer-product.reducer';
 import buyerCartReducer from '@/store/reducers/buyer/buyer-cart.reducer';
 import buyerOrderReducer from '@/store/reducers/buyer/buyer-order.reducer';
@@ -34,7 +34,7 @@ const store = configureStore({
     sellerReviews: sellerReviewReducer,
     sellerProfile: sellerProfileReducer,
 
-    buyer: buyerReducer,
+    buyerCategory: buyerCategoryReducer,
     buyerProduct: buyerProductReducer,
     buyerCart: buyerCartReducer,
     buyerOrder: buyerOrderReducer,
