@@ -1,4 +1,3 @@
-
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 
@@ -25,13 +24,11 @@ import {
 const useBuyerProductDetail = (productId) => {
   const dispatch = useDispatch();
 
-  // Selectors
   const { product, loading, error } = useSelector((state) => state.buyerProduct);
   const { cart = [] } = useSelector((state) => state.buyerCart);
   const { items: wishlist = [] } = useSelector((state) => state.buyerWishlist);
   const { items: reviewResponses = [] } = useSelector((state) => state.buyerReview);
 
-  // Dispatchers (all with return)
   const fetchProduct = () => {
     return dispatch(fetchBuyerProductByIdAction(productId));
   };

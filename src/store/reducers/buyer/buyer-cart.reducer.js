@@ -30,7 +30,7 @@ const buyerCartSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // === FETCH CART ===
+
     builder.addCase(fetchBuyerCartAction.pending, (state) => {
       state.apiName = 'buyerCart/fetch';
       state.loading = 'buyerCart/fetch';
@@ -47,7 +47,6 @@ const buyerCartSlice = createSlice({
       if (payload) state.message = payload.message;
     });
 
-    // === ADD TO CART ===
     builder.addCase(addToBuyerCartAction.pending, (state) => {
       state.apiName = 'buyerCart/add';
       state.loading = 'buyerCart/add';
@@ -64,7 +63,6 @@ const buyerCartSlice = createSlice({
       if (payload) state.message = payload.message;
     });
 
-    // === UPDATE CART ITEM ===
     builder.addCase(updateBuyerCartAction.pending, (state) => {
       state.apiName = 'buyerCart/update';
       state.loading = 'buyerCart/update';
@@ -84,7 +82,6 @@ const buyerCartSlice = createSlice({
       if (payload) state.message = payload.message;
     });
 
-    // === DELETE CART ITEM ===
     builder.addCase(deleteBuyerCartAction.pending, (state) => {
       state.apiName = 'buyerCart/delete';
       state.loading = 'buyerCart/delete';
@@ -101,7 +98,6 @@ const buyerCartSlice = createSlice({
       if (payload) state.message = payload.message;
     });
 
-    // === DELETE ENTIRE CART BY BUYER ID ===
     builder.addCase(deleteBuyerIdCartAction.pending, (state) => {
       state.apiName = 'buyerCart/deleteAll';
       state.loading = 'buyerCart/deleteAll';

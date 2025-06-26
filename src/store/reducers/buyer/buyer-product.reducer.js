@@ -24,7 +24,7 @@ const buyerProductSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // === Fetch Product By ID ===
+
     builder.addCase(fetchBuyerProductByIdAction.pending, (state) => {
       state.apiName = 'buyerProduct/fetchById';
       state.loading = 'buyerProduct/fetchById';

@@ -34,7 +34,7 @@ const productSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // === Fetch Products ===
+
     builder.addCase(fetchAllProductsAction.pending, (state) => {
       state.apiName = 'seller/fetchProducts';
       state.loading = 'seller/fetchProducts';
@@ -53,7 +53,6 @@ const productSlice = createSlice({
       if (payload) state.message = payload.message;
     });
 
-    // === Add Product ===
     builder.addCase(addProductAction.pending, (state) => {
       state.apiName = 'seller/addProduct';
       state.loading = 'seller/addProduct';
@@ -72,7 +71,6 @@ const productSlice = createSlice({
       if (payload) state.message = payload.message;
     });
 
-    // === Update Product ===
     builder.addCase(updateProductAction.pending, (state) => {
       state.apiName = 'seller/updateProduct';
       state.loading = 'seller/updateProduct';
@@ -94,7 +92,6 @@ const productSlice = createSlice({
       if (payload) state.message = payload.message ;
     });
 
-    // === Delete Product ===
     builder.addCase(deleteProductAction.pending, (state) => {
       state.apiName = 'seller/deleteProduct';
       state.loading = 'seller/deleteProduct';
@@ -113,7 +110,6 @@ const productSlice = createSlice({
       if (payload) state.message = payload.message ;
     });
 
-    // === Upload Product Image ===
     builder.addCase(uploadProductImageAction.pending, (state) => {
       state.apiName = 'seller/uploadProductImage';
       state.loading = 'seller/uploadProductImage';

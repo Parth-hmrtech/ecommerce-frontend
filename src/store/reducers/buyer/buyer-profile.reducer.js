@@ -27,7 +27,7 @@ const buyerProfileSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // === Fetch Profile ===
+
     builder.addCase(fetchBuyerProfileAction.pending, (state) => {
       state.apiName = 'buyerProfile/fetch';
       state.loading = 'buyerProfile/fetch';
@@ -46,7 +46,6 @@ const buyerProfileSlice = createSlice({
       }
     });
 
-    // === Update Profile ===
     builder.addCase(updateBuyerProfileAction.pending, (state) => {
       state.apiName = 'buyerProfile/update';
       state.loading = 'buyerProfile/update';
@@ -65,7 +64,6 @@ const buyerProfileSlice = createSlice({
       }
     });
 
-    // === Reset Password ===
     builder.addCase(resetBuyerPasswordAction.pending, (state) => {
       state.apiName = 'buyerProfile/resetPassword';
       state.loading = 'buyerProfile/resetPassword';

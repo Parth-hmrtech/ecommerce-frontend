@@ -34,7 +34,6 @@ const sellerProfileSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // 🟡 FETCH PROFILE
     builder.addCase(fetchSellerProfileAction.pending, (state) => {
       state.apiName = 'seller/fetchProfile';
       state.loading = 'seller/fetchProfile';
@@ -53,7 +52,6 @@ const sellerProfileSlice = createSlice({
       }
     });
 
-    // 🟢 UPDATE PROFILE
     builder.addCase(updateSellerProfileAction.pending, (state) => {
       state.apiName = 'seller/updateProfile';
       state.loading = 'seller/updateProfile';
@@ -74,7 +72,6 @@ const sellerProfileSlice = createSlice({
       }
     });
 
-    // 🔵 RESET PASSWORD
     builder.addCase(resetSellerPasswordAction.pending, (state) => {
       state.apiName = 'seller/resetPassword';
       state.passwordResetLoading = true;

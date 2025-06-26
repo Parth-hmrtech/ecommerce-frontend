@@ -29,7 +29,7 @@ const buyerOrderSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // === PLACE ORDER ===
+
     builder.addCase(placeBuyerOrderAction.pending, (state) => {
       state.apiName = 'buyerOrder/place';
       state.loading = 'buyerOrder/place';
@@ -46,7 +46,6 @@ const buyerOrderSlice = createSlice({
       if (payload) state.message = payload.message;
     });
 
-    // === FETCH ALL ORDERS ===
     builder.addCase(fetchBuyerOrdersAction.pending, (state) => {
       state.apiName = 'buyerOrder/fetchAll';
       state.loading = 'buyerOrder/fetchAll';
@@ -63,7 +62,6 @@ const buyerOrderSlice = createSlice({
       if (payload) state.message = payload.message;
     });
 
-    // === FETCH ORDER BY ID ===
     builder.addCase(fetchBuyerOrderByIdAction.pending, (state) => {
       state.apiName = 'buyerOrder/fetchById';
       state.loading = 'buyerOrder/fetchById';
@@ -80,7 +78,6 @@ const buyerOrderSlice = createSlice({
       if (payload) state.message = payload.message;
     });
 
-    // === UPDATE ORDER ADDRESS ===
     builder.addCase(updateBuyerOrderAddressAction.pending, (state) => {
       state.apiName = 'buyerOrder/updateAddress';
       state.loading = 'buyerOrder/updateAddress';
@@ -97,7 +94,6 @@ const buyerOrderSlice = createSlice({
       if (payload) state.message = payload.message;
     });
 
-    // === DELETE ORDER ===
     builder.addCase(deleteBuyerOrderAction.pending, (state) => {
       state.apiName = 'buyerOrder/delete';
       state.loading = 'buyerOrder/delete';

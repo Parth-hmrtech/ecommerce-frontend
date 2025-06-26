@@ -1,4 +1,3 @@
-// src/store/reducers/buyerWishlistReducer.js
 import { createSlice } from '@reduxjs/toolkit';
 import {
   fetchBuyerWishlistAction,
@@ -21,8 +20,8 @@ const buyerWishlistSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-  // === Fetch Wishlist ===
-  builder.addCase(fetchBuyerWishlistAction.pending, (state) => {
+
+    builder.addCase(fetchBuyerWishlistAction.pending, (state) => {
     state.apiName = 'buyerWishlist/fetch';
     state.loading = 'buyerWishlist/fetch';
   });
@@ -40,7 +39,6 @@ const buyerWishlistSlice = createSlice({
     }
   });
 
-  // === Add to Wishlist ===
   builder.addCase(addToBuyerWishlistAction.pending, (state) => {
     state.apiName = 'buyerWishlist/add';
     state.loading = 'buyerWishlist/add';
@@ -61,7 +59,6 @@ const buyerWishlistSlice = createSlice({
     }
   });
 
-  // === Delete from Wishlist ===
   builder.addCase(deleteFromBuyerWishlistAction.pending, (state) => {
     state.apiName = 'buyerWishlist/delete';
     state.loading = 'buyerWishlist/delete';

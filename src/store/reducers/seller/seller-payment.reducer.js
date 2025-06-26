@@ -29,7 +29,7 @@ const sellerPaymentSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // === Fetch Seller Payments ===
+
     builder.addCase(fetchSellerPaymentsAction.pending, (state) => {
       state.apiName = 'seller/fetchPayments';
       state.loading = 'seller/fetchPayments';
@@ -54,7 +54,6 @@ const sellerPaymentSlice = createSlice({
       }
     });
 
-    // === Fetch Seller Earnings ===
     builder.addCase(fetchSellerEarningsAction.pending, (state) => {
       state.apiName = 'seller/fetchEarnings';
       state.loading = 'seller/fetchEarnings';

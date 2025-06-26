@@ -39,7 +39,7 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // === Signup ===
+
     builder.addCase(signUpUserAction.pending, (state) => {
       state.apiName = 'auth/signUp';
       state.loading = 'auth/signUp';
@@ -58,7 +58,6 @@ const authSlice = createSlice({
       }
     });
 
-    // === Sign In ===
     builder.addCase(signInUserAction.pending, (state) => {
       state.apiName = 'auth/signIn';
       state.loading = 'auth/signIn';
@@ -79,7 +78,6 @@ const authSlice = createSlice({
       }
     });
 
-    // === Forgot Password ===
     builder.addCase(forgotPasswordAction.pending, (state) => {
       state.apiName = 'auth/forgotPassword';
       state.loading = 'auth/forgotPassword';
@@ -99,6 +97,5 @@ const authSlice = createSlice({
   },
 });
 
-// ✅ Export all defined actions including the newly added one
 export const { clearAuthMessage, setAuthError, resetAuthState } = authSlice.actions;
 export default authSlice.reducer;

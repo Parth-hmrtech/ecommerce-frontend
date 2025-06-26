@@ -19,7 +19,6 @@ import {
 const useSellerProduct = () => {
   const dispatch = useDispatch();
 
-  // ---------- Product Actions ----------
   const fetchSellerProducts = () => {
     return dispatch(fetchAllProductsAction());
   };
@@ -40,7 +39,6 @@ const useSellerProduct = () => {
     return dispatch(uploadProductImageAction(formData));
   };
 
-  // ---------- Category & Subcategory ----------
   const fetchSellerCategories = () => {
     return dispatch(fetchAllCategoriesAction());
   };
@@ -49,7 +47,6 @@ const useSellerProduct = () => {
     return dispatch(fetchAllSubCategoriesByIdAction(categoryId));
   };
 
-  // ---------- Review Actions ----------
   const fetchSellerReviews = () => {
     return dispatch(fetchSellerReviewsAction());
   };
@@ -58,29 +55,22 @@ const useSellerProduct = () => {
     return dispatch(deleteSellerReviewAction(reviewId));
   };
 
-  // ---------- Selectors ----------
   const sellerProduct = useSelector((state) => state.sellerProduct);
   const sellerCategories = useSelector((state) => state.sellerCategories);
   const sellerSubcategories = useSelector((state) => state.sellerSubcategories);
   const sellerReviews = useSelector((state) => state.sellerReviews);
 
   return {
-    // Product
+    
     fetchSellerProducts,
     addSellerProduct,
     deleteSellerProduct,
     updateSellerProduct,
     uploadProductImage,
-
-    // Category
     fetchSellerCategories,
     fetchSellerSubcategoriesByCategoryId,
-
-    // Reviews
     fetchSellerReviews,
     deleteSellerReview,
-
-    // State
     sellerProduct,
     sellerCategories,
     sellerSubcategories,

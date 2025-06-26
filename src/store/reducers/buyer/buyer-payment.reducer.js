@@ -26,8 +26,8 @@ const buyerPaymentSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-  // === Checkout Payment ===
-  builder.addCase(buyerCheckoutPaymentAction.pending, (state) => {
+
+    builder.addCase(buyerCheckoutPaymentAction.pending, (state) => {
     state.apiName = 'buyerPayment/checkout';
     state.loading = 'buyerPayment/checkout';
   });
@@ -45,7 +45,6 @@ const buyerPaymentSlice = createSlice({
     }
   });
 
-  // === Verify Payment ===
   builder.addCase(buyerVerifyPaymentAction.pending, (state) => {
     state.apiName = 'buyerPayment/verify';
     state.loading = 'buyerPayment/verify';
@@ -64,7 +63,6 @@ const buyerPaymentSlice = createSlice({
     }
   });
 
-  // === Check Payment Status ===
   builder.addCase(buyerCheckPaymentStatusAction.pending, (state) => {
     state.apiName = 'buyerPayment/checkStatus';
     state.loading = 'buyerPayment/checkStatus';

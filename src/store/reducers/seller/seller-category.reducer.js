@@ -29,7 +29,7 @@ const sellerCategorySlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // Fetch
+
     builder.addCase(fetchAllCategoriesAction.pending, (state) => {
       state.apiName = 'seller/fetchCategories';
       state.loading = 'seller/fetchCategories';
@@ -48,7 +48,7 @@ const sellerCategorySlice = createSlice({
       }
     });
 
-    // Add
+    
     builder.addCase(addCategoryAction.pending, (state) => {
       state.apiName = 'seller/addCategory';
       state.loading = 'seller/addCategory';
@@ -67,7 +67,6 @@ const sellerCategorySlice = createSlice({
       }
     });
 
-    // Update
     builder.addCase(updateCategoryAction.pending, (state) => {
       state.apiName = 'seller/updateCategory';
       state.loading = 'seller/updateCategory';
@@ -89,7 +88,6 @@ const sellerCategorySlice = createSlice({
       }
     });
 
-    // Delete
     builder.addCase(deleteCategoryAction.pending, (state) => {
       state.apiName = 'seller/deleteCategory';
       state.loading = 'seller/deleteCategory';

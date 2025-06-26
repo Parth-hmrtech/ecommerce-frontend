@@ -27,7 +27,7 @@ const subCategorySlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // 🔄 FETCH ALL
+
     builder.addCase(fetchAllSubCategoriesAction.pending, (state) => {
       state.apiName = 'subcategory/fetchAll';
       state.loading = 'subcategory/fetchAll';
@@ -46,7 +46,6 @@ const subCategorySlice = createSlice({
       }
     });
 
-    // 🔄 FETCH BY CATEGORY ID
     builder.addCase(fetchAllSubCategoriesByIdAction.pending, (state) => {
       state.apiName = 'subcategory/fetchByCategoryId';
       state.loading = 'subcategory/fetchByCategoryId';
@@ -65,7 +64,6 @@ const subCategorySlice = createSlice({
       }
     });
 
-    // ➕ ADD
     builder.addCase(addSubCategoryAction.fulfilled, (state, { payload }) => {
       state.alertType = 'success';
       state.message = 'Subcategory added successfully';
@@ -78,7 +76,6 @@ const subCategorySlice = createSlice({
       }
     });
 
-    // ✏️ UPDATE
     builder.addCase(updateSubCategoryAction.fulfilled, (state, { payload }) => {
       state.alertType = 'success';
       state.message = 'Subcategory updated successfully';
@@ -94,7 +91,6 @@ const subCategorySlice = createSlice({
       }
     });
 
-    // ❌ DELETE
     builder.addCase(deleteSubCategoryAction.fulfilled, (state, { payload }) => {
       state.alertType = 'success';
       state.message = 'Subcategory deleted successfully';

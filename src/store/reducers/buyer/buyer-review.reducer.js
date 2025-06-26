@@ -29,7 +29,7 @@ const buyerReviewSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // === Fetch Reviews ===
+
     builder.addCase(fetchBuyerReviewByProductIdAction.pending, (state) => {
       state.apiName = 'buyerReview/fetchByProductId';
       state.loading = 'buyerReview/fetchByProductId';
@@ -46,7 +46,6 @@ const buyerReviewSlice = createSlice({
       if (payload) state.message = payload.message;
     });
 
-    // === Add Review ===
     builder.addCase(addBuyerReviewAction.pending, (state) => {
       state.apiName = 'buyerReview/add';
       state.loading = 'buyerReview/add';
@@ -63,7 +62,6 @@ const buyerReviewSlice = createSlice({
       if (payload) state.message = payload.message;
     });
 
-    // === Update Review ===
     builder.addCase(updateBuyerReviewAction.pending, (state) => {
       state.apiName = 'buyerReview/update';
       state.loading = 'buyerReview/update';
@@ -92,7 +90,6 @@ const buyerReviewSlice = createSlice({
       if (payload) state.message = payload.message;
     });
 
-    // === Delete Review ===
     builder.addCase(deleteBuyerReviewAction.pending, (state) => {
       state.apiName = 'buyerReview/delete';
       state.loading = 'buyerReview/delete';

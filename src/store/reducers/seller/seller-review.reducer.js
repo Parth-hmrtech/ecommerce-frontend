@@ -24,7 +24,7 @@ const sellerReviewsSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // 🟡 FETCH REVIEWS
+
     builder.addCase(fetchSellerReviewsAction.pending, (state) => {
       state.apiName = 'seller/fetchReviews';
       state.loading = 'seller/fetchReviews';
@@ -43,7 +43,6 @@ const sellerReviewsSlice = createSlice({
       }
     });
 
-    // ❌ DELETE REVIEW
     builder.addCase(deleteSellerReviewAction.pending, (state) => {
       state.apiName = 'seller/deleteReview';
       state.loading = 'seller/deleteReview';
