@@ -42,7 +42,7 @@ const SellerDashboard = () => {
     dispatch(fetchAllProductsAction());
     dispatch(fetchSellerPaymentsAction());
     dispatch(fetchSellerEarningsAction());
-    dispatch(fetchSellerOrdersAction()); // ✅ Added
+    dispatch(fetchSellerOrdersAction()); 
   }, [dispatch]);
 
   const handleToggleSidebar = () => {

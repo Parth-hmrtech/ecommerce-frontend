@@ -4,7 +4,10 @@ import { apiRequest } from '../../../hooks/useApiRequest';
 const signUpUserAction = createAsyncThunk(
   'auth/signUpUser',
   async (userData, { fulfillWithValue, rejectWithValue }) => {
+    console.log(userData);
+    
     try {
+      
       const response = await apiRequest({
         method: 'POST',
         url: '/auth/register',
@@ -14,7 +17,8 @@ const signUpUserAction = createAsyncThunk(
       if (response?.status !== 200) {
         return rejectWithValue(new Error("Something is wrong here"));
       }
-
+      console.log(response);
+      
       return fulfillWithValue(response?.data);
     } catch (error) {
       return rejectWithValue(

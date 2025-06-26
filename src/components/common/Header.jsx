@@ -80,13 +80,15 @@ const Header = ({ sidebarOpen, onToggleSidebar }) => {
             >
               <Button
                 onClick={handleProfileClick}
+                                    sx={{ justifyContent: 'flex-start', px: 2 }}
                 startIcon={<AccountCircleIcon />}
                 fullWidth
                 variant="text"
               >
-                My Profile
+                Profile
               </Button>
               <Button
+                sx={{ justifyContent: 'flex-start', px: 2 }}
                 onClick={handleLogout}
                 startIcon={<LogoutIcon />}
                 fullWidth

@@ -6,11 +6,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@mui/material/Unstable_Grid2': path.resolve(
-        __dirname,
-        'node_modules/@mui/material/Unstable_Grid2'
-      ),
-      '@': path.resolve(__dirname, './src'),
+      '@': path.resolve(__dirname, './src'), // ✅ Keeps only your src alias
     },
   },
 });

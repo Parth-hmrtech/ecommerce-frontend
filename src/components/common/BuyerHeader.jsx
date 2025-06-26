@@ -68,7 +68,7 @@ const BuyerHeader = () => {
                   right: 0,
                   mt: 0,
                   zIndex: 0,
-                  minWidth: 160,
+                  minWidth: 150,
                   backgroundColor: 'background.paper',
                 }}
               >

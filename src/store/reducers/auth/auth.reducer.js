@@ -12,6 +12,7 @@ const initialState = {
   message: '',
   apiName: '',
   alertType: '',
+  success: false, 
 };
 
 const authSlice = createSlice({
@@ -36,22 +37,25 @@ const authSlice = createSlice({
       state.message = '';
       state.apiName = '';
       state.alertType = '';
+      state.success = false;
     },
   },
   extraReducers: (builder) => {
-
     builder.addCase(signUpUserAction.pending, (state) => {
       state.apiName = 'auth/signUp';
       state.loading = 'auth/signUp';
+      state.success = false; 
     });
     builder.addCase(signUpUserAction.fulfilled, (state, { payload }) => {
       state.loading = '';
+      state.success = true;
       state.alertType = 'success';
       state.message = payload?.message || 'Sign up successful';
       state.user = payload?.data?.user || null;
     });
     builder.addCase(signUpUserAction.rejected, (state, { payload }) => {
       state.loading = '';
+      state.success = false;
       state.alertType = 'error';
       if (payload) {
         state.message = payload.message;
@@ -66,7 +70,7 @@ const authSlice = createSlice({
       state.loading = '';
       state.alertType = 'success';
       state.message = payload?.message || 'Sign in successful';
-      state.user = payload?.data?.user || null;      
+      state.user = payload?.data?.user || null;
       localStorage.setItem('user', JSON.stringify(payload?.data?.user));
       localStorage.setItem('access_token', payload?.data?.token);
     });

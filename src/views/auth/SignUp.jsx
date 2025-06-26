@@ -45,6 +45,13 @@ const SignUp = () => {
   const navigate = useNavigate();
   const { signUp, loading, error, success, resetAuth } = useAuthentication();
 
+  useEffect(() => {
+  if (success) {
+    navigate('/signin');    
+    resetAuth();           
+  }
+}, [success, navigate, resetAuth]);
+
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -102,12 +109,6 @@ const SignUp = () => {
     signUp(formData);
   };
 
-  useEffect(() => {
-    if (success) {
-      navigate('/signin');
-      resetAuth();
-    }
-  }, [success, navigate, resetAuth]);
 
   return (
     <Box minHeight="100vh" display="flex" justifyContent="center" alignItems="center" bgcolor="#f9f9f9" px={2}>

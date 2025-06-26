@@ -1,25 +1,25 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import authReducer from './reducers/auth/auth.reducer';
+import authReducer from '@/store/reducers/auth/auth.reducer';
 
-import sellerProductReducer from './reducers/seller/seller-product.reducer';
-import categoryReducer from './reducers/seller/seller-category.reducer';
-import subCategoryReducer from './reducers/seller/seller-sub-category.reducer';
-import sellerOrderReducer from './reducers/seller/seller-order.reducer';
-import sellerPaymentReducer from './reducers/seller/seller-payment.reducer';
-import sellerReviewReducer from './reducers/seller/seller-review.reducer';
-import sellerProfileReducer from './reducers/seller/seller-profile.reducer';
+import sellerProductReducer from '@/store/reducers/seller/seller-product.reducer';
+import categoryReducer from '@/store/reducers/seller/seller-category.reducer';
+import subCategoryReducer from '@/store/reducers/seller/seller-sub-category.reducer';
+import sellerOrderReducer from '@/store/reducers/seller/seller-order.reducer';
+import sellerPaymentReducer from '@/store/reducers/seller/seller-payment.reducer';
+import sellerReviewReducer from '@/store/reducers/seller/seller-review.reducer';
+import sellerProfileReducer from '@/store/reducers/seller/seller-profile.reducer';
 
-import buyerReducer from './reducers/buyer/buyer-category.reducer';
-import buyerProductReducer from './reducers/buyer/buyer-product.reducer';
-import buyerCartReducer from './reducers/buyer/buyer-cart.reducer';
-import buyerOrderReducer from './reducers/buyer/buyer-order.reducer';
-import buyerPaymentReducer from './reducers/buyer/buyer-payment.reducer';
-import buyerWishlistReducer from './reducers/buyer/buyer-wish-list.reducer';
-import buyerReviewReducer from './reducers/buyer/buyer-review.reducer';
-import buyerProfileReducer from './reducers/buyer/buyer-profile.reducer';
+import buyerReducer from '@/store/reducers/buyer/buyer-category.reducer';
+import buyerProductReducer from '@/store/reducers/buyer/buyer-product.reducer';
+import buyerCartReducer from '@/store/reducers/buyer/buyer-cart.reducer';
+import buyerOrderReducer from '@/store/reducers/buyer/buyer-order.reducer';
+import buyerPaymentReducer from '@/store/reducers/buyer/buyer-payment.reducer';
+import buyerWishlistReducer from '@/store/reducers/buyer/buyer-wish-list.reducer';
+import buyerReviewReducer from '@/store/reducers/buyer/buyer-review.reducer';
+import buyerProfileReducer from '@/store/reducers/buyer/buyer-profile.reducer';
 
-import productReducer from './reducers/product.reducer';
+import productReducer from '@/store/reducers/product.reducer';
 
 const store = configureStore({
   reducer: {
