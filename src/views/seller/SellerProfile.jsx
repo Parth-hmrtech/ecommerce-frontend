@@ -11,22 +11,14 @@ import {
   IconButton,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { useDispatch, useSelector } from 'react-redux';
 
 import Header from '../../components/common/Header';
 import Sidebar from '../../components/common/Sidebar';
 import Footer from '../../components/common/Footer';
 
-import {
-  fetchSellerProfileAction,
-  updateSellerProfileAction,
-  resetSellerPasswordAction,
-} from '../../store/actions/seller/seller-profile.action';
+import useSellerProfile from '@/hooks/seller/useSellerProfile';
 
 const SellerProfile = () => {
-  const id = JSON.parse(localStorage.getItem('user'))?.id;
-  const dispatch = useDispatch();
-
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [formData, setFormData] = useState(null);
   const [formErrors, setFormErrors] = useState({});
@@ -45,11 +37,12 @@ const SellerProfile = () => {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
 
-  const { profile, loading } = useSelector((state) => state.sellerProfile);
-
-  useEffect(() => {
-    dispatch(fetchSellerProfileAction(id));
-  }, [dispatch, id]);
+  const {
+    profile,
+    loading,
+    updateSellerProfile,
+    resetSellerPassword,
+  } = useSellerProfile();
 
   useEffect(() => {
     if (profile?.user) {
@@ -99,7 +92,7 @@ const SellerProfile = () => {
     setSuccessMsg('');
     setUpdating(true);
 
-    dispatch(updateSellerProfileAction({ id, data: formData }))
+    updateSellerProfile(formData)
       .unwrap()
       .then(() => {
         setSuccessMsg('Profile updated successfully');
@@ -122,7 +115,7 @@ const SellerProfile = () => {
     setPasswordResetMsg('');
     setPasswordResetSeverity('error');
 
-    dispatch(resetSellerPasswordAction({ oldPassword, newPassword }))
+    resetSellerPassword({ oldPassword, newPassword })
       .unwrap()
       .then((res) => {
         const message =

@@ -28,7 +28,7 @@ const useBuyerOrder = () => {
   const { items: reviewResponses } = useSelector((state) => state.buyerReview);
 
   const fetchOrders = () => {
-    dispatch(fetchBuyerOrdersAction());
+    return dispatch(fetchBuyerOrdersAction());
   };
 
   const deleteOrder = (orderId) => {
@@ -40,7 +40,7 @@ const useBuyerOrder = () => {
   };
 
   const fetchPaymentStatus = () => {
-    dispatch(buyerCheckPaymentStatusAction());
+    return dispatch(buyerCheckPaymentStatusAction());
   };
 
   const checkoutPayment = (payload) => {
@@ -64,7 +64,7 @@ const useBuyerOrder = () => {
   };
 
   const fetchReviewsByProductId = (productId) => {
-    dispatch(fetchBuyerReviewByProductIdAction(productId));
+    return dispatch(fetchBuyerReviewByProductIdAction(productId));
   };
 
   useEffect(() => {

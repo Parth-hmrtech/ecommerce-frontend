@@ -7,6 +7,7 @@ import {
   fetchBuyerWishlistAction,
   deleteFromBuyerWishlistAction,
 } from '@/store/actions/buyer/buyer-wishlist.action';
+
 import { fetchProductsAction } from '@/store/actions/product.actions';
 
 const useBuyerWishlist = () => {
@@ -24,10 +25,13 @@ const useBuyerWishlist = () => {
     error: productError,
   } = useSelector((state) => state.product);
 
-  useEffect(() => {
-    dispatch(fetchBuyerWishlistAction());
-    dispatch(fetchProductsAction());
-  }, [dispatch]);
+  const fetchWishlist = () => {
+    return dispatch(fetchBuyerWishlistAction());
+  };
+
+  const fetchProducts = () => {
+    return dispatch(fetchProductsAction());
+  };
 
   const deleteFromWishlist = (product_id) => {
     return dispatch(deleteFromBuyerWishlistAction(product_id)).then(() =>
@@ -39,6 +43,11 @@ const useBuyerWishlist = () => {
     new Map(wishlist.map((item) => [item.product_id, item])).values()
   );
 
+  useEffect(() => {
+    fetchWishlist();
+    fetchProducts();
+  }, [dispatch]);
+
   return {
     wishlist: uniqueWishlist,
     wishlistLoading,
@@ -46,6 +55,8 @@ const useBuyerWishlist = () => {
     products,
     productLoading,
     productError,
+    fetchWishlist,
+    fetchProducts,
     deleteFromWishlist,
   };
 };

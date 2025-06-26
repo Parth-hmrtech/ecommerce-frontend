@@ -11,7 +11,6 @@ import {
     InputLabel,
     FormControl,
 } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -20,10 +19,7 @@ import Header from '../../components/common/Header';
 import Sidebar from '../../components/common/Sidebar';
 import Footer from '../../components/common/Footer';
 
-import {
-    fetchAllProductsAction,
-    uploadProductImageAction,
-} from '../../store/actions/seller/seller-product.action';
+import useSellerProduct from '@/hooks/seller/useSellerProduct';
 
 const NextArrow = ({ onClick }) => (
     <Box
@@ -90,37 +86,36 @@ const sliderSettings = {
 };
 
 const SellerProductImages = () => {
-    const dispatch = useDispatch();
-    const { list: products = [], loading, error } = useSelector(
-        (state) => state.sellerProduct
-    );
+    const {
+        fetchSellerProducts,
+        uploadProductImage,
+        sellerProduct: { list: products = [], loading, error },
+    } = useSellerProduct();
 
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [file, setFile] = useState(null);
     const [productId, setProductId] = useState('');
-    const [visibleCount, setVisibleCount] = useState(20); 
+    const [visibleCount, setVisibleCount] = useState(20);
 
     useEffect(() => {
-        dispatch(fetchAllProductsAction());
-    }, [dispatch]);
+        fetchSellerProducts();
+    }, []);
 
     const handleToggleSidebar = () => setSidebarOpen((o) => !o);
+
     const handleUpload = () => {
         if (!file || !productId || file.length === 0) return;
 
         const fd = new FormData();
         fd.append('product_id', productId);
+        file.forEach((f) => fd.append('image', f));
 
-        file.forEach((f) => {
-            fd.append('image', f);
-        });
-
-        dispatch(uploadProductImageAction(fd))
+        uploadProductImage(fd)
             .unwrap()
             .then(() => {
                 setFile(null);
                 document.querySelector('input[type="file"]').value = '';
-                dispatch(fetchAllProductsAction());
+                fetchSellerProducts();
             })
             .catch((err) => {
                 console.error('Image upload failed:', err);

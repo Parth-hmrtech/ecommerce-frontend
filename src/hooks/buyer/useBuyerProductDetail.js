@@ -1,4 +1,3 @@
-// src/hooks/buyer/useBuyerProductDetail.js
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
@@ -32,22 +31,47 @@ const useBuyerProductDetail = (productId) => {
   const { items: wishlist = [] } = useSelector((state) => state.buyerWishlist);
   const { items: reviewResponses = [] } = useSelector((state) => state.buyerReview);
 
-  // Dispatchers
-  const fetchProduct = () => dispatch(fetchBuyerProductByIdAction(productId));
-  const fetchCart = () => dispatch(fetchBuyerCartAction());
-  const fetchWishlist = () => dispatch(fetchBuyerWishlistAction());
-  const fetchReviews = (id) => dispatch(fetchBuyerReviewByProductIdAction(id));
+  // Dispatchers (all with return)
+  const fetchProduct = () => {
+    return dispatch(fetchBuyerProductByIdAction(productId));
+  };
 
-  const addToCart = (payload) => dispatch(addToBuyerCartAction(payload));
-  const updateCart = (payload) => dispatch(updateBuyerCartAction(payload));
-  const deleteCartItem = (cartItemId) => dispatch(deleteBuyerCartAction(cartItemId));
+  const fetchCart = () => {
+    return dispatch(fetchBuyerCartAction());
+  };
 
-  const addToWishlist = (payload) => dispatch(addToBuyerWishlistAction(payload));
+  const fetchWishlist = () => {
+    return dispatch(fetchBuyerWishlistAction());
+  };
 
-  const updateReview = (payload) => dispatch(updateBuyerReviewAction(payload));
-  const deleteReview = (reviewId) => dispatch(deleteBuyerReviewAction(reviewId));
+  const fetchReviews = (id) => {
+    return dispatch(fetchBuyerReviewByProductIdAction(id));
+  };
 
-  // Initial fetches on mount or when productId changes
+  const addToCart = (payload) => {
+    return dispatch(addToBuyerCartAction(payload));
+  };
+
+  const updateCart = (payload) => {
+    return dispatch(updateBuyerCartAction(payload));
+  };
+
+  const deleteCartItem = (cartItemId) => {
+    return dispatch(deleteBuyerCartAction(cartItemId));
+  };
+
+  const addToWishlist = (payload) => {
+    return dispatch(addToBuyerWishlistAction(payload));
+  };
+
+  const updateReview = (payload) => {
+    return dispatch(updateBuyerReviewAction(payload));
+  };
+
+  const deleteReview = (reviewId) => {
+    return dispatch(deleteBuyerReviewAction(reviewId));
+  };
+
   useEffect(() => {
     if (productId) {
       fetchProduct();
@@ -56,7 +80,6 @@ const useBuyerProductDetail = (productId) => {
     }
   }, [productId]);
 
-  // Fetch reviews when product is loaded
   useEffect(() => {
     if (product?.id) {
       fetchReviews(product.id);

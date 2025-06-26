@@ -46,10 +46,6 @@ const SignIn = () => {
   });
 
   useEffect(() => {
-    console.log("hello");
-    
-    console.log(user);
-    
     if (user) {
       if (user.role === 'buyer') {
         navigate('/buyer-dashboard');

@@ -67,9 +67,7 @@ const authSlice = createSlice({
       state.loading = '';
       state.alertType = 'success';
       state.message = payload?.message || 'Sign in successful';
-      state.user = payload?.data?.user || null;
-      console.log(payload);
-      
+      state.user = payload?.data?.user || null;      
       localStorage.setItem('user', JSON.stringify(payload?.data?.user));
       localStorage.setItem('access_token', payload?.data?.token);
     });

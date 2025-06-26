@@ -1,13 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  fetchAllSubCategoriesAction,
-  addSubCategoryAction,
-  updateSubCategoryAction,
-  deleteSubCategoryAction,
-} from '../../store/actions/seller/seller-sub-category.action';
-import { fetchAllCategoriesAction } from '../../store/actions/seller/seller-category.action';
-
 import {
   Box,
   Typography,
@@ -39,10 +30,23 @@ import Header from '../../components/common/Header';
 import Sidebar from '../../components/common/Sidebar';
 import Footer from '../../components/common/Footer';
 
+import useSellerCategory from '@/hooks/seller/useSellerCategory'; // 👈 using the hook
+
 const SellerSubCategory = () => {
-  const dispatch = useDispatch();
-  const { list, loading, error } = useSelector((state) => state.sellerSubcategories);
-  const { list: categoryList } = useSelector((state) => state.sellerCategories);
+  const {
+    // Subcategory
+    subCategories,
+    subCategoryLoading,
+    subCategoryError,
+    fetchSubCategories,
+    addSubCategory,
+    updateSubCategory,
+    deleteSubCategory,
+
+    // Category
+    categories,
+    fetchCategories,
+  } = useSellerCategory();
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -57,9 +61,9 @@ const SellerSubCategory = () => {
   const [subCategoryToDelete, setSubCategoryToDelete] = useState(null);
 
   useEffect(() => {
-    dispatch(fetchAllSubCategoriesAction());
-    dispatch(fetchAllCategoriesAction());
-  }, [dispatch]);
+    fetchSubCategories();
+    fetchCategories();
+  }, []);
 
   const handleToggleSidebar = () => {
     setSidebarOpen((prev) => !prev);
@@ -68,12 +72,7 @@ const SellerSubCategory = () => {
   const handleAddSubCategory = () => {
     if (!newSubCategoryName.trim() || !selectedCategoryId) return;
 
-    dispatch(
-      addSubCategoryAction({
-        category_id: selectedCategoryId,
-        sub_category_name: newSubCategoryName,
-      })
-    )
+    addSubCategory(selectedCategoryId, newSubCategoryName)
       .unwrap()
       .then(() => {
         setNewSubCategoryName('');
@@ -91,17 +90,12 @@ const SellerSubCategory = () => {
   const handleEditSave = () => {
     if (!editSubCategoryName.trim()) return;
 
-    dispatch(
-      updateSubCategoryAction({
-        id: editSubCategoryId,
-        sub_category_name: editSubCategoryName,
-      })
-    )
+    updateSubCategory(editSubCategoryId, null, editSubCategoryName) // null for category_id if unchanged
       .unwrap()
       .then(() => {
         setEditSubCategoryId(null);
         setEditSubCategoryName('');
-        dispatch(fetchAllSubCategoriesAction());
+        fetchSubCategories();
       })
       .catch((err) => console.error('Update failed:', err));
   };
@@ -117,22 +111,22 @@ const SellerSubCategory = () => {
   };
 
   const confirmDelete = () => {
-    dispatch(deleteSubCategoryAction(subCategoryToDelete))
+    deleteSubCategory(subCategoryToDelete)
       .unwrap()
       .then(() => {
         setConfirmOpen(false);
         setSubCategoryToDelete(null);
-        dispatch(fetchAllSubCategoriesAction());
+        fetchSubCategories();
       })
       .catch((err) => console.error('Delete failed:', err));
   };
 
-  const filteredList = list.filter((sub) =>
+  const filteredList = subCategories.filter((sub) =>
     sub.sub_category_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const getCategoryName = (id) => {
-    const category = categoryList.find((cat) => cat.id === id);
+    const category = categories.find((cat) => cat.id === id);
     return category ? category.category_name : '-';
   };
 
@@ -160,7 +154,7 @@ const SellerSubCategory = () => {
                   onChange={(e) => setSelectedCategoryId(e.target.value)}
                   label="Category"
                 >
-                  {categoryList.map((cat) => (
+                  {categories.map((cat) => (
                     <MenuItem key={cat.id} value={cat.id}>
                       {cat.category_name}
                     </MenuItem>
@@ -192,10 +186,10 @@ const SellerSubCategory = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
 
-          {loading ? (
+          {subCategoryLoading ? (
             <CircularProgress />
-          ) : error ? (
-            <Typography color="error">{error}</Typography>
+          ) : subCategoryError ? (
+            <Typography color="error">{subCategoryError}</Typography>
           ) : filteredList.length === 0 ? (
             <Typography>No subcategories found.</Typography>
           ) : (

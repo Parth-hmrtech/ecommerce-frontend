@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
 import {
   fetchBuyerCartAction,
   updateBuyerCartAction,
@@ -16,14 +17,29 @@ const useBuyerCart = () => {
   const { cart, loading, error } = useSelector((state) => state.buyerCart);
   const { products } = useSelector((state) => state.product);
 
-  const fetchCart = () => dispatch(fetchBuyerCartAction());
-  const fetchProducts = () => dispatch(fetchProductsAction());
+  const fetchCart = () => {
+    return dispatch(fetchBuyerCartAction());
+  };
 
-  const updateCartItem = (payload) => dispatch(updateBuyerCartAction(payload));
-  const deleteCartItem = (id) => dispatch(deleteBuyerCartAction(id));
-  const deleteCartByBuyerId = (buyerId) => dispatch(deleteBuyerIdCartAction(buyerId));
+  const fetchProducts = () => {
+    return dispatch(fetchProductsAction());
+  };
 
-  const placeOrder = (payload) => dispatch(placeBuyerOrderAction(payload));
+  const updateCartItem = (payload) => {
+    return dispatch(updateBuyerCartAction(payload));
+  };
+
+  const deleteCartItem = (id) => {
+    return dispatch(deleteBuyerCartAction(id));
+  };
+
+  const deleteCartByBuyerId = (buyerId) => {
+    return dispatch(deleteBuyerIdCartAction(buyerId));
+  };
+
+  const placeOrder = (payload) => {
+    return dispatch(placeBuyerOrderAction(payload));
+  };
 
   useEffect(() => {
     fetchCart();
