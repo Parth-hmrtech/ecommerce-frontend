@@ -20,13 +20,17 @@ const useSellerCategory = () => {
     list: categories = [],
     loading: categoryLoading = false,
     error: categoryError = null,
-  } = useSelector((state) => state.sellerCategories);
+  } = useSelector((state) => state.sellerCategories || {});
+
+  console.log("📦 Categories from Redux:", categories);
 
   const {
     list: subCategories = [],
     loading: subCategoryLoading = false,
     error: subCategoryError = null,
-  } = useSelector((state) => state.sellerSubcategories);
+  } = useSelector((state) => state.sellerSubcategories || {});
+
+  console.log("📦 Subcategories from Redux:", subCategories);
 
   const fetchCategories = () => {
     return dispatch(fetchAllCategoriesAction());

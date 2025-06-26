@@ -17,6 +17,8 @@ const fetchAllCategoriesAction = createAsyncThunk(
         url: '/seller/categories',
         headers: getTokenHeader(),
       });
+      console.log("hello",response);
+      
       return fulfillWithValue(response.data?.data || []);
     } catch (error) {
       return rejectWithValue('Something is wrong here');

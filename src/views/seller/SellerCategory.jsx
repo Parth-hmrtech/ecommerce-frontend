@@ -27,36 +27,39 @@ import Header from '../../components/common/Header';
 import Footer from '../../components/common/Footer';
 import Sidebar from '../../components/common/Sidebar';
 
-import useSellerCategory from '@/hooks/seller/useSellerCategory'; // 👈 custom hook
+import { useDispatch } from 'react-redux';
+import {
+  fetchAllCategoriesAction,
+  addCategoryAction,
+  deleteCategoryAction,
+  updateCategoryAction,
+} from '@/store/actions/seller/seller-category.action';
+
+import useSellerCategory from '@/hooks/seller/useSellerCategory';
 
 const SellerCategory = () => {
+  const dispatch = useDispatch();
   const {
-    list,
-    loading,
-    error,
-    fetchCategories,
-    addCategory,
-    updateCategory,
-    deleteCategory,
+    categories: list = [],
+    categoryLoading: loading,
+    categoryError: error,
   } = useSellerCategory();
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddForm, setShowAddForm] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
-
   const [editCategoryId, setEditCategoryId] = useState(null);
   const [editCategoryName, setEditCategoryName] = useState('');
-
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
-
   const [sortField, setSortField] = useState('createdAt');
   const [sortDirection, setSortDirection] = useState('desc');
 
+  // 🔁 Initial fetch
   useEffect(() => {
-    fetchCategories();
-  }, []);
+    dispatch(fetchAllCategoriesAction());
+  }, [dispatch]);
 
   const handleToggleSidebar = () => {
     setSidebarOpen((prev) => !prev);
@@ -64,15 +67,14 @@ const SellerCategory = () => {
 
   const handleAddCategory = () => {
     if (!newCategoryName.trim()) return;
-    addCategory(newCategoryName)
+    dispatch(addCategoryAction({ category_name: newCategoryName }))
       .unwrap()
       .then(() => {
         setNewCategoryName('');
         setShowAddForm(false);
+        dispatch(fetchAllCategoriesAction());
       })
-      .catch((err) => {
-        console.error('Failed to add category:', err);
-      });
+      .catch((err) => console.error('Failed to add category:', err));
   };
 
   const handleEditClick = (category) => {
@@ -82,12 +84,12 @@ const SellerCategory = () => {
 
   const handleEditSave = () => {
     if (!editCategoryName.trim()) return;
-    updateCategory(editCategoryId, editCategoryName)
+    dispatch(updateCategoryAction({ id: editCategoryId, category_name: editCategoryName }))
       .unwrap()
       .then(() => {
         setEditCategoryId(null);
         setEditCategoryName('');
-        fetchCategories();
+        dispatch(fetchAllCategoriesAction());
       })
       .catch((err) => console.error('Update failed:', err));
   };
@@ -104,16 +106,16 @@ const SellerCategory = () => {
 
   const confirmDelete = () => {
     if (!categoryToDelete) return;
-    deleteCategory(categoryToDelete)
+    dispatch(deleteCategoryAction(categoryToDelete))
       .unwrap()
       .then(() => {
-        fetchCategories();
+        dispatch(fetchAllCategoriesAction());
         setConfirmOpen(false);
         setCategoryToDelete(null);
       })
       .catch((err) => {
         console.error('Delete failed:', err);
-        alert(`Delete failed: ${err}`);
+        alert(`Delete failed: ${err.message || err}`);
       });
   };
 
@@ -125,16 +127,15 @@ const SellerCategory = () => {
 
   const filteredList = list
     .filter((category) =>
-      category.category_name.toLowerCase().includes(searchTerm.toLowerCase())
+      category.category_name?.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .sort((a, b) => {
-      const aField = a[sortField] || '';
-      const bField = b[sortField] || '';
-      const aVal = typeof aField === 'string' ? aField.toLowerCase() : new Date(aField);
-      const bVal = typeof bField === 'string' ? bField.toLowerCase() : new Date(bField);
-      if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
-      if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
-      return 0;
+      const aVal = a[sortField] || '';
+      const bVal = b[sortField] || '';
+      const normalizedA = typeof aVal === 'string' ? aVal.toLowerCase() : new Date(aVal);
+      const normalizedB = typeof bVal === 'string' ? bVal.toLowerCase() : new Date(bVal);
+      return (normalizedA < normalizedB ? -1 : normalizedA > normalizedB ? 1 : 0) *
+        (sortDirection === 'asc' ? 1 : -1);
     });
 
   return (
