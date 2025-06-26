@@ -10,15 +10,9 @@ const fetchProductsAction = createAsyncThunk(
         url: '/buyer/products',
       });
 
-      if (response?.status !== 200) {
-        return rejectWithValue(new Error("Something is wrong here"));
-      }
-
       return fulfillWithValue(response?.data?.data || []);
     } catch (error) {
-      return rejectWithValue(
-        new Error(error?.data?.message || "Something is wrong here")
-      );
+      return rejectWithValue('Something is wrong here');
     }
   }
 );

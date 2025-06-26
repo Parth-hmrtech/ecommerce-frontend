@@ -26,46 +26,64 @@ const buyerPaymentSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(buyerCheckoutPaymentAction.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(buyerCheckoutPaymentAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.checkoutData = action.payload || null;
-      })
-      .addCase(buyerCheckoutPaymentAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || action.error.message;
-      })
+  // === Checkout Payment ===
+  builder.addCase(buyerCheckoutPaymentAction.pending, (state) => {
+    state.apiName = 'buyerPayment/checkout';
+    state.loading = 'buyerPayment/checkout';
+  });
+  builder.addCase(buyerCheckoutPaymentAction.fulfilled, (state, { payload }) => {
+    state.loading = '';
+    state.alertType = 'success';
+    state.message = payload?.message || 'Checkout initiated';
+    state.checkoutData = payload || null;
+  });
+  builder.addCase(buyerCheckoutPaymentAction.rejected, (state, { payload }) => {
+    state.loading = '';
+    state.alertType = 'error';
+    if (payload) {
+      state.message = payload.message;
+    }
+  });
 
-      .addCase(buyerVerifyPaymentAction.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(buyerVerifyPaymentAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.verifyData = action.payload || null;
-      })
-      .addCase(buyerVerifyPaymentAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || action.error.message;
-      })
+  // === Verify Payment ===
+  builder.addCase(buyerVerifyPaymentAction.pending, (state) => {
+    state.apiName = 'buyerPayment/verify';
+    state.loading = 'buyerPayment/verify';
+  });
+  builder.addCase(buyerVerifyPaymentAction.fulfilled, (state, { payload }) => {
+    state.loading = '';
+    state.alertType = 'success';
+    state.message = payload?.message || 'Payment verified';
+    state.verifyData = payload || null;
+  });
+  builder.addCase(buyerVerifyPaymentAction.rejected, (state, { payload }) => {
+    state.loading = '';
+    state.alertType = 'error';
+    if (payload) {
+      state.message = payload.message;
+    }
+  });
 
-      .addCase(buyerCheckPaymentStatusAction.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(buyerCheckPaymentStatusAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.buyerCheckPayments = action.payload || [];
-      })
-      .addCase(buyerCheckPaymentStatusAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || action.error.message;
-      });
-  },
+  // === Check Payment Status ===
+  builder.addCase(buyerCheckPaymentStatusAction.pending, (state) => {
+    state.apiName = 'buyerPayment/checkStatus';
+    state.loading = 'buyerPayment/checkStatus';
+  });
+  builder.addCase(buyerCheckPaymentStatusAction.fulfilled, (state, { payload }) => {
+    state.loading = '';
+    state.alertType = 'success';
+    state.message = payload?.message || 'Payment status fetched';
+    state.buyerCheckPayments = payload || [];
+  });
+  builder.addCase(buyerCheckPaymentStatusAction.rejected, (state, { payload }) => {
+    state.loading = '';
+    state.alertType = 'error';
+    if (payload) {
+      state.message = payload.message;
+    }
+  });
+}
+
 });
 
 export const { clearPaymentState } = buyerPaymentSlice.actions;

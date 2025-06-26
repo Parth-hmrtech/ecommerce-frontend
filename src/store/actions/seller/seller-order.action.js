@@ -10,24 +10,23 @@ const getTokenHeader = () => {
 
 const fetchSellerOrdersAction = createAsyncThunk(
   'orders/fetchAll',
-  async (_, { rejectWithValue }) => {
+  async (_, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'GET',
         url: '/seller/orders',
         headers: getTokenHeader(),
       });
-      return response.data.data;
-    } catch (err) {
-      const errorMsg = err?.response?.data?.message || err.message || 'Failed to fetch orders';
-      return rejectWithValue(errorMsg);
+      return fulfillWithValue(response.data?.data || []);
+    } catch (error) {
+      return rejectWithValue('Something is wrong here');
     }
   }
 );
 
 const updateOrderStatusAction = createAsyncThunk(
   'orders/updateStatus',
-  async ({ orderId, status }, { rejectWithValue, dispatch }) => {
+  async ({ orderId, status }, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'PUT',
@@ -35,13 +34,14 @@ const updateOrderStatusAction = createAsyncThunk(
         headers: getTokenHeader(),
         data: { status },
       });
-      dispatch(fetchSellerOrdersAction());
-      return response.data;
-    } catch (err) {
-      const errorMsg = err?.response?.data?.message || err.message || 'Failed to update status';
-      return rejectWithValue(errorMsg);
+      return fulfillWithValue(response.data?.data || []);
+    } catch (error) {
+      return rejectWithValue('Something is wrong here');
     }
   }
 );
 
-export { fetchSellerOrdersAction, updateOrderStatusAction };
+export {
+  fetchSellerOrdersAction,
+  updateOrderStatusAction,
+};

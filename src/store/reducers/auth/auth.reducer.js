@@ -5,79 +5,102 @@ import {
   forgotPasswordAction,
 } from '../../actions/auth/auth.actions';
 
+const initialState = {
+  user: null,
+  loading: '',
+  error: false,
+  message: '',
+  apiName: '',
+  alertType: '',
+};
+
 const authSlice = createSlice({
   name: 'auth',
-  initialState: {
-    user: null,
-    loading: false,
-    error: null,
-    success: false,
-    message: null,
-  },
+  initialState,
   reducers: {
+    clearAuthMessage: (state) => {
+      state.alertType = '';
+      state.apiName = '';
+      state.message = '';
+      state.error = false;
+    },
+    setAuthError: (state, action) => {
+      state.alertType = action.payload.alertType;
+      state.apiName = action.payload.apiName;
+      state.message = action.payload.message;
+    },
     resetAuthState: (state) => {
-      state.error = null;
-      state.success = false;
-      state.message = null;
+      state.user = null;
+      state.loading = '';
+      state.error = false;
+      state.message = '';
+      state.apiName = '';
+      state.alertType = '';
     },
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(signUpUserAction.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-        state.success = false;
-        state.message = null;
-      })
-      .addCase(signUpUserAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = action.payload;
-        state.success = true;
-        state.message = action.payload?.message || 'Sign up successful';
-      })
-      .addCase(signUpUserAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-        state.success = false;
-        state.message = null;
-      })
-      .addCase(signInUserAction.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-        state.success = false;
-        state.message = null;
-      })
-      .addCase(signInUserAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.success = true;
-        state.message = action.payload?.message || 'Sign in successful';
-        state.user = action.payload?.data?.user;
-        localStorage.setItem('user', JSON.stringify(action.payload?.data?.user));
-        localStorage.setItem('access_token', action.payload?.data?.token);
-      })
-      .addCase(signInUserAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-        state.success = false;
-        state.message = null;
-      })
-      .addCase(forgotPasswordAction.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-        state.message = null;
-      })
-      .addCase(forgotPasswordAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.success = true;
-        state.message = action.payload?.message || 'Reset link sent to your email';
-      })
-      .addCase(forgotPasswordAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-        state.message = null;
-      });
+    // === Signup ===
+    builder.addCase(signUpUserAction.pending, (state) => {
+      state.apiName = 'auth/signUp';
+      state.loading = 'auth/signUp';
+    });
+    builder.addCase(signUpUserAction.fulfilled, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'success';
+      state.message = payload?.message || 'Sign up successful';
+      state.user = payload?.data?.user || null;
+    });
+    builder.addCase(signUpUserAction.rejected, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'error';
+      if (payload) {
+        state.message = payload.message;
+      }
+    });
+
+    // === Sign In ===
+    builder.addCase(signInUserAction.pending, (state) => {
+      state.apiName = 'auth/signIn';
+      state.loading = 'auth/signIn';
+    });
+    builder.addCase(signInUserAction.fulfilled, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'success';
+      state.message = payload?.message || 'Sign in successful';
+      state.user = payload?.data?.user || null;
+      console.log(payload);
+      
+      localStorage.setItem('user', JSON.stringify(payload?.data?.user));
+      localStorage.setItem('access_token', payload?.data?.token);
+    });
+    builder.addCase(signInUserAction.rejected, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'error';
+      if (payload) {
+        state.message = payload.message;
+      }
+    });
+
+    // === Forgot Password ===
+    builder.addCase(forgotPasswordAction.pending, (state) => {
+      state.apiName = 'auth/forgotPassword';
+      state.loading = 'auth/forgotPassword';
+    });
+    builder.addCase(forgotPasswordAction.fulfilled, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'success';
+      state.message = payload?.message || 'Reset link sent to your email';
+    });
+    builder.addCase(forgotPasswordAction.rejected, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'error';
+      if (payload) {
+        state.message = payload.message;
+      }
+    });
   },
 });
 
-export const { resetAuthState } = authSlice.actions;
+// ✅ Export all defined actions including the newly added one
+export const { clearAuthMessage, setAuthError, resetAuthState } = authSlice.actions;
 export default authSlice.reducer;

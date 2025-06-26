@@ -7,66 +7,107 @@ import {
   fetchAllSubCategoriesByIdAction,
 } from '../../actions/seller/seller-sub-category.action';
 
+const initialState = {
+  list: [],
+  loading: '',
+  apiName: '',
+  alertType: '',
+  message: '',
+};
+
 const subCategorySlice = createSlice({
   name: 'subcategories',
-  initialState: {
-    list: [],
-    loading: false,
-    error: null,
+  initialState,
+  reducers: {
+    clearSubCategoryState: (state) => {
+      state.loading = '';
+      state.apiName = '';
+      state.alertType = '';
+      state.message = '';
+    },
   },
-  reducers: {},
   extraReducers: (builder) => {
-    builder
-      .addCase(fetchAllSubCategoriesAction.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchAllSubCategoriesAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.list = action.payload;
-      })
-      .addCase(fetchAllSubCategoriesAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+    // 🔄 FETCH ALL
+    builder.addCase(fetchAllSubCategoriesAction.pending, (state) => {
+      state.apiName = 'subcategory/fetchAll';
+      state.loading = 'subcategory/fetchAll';
+    });
+    builder.addCase(fetchAllSubCategoriesAction.fulfilled, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'success';
+      state.message = 'Subcategories fetched successfully';
+      state.list = payload;
+    });
+    builder.addCase(fetchAllSubCategoriesAction.rejected, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'error';
+      if (payload) {
+        state.message = payload.message;
+      }
+    });
 
-      .addCase(fetchAllSubCategoriesByIdAction.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchAllSubCategoriesByIdAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.list = action.payload;
-      })
-      .addCase(fetchAllSubCategoriesByIdAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+    // 🔄 FETCH BY CATEGORY ID
+    builder.addCase(fetchAllSubCategoriesByIdAction.pending, (state) => {
+      state.apiName = 'subcategory/fetchByCategoryId';
+      state.loading = 'subcategory/fetchByCategoryId';
+    });
+    builder.addCase(fetchAllSubCategoriesByIdAction.fulfilled, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'success';
+      state.message = 'Subcategories fetched by category ID';
+      state.list = payload;
+    });
+    builder.addCase(fetchAllSubCategoriesByIdAction.rejected, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'error';
+      if (payload) {
+        state.message = payload.message;
+      }
+    });
 
-      .addCase(addSubCategoryAction.fulfilled, (state, action) => {
-        state.list.push(action.payload);
-      })
-      .addCase(addSubCategoryAction.rejected, (state, action) => {
-        state.error = action.payload;
-      })
+    // ➕ ADD
+    builder.addCase(addSubCategoryAction.fulfilled, (state, { payload }) => {
+      state.alertType = 'success';
+      state.message = 'Subcategory added successfully';
+      state.list.push(payload);
+    });
+    builder.addCase(addSubCategoryAction.rejected, (state, { payload }) => {
+      state.alertType = 'error';
+      if (payload) {
+        state.message = payload.message;
+      }
+    });
 
-      .addCase(updateSubCategoryAction.fulfilled, (state, action) => {
-        const index = state.list.findIndex(sub => sub.id === action.payload.id);
-        if (index !== -1) {
-          state.list[index] = action.payload;
-        }
-      })
-      .addCase(updateSubCategoryAction.rejected, (state, action) => {
-        state.error = action.payload;
-      })
+    // ✏️ UPDATE
+    builder.addCase(updateSubCategoryAction.fulfilled, (state, { payload }) => {
+      state.alertType = 'success';
+      state.message = 'Subcategory updated successfully';
+      const index = state.list.findIndex((sub) => sub.id === payload.id);
+      if (index !== -1) {
+        state.list[index] = payload;
+      }
+    });
+    builder.addCase(updateSubCategoryAction.rejected, (state, { payload }) => {
+      state.alertType = 'error';
+      if (payload) {
+        state.message = payload.message;
+      }
+    });
 
-      .addCase(deleteSubCategoryAction.fulfilled, (state, action) => {
-        state.list = state.list.filter(sub => sub.id !== action.payload);
-      })
-      .addCase(deleteSubCategoryAction.rejected, (state, action) => {
-        state.error = action.payload;
-      });
+    // ❌ DELETE
+    builder.addCase(deleteSubCategoryAction.fulfilled, (state, { payload }) => {
+      state.alertType = 'success';
+      state.message = 'Subcategory deleted successfully';
+      state.list = state.list.filter((sub) => sub.id !== payload);
+    });
+    builder.addCase(deleteSubCategoryAction.rejected, (state, { payload }) => {
+      state.alertType = 'error';
+      if (payload) {
+        state.message = payload.message;
+      }
+    });
   },
 });
 
+export const { clearSubCategoryState } = subCategorySlice.actions;
 export default subCategorySlice.reducer;

@@ -10,23 +10,23 @@ const getAuthHeaders = () => {
 
 const fetchSellerProfileAction = createAsyncThunk(
   'sellerProfile/fetch',
-  async (_, { rejectWithValue }) => {
+  async (_, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'GET',
         url: '/profile',
         headers: getAuthHeaders(),
       });
-      return response.data.data;
-    } catch (err) {
-      return rejectWithValue(err?.response?.data?.message || 'Failed to fetch profile');
+      return fulfillWithValue(response.data?.data || []);
+    } catch (error) {
+      return rejectWithValue('Something is wrong here');
     }
   }
 );
 
 const updateSellerProfileAction = createAsyncThunk(
   'sellerProfile/update',
-  async ({ id, data }, { rejectWithValue }) => {
+  async ({ id, data }, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'PUT',
@@ -34,16 +34,16 @@ const updateSellerProfileAction = createAsyncThunk(
         data,
         headers: getAuthHeaders(),
       });
-      return response.data;
-    } catch (err) {
-      return rejectWithValue(err?.response?.data?.message || 'Update failed');
+      return fulfillWithValue(response.data?.data || []);
+    } catch (error) {
+      return rejectWithValue('Something is wrong here');
     }
   }
 );
 
 const resetSellerPasswordAction = createAsyncThunk(
   'seller/resetPassword',
-  async ({ oldPassword, newPassword }, { rejectWithValue }) => {
+  async ({ oldPassword, newPassword }, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'POST',
@@ -51,9 +51,9 @@ const resetSellerPasswordAction = createAsyncThunk(
         data: { oldPassword, newPassword },
         headers: getAuthHeaders(),
       });
-      return response.data;
-    } catch (err) {
-      return rejectWithValue(err?.response?.data?.message || 'Password reset failed');
+      return fulfillWithValue(response.data?.data || []);
+    } catch (error) {
+      return rejectWithValue('Something is wrong here');
     }
   }
 );

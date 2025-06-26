@@ -7,8 +7,11 @@ import {
 
 const initialState = {
   profile: null,
-  loading: false,
-  error: null,
+  loading: '',
+  apiName: '',
+  alertType: '',
+  message: '',
+  error: false,
   updateSuccess: false,
   passwordResetLoading: false,
   passwordResetSuccess: '',
@@ -19,60 +22,81 @@ const sellerProfileSlice = createSlice({
   name: 'sellerProfile',
   initialState,
   reducers: {
-    clearProfileMessages: (state) => {
-      state.error = null;
+    clearSellerProfileState: (state) => {
+      state.loading = '';
+      state.apiName = '';
+      state.alertType = '';
+      state.message = '';
+      state.error = false;
       state.updateSuccess = false;
       state.passwordResetSuccess = '';
       state.passwordResetError = '';
     },
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(fetchSellerProfileAction.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchSellerProfileAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.profile = action.payload;
-      })
-      .addCase(fetchSellerProfileAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+    // 🟡 FETCH PROFILE
+    builder.addCase(fetchSellerProfileAction.pending, (state) => {
+      state.apiName = 'seller/fetchProfile';
+      state.loading = 'seller/fetchProfile';
+    });
+    builder.addCase(fetchSellerProfileAction.fulfilled, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'success';
+      state.message = 'Profile fetched successfully';
+      state.profile = payload;
+    });
+    builder.addCase(fetchSellerProfileAction.rejected, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'error';
+      if (payload) {
+        state.message = payload.message;
+      }
+    });
 
-      .addCase(updateSellerProfileAction.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-        state.updateSuccess = false;
-      })
-      .addCase(updateSellerProfileAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.profile = action.payload;
-        state.updateSuccess = true;
-      })
-      .addCase(updateSellerProfileAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+    // 🟢 UPDATE PROFILE
+    builder.addCase(updateSellerProfileAction.pending, (state) => {
+      state.apiName = 'seller/updateProfile';
+      state.loading = 'seller/updateProfile';
+      state.updateSuccess = false;
+    });
+    builder.addCase(updateSellerProfileAction.fulfilled, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'success';
+      state.message = 'Profile updated successfully';
+      state.profile = payload;
+      state.updateSuccess = true;
+    });
+    builder.addCase(updateSellerProfileAction.rejected, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'error';
+      if (payload) {
+        state.message = payload.message;
+      }
+    });
 
-      .addCase(resetSellerPasswordAction.pending, (state) => {
-        state.passwordResetLoading = true;
-        state.passwordResetSuccess = '';
-        state.passwordResetError = '';
-      })
-      .addCase(resetSellerPasswordAction.fulfilled, (state, action) => {
-        state.passwordResetLoading = false;
-        state.passwordResetSuccess = action.payload;
-        console.log(action.payload);
-        
-      })
-      .addCase(resetSellerPasswordAction.rejected, (state, action) => {
-        state.passwordResetLoading = false;
-        state.passwordResetError = action.payload;
-      });
+    // 🔵 RESET PASSWORD
+    builder.addCase(resetSellerPasswordAction.pending, (state) => {
+      state.apiName = 'seller/resetPassword';
+      state.passwordResetLoading = true;
+      state.passwordResetSuccess = '';
+      state.passwordResetError = '';
+    });
+    builder.addCase(resetSellerPasswordAction.fulfilled, (state, { payload }) => {
+      state.passwordResetLoading = false;
+      state.alertType = 'success';
+      state.message = 'Password reset successfully';
+      state.passwordResetSuccess = payload;
+    });
+    builder.addCase(resetSellerPasswordAction.rejected, (state, { payload }) => {
+      state.passwordResetLoading = false;
+      state.alertType = 'error';
+      if (payload) {
+        state.message = payload.message;
+      }
+      state.passwordResetError = payload;
+    });
   },
 });
 
-export const { clearProfileMessages } = sellerProfileSlice.actions;
+export const { clearSellerProfileState } = sellerProfileSlice.actions;
 export default sellerProfileSlice.reducer;

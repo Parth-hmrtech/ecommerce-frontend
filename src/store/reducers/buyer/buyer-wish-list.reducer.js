@@ -21,48 +21,65 @@ const buyerWishlistSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(fetchBuyerWishlistAction.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchBuyerWishlistAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.items = Array.isArray(action.payload) ? action.payload : [];
-      })
-      .addCase(fetchBuyerWishlistAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+  // === Fetch Wishlist ===
+  builder.addCase(fetchBuyerWishlistAction.pending, (state) => {
+    state.apiName = 'buyerWishlist/fetch';
+    state.loading = 'buyerWishlist/fetch';
+  });
+  builder.addCase(fetchBuyerWishlistAction.fulfilled, (state, { payload }) => {
+    state.loading = '';
+    state.alertType = 'success';
+    state.message = 'Wishlist fetched successfully';
+    state.items = Array.isArray(payload) ? payload : [];
+  });
+  builder.addCase(fetchBuyerWishlistAction.rejected, (state, { payload }) => {
+    state.loading = '';
+    state.alertType = 'error';
+    if (payload) {
+      state.message = payload.message;
+    }
+  });
 
-      .addCase(addToBuyerWishlistAction.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(addToBuyerWishlistAction.fulfilled, (state, action) => {
-        state.loading = false;
-        if (action.payload) {
-          state.items.push(action.payload);
-        }
-      })
-      .addCase(addToBuyerWishlistAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+  // === Add to Wishlist ===
+  builder.addCase(addToBuyerWishlistAction.pending, (state) => {
+    state.apiName = 'buyerWishlist/add';
+    state.loading = 'buyerWishlist/add';
+  });
+  builder.addCase(addToBuyerWishlistAction.fulfilled, (state, { payload }) => {
+    state.loading = '';
+    state.alertType = 'success';
+    state.message = 'Item added to wishlist';
+    if (payload) {
+      state.items.push(payload);
+    }
+  });
+  builder.addCase(addToBuyerWishlistAction.rejected, (state, { payload }) => {
+    state.loading = '';
+    state.alertType = 'error';
+    if (payload) {
+      state.message = payload.message;
+    }
+  });
 
-      .addCase(deleteFromBuyerWishlistAction.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(deleteFromBuyerWishlistAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.items = state.items.filter((item) => item.id !== action.payload.wishlistId);
-      })
-      .addCase(deleteFromBuyerWishlistAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      });
-  },
+  // === Delete from Wishlist ===
+  builder.addCase(deleteFromBuyerWishlistAction.pending, (state) => {
+    state.apiName = 'buyerWishlist/delete';
+    state.loading = 'buyerWishlist/delete';
+  });
+  builder.addCase(deleteFromBuyerWishlistAction.fulfilled, (state, { payload }) => {
+    state.loading = '';
+    state.alertType = 'success';
+    state.message = 'Item removed from wishlist';
+    state.items = state.items.filter((item) => item.id !== payload.wishlistId);
+  });
+  builder.addCase(deleteFromBuyerWishlistAction.rejected, (state, { payload }) => {
+    state.loading = '';
+    state.alertType = 'error';
+      if (payload) {
+        state.message = payload.message;
+      }
+  });
+},
 });
 
 export const { resetBuyerWishlistState } = buyerWishlistSlice.actions;

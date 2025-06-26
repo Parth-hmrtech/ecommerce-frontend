@@ -10,23 +10,23 @@ const getTokenHeader = () => {
 
 const fetchAllCategoriesAction = createAsyncThunk(
   'categories/fetchAll',
-  async (_, { rejectWithValue }) => {
+  async (_, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'GET',
         url: '/seller/categories',
         headers: getTokenHeader(),
       });
-      return response.data.data;
-    } catch (err) {
-      return rejectWithValue(err?.response?.data?.message || 'Failed to fetch categories');
+      return fulfillWithValue(response.data?.data || []);
+    } catch (error) {
+      return rejectWithValue('Something is wrong here');
     }
   }
 );
 
 const addCategoryAction = createAsyncThunk(
   'categories/add',
-  async (data, { rejectWithValue }) => {
+  async (data, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'POST',
@@ -34,16 +34,16 @@ const addCategoryAction = createAsyncThunk(
         data,
         headers: getTokenHeader(),
       });
-      return response.data.data;
-    } catch (err) {
-      return rejectWithValue(err?.response?.data?.message || 'Failed to add category');
+      return fulfillWithValue(response.data?.data || []);
+    } catch (error) {
+      return rejectWithValue('Something is wrong here');
     }
   }
 );
 
 const updateCategoryAction = createAsyncThunk(
   'categories/update',
-  async ({ id, category_name }, { rejectWithValue }) => {
+  async ({ id, category_name }, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'PUT',
@@ -51,25 +51,25 @@ const updateCategoryAction = createAsyncThunk(
         data: { category_name },
         headers: getTokenHeader(),
       });
-      return response.data.data;
-    } catch (err) {
-      return rejectWithValue(err?.response?.data?.message || 'Failed to update category');
+      return fulfillWithValue(response.data?.data || []);
+    } catch (error) {
+      return rejectWithValue('Something is wrong here');
     }
   }
 );
 
 const deleteCategoryAction = createAsyncThunk(
   'categories/delete',
-  async (id, { rejectWithValue }) => {
+  async (id, { fulfillWithValue, rejectWithValue }) => {
     try {
       await apiRequest({
         method: 'DELETE',
         url: `/seller/categories/${id}`,
         headers: getTokenHeader(),
       });
-      return id;
-    } catch (err) {
-      return rejectWithValue(err?.response?.data?.message || err.message || 'Failed to delete category');
+      return fulfillWithValue(id);
+    } catch (error) {
+      return rejectWithValue('Something is wrong here');
     }
   }
 );
@@ -78,5 +78,5 @@ export {
   fetchAllCategoriesAction,
   addCategoryAction,
   updateCategoryAction,
-  deleteCategoryAction
+  deleteCategoryAction,
 };

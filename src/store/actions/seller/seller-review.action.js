@@ -10,36 +10,37 @@ const getAuthHeaders = () => {
 
 const fetchSellerReviewsAction = createAsyncThunk(
   'seller/fetchReviews',
-  async (_, { rejectWithValue }) => {
+  async (_, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'GET',
         url: '/seller/reviews/',
         headers: getAuthHeaders(),
       });
-      return response.data.data;
-    } catch (err) {
-      const message = err?.response?.data?.message || err.message || 'Failed to fetch reviews';
-      return rejectWithValue(message);
+      return fulfillWithValue(response.data?.data || []);
+    } catch (error) {
+      return rejectWithValue('Something is wrong here');
     }
   }
 );
 
 const deleteSellerReviewAction = createAsyncThunk(
   'seller/deleteReview',
-  async (reviewId, { rejectWithValue }) => {
+  async (reviewId, { fulfillWithValue, rejectWithValue }) => {
     try {
       await apiRequest({
         method: 'DELETE',
         url: `/seller/reviews/${reviewId}`,
         headers: getAuthHeaders(),
       });
-      return reviewId;
-    } catch (err) {
-      const message = err?.response?.data?.message || err.message || 'Failed to delete review';
-      return rejectWithValue(message);
+      return fulfillWithValue(reviewId);
+    } catch (error) {
+      return rejectWithValue('Something is wrong here');
     }
   }
 );
 
-export { fetchSellerReviewsAction, deleteSellerReviewAction };
+export {
+  fetchSellerReviewsAction,
+  deleteSellerReviewAction,
+};

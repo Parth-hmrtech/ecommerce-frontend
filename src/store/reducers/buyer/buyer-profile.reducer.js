@@ -7,13 +7,11 @@ import {
 
 const initialState = {
   profile: null,
-  loading: false,
-  error: null,
-  updateSuccess: false,
-
-  passwordResetLoading: false,
-  passwordResetSuccess: null, // Now holds full payload (can be object)
-  passwordResetError: '',
+  loading: '',
+  apiName: '',
+  alertType: '',
+  message: '',
+  error: false,
 };
 
 const buyerProfileSlice = createSlice({
@@ -21,59 +19,69 @@ const buyerProfileSlice = createSlice({
   initialState,
   reducers: {
     clearProfileMessages: (state) => {
-      state.error = null;
-      state.updateSuccess = false;
-      state.passwordResetSuccess = null;
-      state.passwordResetError = '';
+      state.loading = '';
+      state.apiName = '';
+      state.alertType = '';
+      state.message = '';
+      state.error = false;
     },
   },
   extraReducers: (builder) => {
-    builder
-      // --- Fetch Buyer Profile ---
-      .addCase(fetchBuyerProfileAction.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchBuyerProfileAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.profile = action.payload;
-      })
-      .addCase(fetchBuyerProfileAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+    // === Fetch Profile ===
+    builder.addCase(fetchBuyerProfileAction.pending, (state) => {
+      state.apiName = 'buyerProfile/fetch';
+      state.loading = 'buyerProfile/fetch';
+    });
+    builder.addCase(fetchBuyerProfileAction.fulfilled, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'success';
+      state.message = 'Profile loaded successfully';
+      state.profile = payload;
+    });
+    builder.addCase(fetchBuyerProfileAction.rejected, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'error';
+      if (payload) {
+        state.message = payload.message;
+      }
+    });
 
-      // --- Update Buyer Profile ---
-      .addCase(updateBuyerProfileAction.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-        state.updateSuccess = false;
-      })
-      .addCase(updateBuyerProfileAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.profile = action.payload;
-        state.updateSuccess = true;
-      })
-      .addCase(updateBuyerProfileAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+    // === Update Profile ===
+    builder.addCase(updateBuyerProfileAction.pending, (state) => {
+      state.apiName = 'buyerProfile/update';
+      state.loading = 'buyerProfile/update';
+    });
+    builder.addCase(updateBuyerProfileAction.fulfilled, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'success';
+      state.message = 'Profile updated successfully';
+      state.profile = payload;
+    });
+    builder.addCase(updateBuyerProfileAction.rejected, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'error';
+      if (payload) {
+        state.message = payload.message;
+      }
+    });
 
-      // --- Reset Password ---
-      .addCase(resetBuyerPasswordAction.pending, (state) => {
-        state.passwordResetLoading = true;
-        state.passwordResetSuccess = null;
-        state.passwordResetError = '';
-      })
-      .addCase(resetBuyerPasswordAction.fulfilled, (state, action) => {
-        state.passwordResetLoading = false;
-        state.passwordResetSuccess = action.payload; // Store full payload object
-        console.log('Password reset success payload:', action.payload);
-      })
-      .addCase(resetBuyerPasswordAction.rejected, (state, action) => {
-        state.passwordResetLoading = false;
-        state.passwordResetError = action.payload;
-      });
+    // === Reset Password ===
+    builder.addCase(resetBuyerPasswordAction.pending, (state) => {
+      state.apiName = 'buyerProfile/resetPassword';
+      state.loading = 'buyerProfile/resetPassword';
+    });
+    builder.addCase(resetBuyerPasswordAction.fulfilled, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'success';
+      state.message = payload?.message || 'Password updated';
+    });
+    builder.addCase(resetBuyerPasswordAction.rejected, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'error';
+      if (payload) {
+        state.message = payload.message;
+      }
+    });
   },
 });
 

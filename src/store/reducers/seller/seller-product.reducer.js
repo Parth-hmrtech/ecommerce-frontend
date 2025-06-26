@@ -9,10 +9,13 @@ import {
 
 const initialState = {
   list: [],
-  loading: false,
-  error: null,
+  loading: '',
+  apiName: '',
+  alertType: '',
+  message: '',
+  error: false,
   imageUploadSuccess: false,
-  imageDeleteSuccess: false,
+  imageDeleteSuccess: false, 
 };
 
 const productSlice = createSlice({
@@ -21,83 +24,115 @@ const productSlice = createSlice({
   reducers: {
     resetProductState: (state) => {
       state.list = [];
-      state.loading = false;
-      state.error = null;
+      state.loading = '';
+      state.apiName = '';
+      state.alertType = '';
+      state.message = '';
+      state.error = false;
       state.imageUploadSuccess = false;
       state.imageDeleteSuccess = false;
     },
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(fetchAllProductsAction.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchAllProductsAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.list = action.payload;
-      })
-      .addCase(fetchAllProductsAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+    // === Fetch Products ===
+    builder.addCase(fetchAllProductsAction.pending, (state) => {
+      state.apiName = 'seller/fetchProducts';
+      state.loading = 'seller/fetchProducts';
+      state.error = false;
+    });
+    builder.addCase(fetchAllProductsAction.fulfilled, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'success';
+      state.message = 'Products fetched successfully';
+      state.list = payload || [];
+    });
+    builder.addCase(fetchAllProductsAction.rejected, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'error';
+      state.error = true;
+      if (payload) state.message = payload.message;
+    });
 
-      .addCase(addProductAction.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(addProductAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.list.push(action.payload);
-      })
-      .addCase(addProductAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+    // === Add Product ===
+    builder.addCase(addProductAction.pending, (state) => {
+      state.apiName = 'seller/addProduct';
+      state.loading = 'seller/addProduct';
+      state.error = false;
+    });
+    builder.addCase(addProductAction.fulfilled, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'success';
+      state.message = 'Product added successfully';
+      state.list.push(payload);
+    });
+    builder.addCase(addProductAction.rejected, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'error';
+      state.error = true;
+      if (payload) state.message = payload.message;
+    });
 
-      .addCase(updateProductAction.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(updateProductAction.fulfilled, (state, action) => {
-        state.loading = false;
-        const index = state.list.findIndex((p) => p.id === action.payload.id);
-        if (index !== -1) {
-          state.list[index] = action.payload;
-        }
-      })
-      .addCase(updateProductAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+    // === Update Product ===
+    builder.addCase(updateProductAction.pending, (state) => {
+      state.apiName = 'seller/updateProduct';
+      state.loading = 'seller/updateProduct';
+      state.error = false;
+    });
+    builder.addCase(updateProductAction.fulfilled, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'success';
+      state.message = 'Product updated successfully';
+      const index = state.list.findIndex((p) => p.id === payload.id);
+      if (index !== -1) {
+        state.list[index] = payload;
+      }
+    });
+    builder.addCase(updateProductAction.rejected, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'error';
+      state.error = true;
+      if (payload) state.message = payload.message ;
+    });
 
-      .addCase(deleteProductAction.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(deleteProductAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.list = state.list.filter((p) => p.id !== action.payload);
-      })
-      .addCase(deleteProductAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+    // === Delete Product ===
+    builder.addCase(deleteProductAction.pending, (state) => {
+      state.apiName = 'seller/deleteProduct';
+      state.loading = 'seller/deleteProduct';
+      state.error = false;
+    });
+    builder.addCase(deleteProductAction.fulfilled, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'success';
+      state.message = 'Product deleted successfully';
+      state.list = state.list.filter((p) => p.id !== payload);
+    });
+    builder.addCase(deleteProductAction.rejected, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'error';
+      state.error = true;
+      if (payload) state.message = payload.message ;
+    });
 
-      .addCase(uploadProductImageAction.pending, (state) => {
-        state.loading = true;
-        state.imageUploadSuccess = false;
-        state.error = null;
-      })
-      .addCase(uploadProductImageAction.fulfilled, (state) => {
-        state.loading = false;
-        state.imageUploadSuccess = true;
-      })
-      .addCase(uploadProductImageAction.rejected, (state, action) => {
-        state.loading = false;
-        state.imageUploadSuccess = false;
-        state.error = action.payload;
-      });
+    // === Upload Product Image ===
+    builder.addCase(uploadProductImageAction.pending, (state) => {
+      state.apiName = 'seller/uploadProductImage';
+      state.loading = 'seller/uploadProductImage';
+      state.error = false;
+      state.imageUploadSuccess = false;
+    });
+    builder.addCase(uploadProductImageAction.fulfilled, (state) => {
+      state.loading = '';
+      state.alertType = 'success';
+      state.message = 'Product image uploaded successfully';
+      state.imageUploadSuccess = true;
+    });
+    builder.addCase(uploadProductImageAction.rejected, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'error';
+      state.imageUploadSuccess = false;
+      state.error = true;
+      if (payload) state.message = payload.message;
+    });
   },
 });
 

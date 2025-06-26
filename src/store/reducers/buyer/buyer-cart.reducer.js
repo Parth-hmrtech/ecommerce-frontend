@@ -4,95 +4,121 @@ import {
   addToBuyerCartAction,
   updateBuyerCartAction,
   deleteBuyerCartAction,
-  deleteBuyerIdCartAction, 
+  deleteBuyerIdCartAction,
 } from '../../actions/buyer/buyer-cart.action';
+
+const initialState = {
+  cart: [],
+  loading: '',
+  apiName: '',
+  alertType: '',
+  message: '',
+  error: false,
+};
 
 const buyerCartSlice = createSlice({
   name: 'buyerCart',
-  initialState: {
-    cart: [],
-    loading: false,
-    error: null,
-  },
+  initialState,
   reducers: {
     clearBuyerCart: (state) => {
       state.cart = [];
+      state.loading = '';
+      state.apiName = '';
+      state.alertType = '';
+      state.message = '';
+      state.error = false;
     },
   },
   extraReducers: (builder) => {
-    builder
-      // Fetch
-      .addCase(fetchBuyerCartAction.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchBuyerCartAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.cart = action.payload;
-      })
-      .addCase(fetchBuyerCartAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+    // === FETCH CART ===
+    builder.addCase(fetchBuyerCartAction.pending, (state) => {
+      state.apiName = 'buyerCart/fetch';
+      state.loading = 'buyerCart/fetch';
+    });
+    builder.addCase(fetchBuyerCartAction.fulfilled, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'success';
+      state.message = 'Cart fetched successfully';
+      state.cart = payload;
+    });
+    builder.addCase(fetchBuyerCartAction.rejected, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'error';
+      if (payload) state.message = payload.message;
+    });
 
-      // Add
-      .addCase(addToBuyerCartAction.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(addToBuyerCartAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.cart.push(action.payload);
-      })
-      .addCase(addToBuyerCartAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+    // === ADD TO CART ===
+    builder.addCase(addToBuyerCartAction.pending, (state) => {
+      state.apiName = 'buyerCart/add';
+      state.loading = 'buyerCart/add';
+    });
+    builder.addCase(addToBuyerCartAction.fulfilled, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'success';
+      state.message = 'Item added to cart';
+      state.cart.push(payload);
+    });
+    builder.addCase(addToBuyerCartAction.rejected, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'error';
+      if (payload) state.message = payload.message;
+    });
 
-      // Update
-      .addCase(updateBuyerCartAction.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(updateBuyerCartAction.fulfilled, (state, action) => {
-        state.loading = false;
-        const index = state.cart.findIndex((item) => item.id === action.payload.id);
-        if (index !== -1) {
-          state.cart[index] = action.payload;
-        }
-      })
-      .addCase(updateBuyerCartAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+    // === UPDATE CART ITEM ===
+    builder.addCase(updateBuyerCartAction.pending, (state) => {
+      state.apiName = 'buyerCart/update';
+      state.loading = 'buyerCart/update';
+    });
+    builder.addCase(updateBuyerCartAction.fulfilled, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'success';
+      state.message = 'Cart item updated';
+      const index = state.cart.findIndex((item) => item.id === payload.id);
+      if (index !== -1) {
+        state.cart[index] = payload;
+      }
+    });
+    builder.addCase(updateBuyerCartAction.rejected, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'error';
+      if (payload) state.message = payload.message;
+    });
 
-      // Delete single item
-      .addCase(deleteBuyerCartAction.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(deleteBuyerCartAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.cart = state.cart.filter((item) => item.id !== action.payload);
-      })
-      .addCase(deleteBuyerCartAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+    // === DELETE CART ITEM ===
+    builder.addCase(deleteBuyerCartAction.pending, (state) => {
+      state.apiName = 'buyerCart/delete';
+      state.loading = 'buyerCart/delete';
+    });
+    builder.addCase(deleteBuyerCartAction.fulfilled, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'success';
+      state.message = 'Item removed from cart';
+      state.cart = state.cart.filter((item) => item.id !== payload);
+    });
+    builder.addCase(deleteBuyerCartAction.rejected, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'error';
+      if (payload) state.message = payload.message;
+    });
 
-      .addCase(deleteBuyerIdCartAction.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(deleteBuyerIdCartAction.fulfilled, (state) => {
-        state.loading = false;
-        state.cart = []; 
-      })
-      .addCase(deleteBuyerIdCartAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || 'Failed to delete buyer cart';
-      });
+    // === DELETE ENTIRE CART BY BUYER ID ===
+    builder.addCase(deleteBuyerIdCartAction.pending, (state) => {
+      state.apiName = 'buyerCart/deleteAll';
+      state.loading = 'buyerCart/deleteAll';
+    });
+    builder.addCase(deleteBuyerIdCartAction.fulfilled, (state) => {
+      state.loading = '';
+      state.alertType = 'success';
+      state.message = 'Cart cleared';
+      state.cart = [];
+    });
+    builder.addCase(deleteBuyerIdCartAction.rejected, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'error';
+      state.message = payload?.message;
+    });
   },
+  
 });
 
 export const { clearBuyerCart } = buyerCartSlice.actions;

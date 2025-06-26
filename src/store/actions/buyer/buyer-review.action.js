@@ -10,25 +10,23 @@ const getTokenHeader = () => {
 
 const fetchBuyerReviewByProductIdAction = createAsyncThunk(
   'buyerReview/fetchByProductId',
-  async (productId, { rejectWithValue }) => {
+  async (productId, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'GET',
         url: `/buyer/reviews/${productId}`,
         headers: getTokenHeader(),
       });
-      return response.data?.data;
+      return fulfillWithValue(response.data?.data || []);
     } catch (error) {
-      return rejectWithValue(
-        error?.response?.data?.message || error.message || 'Failed to fetch review'
-      );
+      return rejectWithValue('Something is wrong here');
     }
   }
 );
 
 const addBuyerReviewAction = createAsyncThunk(
   'buyerReview/add',
-  async ({ product_id, order_id, buyer_id, seller_id, rating, comment }, { rejectWithValue }) => {
+  async ({ product_id, order_id, buyer_id, seller_id, rating, comment }, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'POST',
@@ -36,18 +34,16 @@ const addBuyerReviewAction = createAsyncThunk(
         data: { product_id, order_id, buyer_id, seller_id, rating, comment },
         headers: getTokenHeader(),
       });
-      return response.data?.data;
+      return fulfillWithValue(response.data?.data || []);
     } catch (error) {
-      return rejectWithValue(
-        error?.response?.data?.message || error.message || 'Failed to add review'
-      );
+      return rejectWithValue('Something is wrong here');
     }
   }
 );
 
 const updateBuyerReviewAction = createAsyncThunk(
   'buyerReview/update',
-  async ({ id, rating, comment }, { rejectWithValue }) => {
+  async ({ id, rating, comment }, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'PUT',
@@ -55,29 +51,25 @@ const updateBuyerReviewAction = createAsyncThunk(
         data: { rating, comment },
         headers: getTokenHeader(),
       });
-      return response.data?.data;
+      return fulfillWithValue(response.data?.data || []);
     } catch (error) {
-      return rejectWithValue(
-        error?.response?.data?.message || error.message || 'Failed to update review'
-      );
+      return rejectWithValue('Something is wrong here');
     }
   }
 );
 
 const deleteBuyerReviewAction = createAsyncThunk(
   'buyerReview/delete',
-  async (id, { rejectWithValue }) => {
+  async (id, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'DELETE',
         url: `/buyer/reviews/${id}`,
         headers: getTokenHeader(),
       });
-      return response.data?.data;
+      return fulfillWithValue(response.data?.data || []);
     } catch (error) {
-      return rejectWithValue(
-        error?.response?.data?.message || error.message || 'Failed to delete review'
-      );
+      return rejectWithValue('Something is wrong here');
     }
   }
 );

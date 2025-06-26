@@ -7,9 +7,10 @@ const getTokenHeader = () => {
     Authorization: `Bearer ${token}`,
   };
 };
- const placeBuyerOrderAction = createAsyncThunk(
+
+const placeBuyerOrderAction = createAsyncThunk(
   'buyerOrder/placeBuyerOrder',
-  async ({ products, delivery_address }, { rejectWithValue }) => {
+  async ({ products, delivery_address }, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'POST',
@@ -17,53 +18,48 @@ const getTokenHeader = () => {
         data: { products, delivery_address },
         headers: getTokenHeader(),
       });
-      return response.data?.data;
+      return fulfillWithValue(response.data?.data || []);
     } catch (error) {
-      return rejectWithValue(
-        error?.response?.data?.message || error.message || 'Failed to place order'
-      );
+      return rejectWithValue('Something is wrong here');
     }
   }
-  
-);const fetchBuyerOrdersAction = createAsyncThunk(
+);
+
+const fetchBuyerOrdersAction = createAsyncThunk(
   'buyerOrder/fetchBuyerOrders',
-  async (_, { rejectWithValue }) => {
+  async (_, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'GET',
         url: '/buyer/orders',
         headers: getTokenHeader(),
       });
-      return response.data?.data || [];
+      return fulfillWithValue(response.data?.data || []);
     } catch (error) {
-      return rejectWithValue(
-        error?.response?.data?.message || error.message || 'Failed to fetch orders'
-      );
+      return rejectWithValue('Something is wrong here');
     }
   }
 );
 
 const fetchBuyerOrderByIdAction = createAsyncThunk(
   'buyerOrder/fetchBuyerOrderById',
-  async (orderId, { rejectWithValue }) => {
+  async (orderId, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'GET',
         url: `/buyer/orders/${orderId}`,
         headers: getTokenHeader(),
       });
-      return response.data?.data;
+      return fulfillWithValue(response.data?.data || []);
     } catch (error) {
-      return rejectWithValue(
-        error?.response?.data?.message || error.message || 'Failed to fetch order'
-      );
+      return rejectWithValue('Something is wrong here');
     }
   }
 );
 
 const updateBuyerOrderAddressAction = createAsyncThunk(
   'buyerOrder/updateBuyerOrderAddress',
-  async ({ orderId, delivery_address }, { rejectWithValue }) => {
+  async ({ orderId, delivery_address }, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'PUT',
@@ -71,29 +67,25 @@ const updateBuyerOrderAddressAction = createAsyncThunk(
         data: { delivery_address },
         headers: getTokenHeader(),
       });
-      return response.data?.data;
+      return fulfillWithValue(response.data?.data || []);
     } catch (error) {
-      return rejectWithValue(
-        error?.response?.data?.message || error.message || 'Failed to update address'
-      );
+      return rejectWithValue('Something is wrong here');
     }
   }
 );
 
 const deleteBuyerOrderAction = createAsyncThunk(
   'buyerOrder/deleteBuyerOrder',
-  async (orderId, { rejectWithValue }) => {
+  async (orderId, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'DELETE',
         url: `/buyer/orders/${orderId}`,
         headers: getTokenHeader(),
       });
-      return response.data?.data;
+      return fulfillWithValue(response.data?.data || []);
     } catch (error) {
-      return rejectWithValue(
-        error?.response?.data?.message || error.message || 'Failed to delete order'
-      );
+      return rejectWithValue('Something is wrong here');
     }
   }
 );
@@ -103,5 +95,5 @@ export {
   fetchBuyerOrdersAction,
   fetchBuyerOrderByIdAction,
   updateBuyerOrderAddressAction,
-  deleteBuyerOrderAction
+  deleteBuyerOrderAction,
 };

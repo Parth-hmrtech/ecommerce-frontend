@@ -10,25 +10,23 @@ const getTokenHeader = () => {
 
 const fetchBuyerWishlistAction = createAsyncThunk(
   'buyerWishlist/fetchBuyerWishlist',
-  async (_, { rejectWithValue }) => {
+  async (_, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'GET',
         url: '/buyer/wishlist',
         headers: getTokenHeader(),
       });
-      return response.data?.data;
+      return fulfillWithValue(response.data?.data || []);
     } catch (error) {
-      return rejectWithValue(
-        error?.response?.data?.message || error.message || 'Failed to fetch wishlist'
-      );
+      return rejectWithValue('Something is wrong here');
     }
   }
 );
 
 const addToBuyerWishlistAction = createAsyncThunk(
   'buyerWishlist/addToBuyerWishlist',
-  async ({ buyer_id, product_id }, { rejectWithValue }) => {
+  async ({ buyer_id, product_id }, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'POST',
@@ -36,32 +34,28 @@ const addToBuyerWishlistAction = createAsyncThunk(
         data: { buyer_id, product_id },
         headers: getTokenHeader(),
       });
-      return response.data?.data;
+      return fulfillWithValue(response.data?.data || []);
     } catch (error) {
-      return rejectWithValue(
-        error?.response?.data?.message || error.message || 'Failed to add to wishlist'
-      );
+      return rejectWithValue('Something is wrong here');
     }
   }
 );
 
 const deleteFromBuyerWishlistAction = createAsyncThunk(
   'buyerWishlist/deleteFromBuyerWishlist',
-  async (wishlistId, { rejectWithValue }) => {
+  async (wishlistId, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'DELETE',
         url: `/buyer/wishlist/${wishlistId}`,
         headers: getTokenHeader(),
       });
-      return {
+      return fulfillWithValue({
         wishlistId,
         message: response?.data?.message || 'Deleted from wishlist',
-      };
+      });
     } catch (error) {
-      return rejectWithValue(
-        error?.response?.data?.message || error.message || 'Failed to delete from wishlist'
-      );
+      return rejectWithValue('Something is wrong here');
     }
   }
 );

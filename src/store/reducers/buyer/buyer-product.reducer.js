@@ -3,29 +3,47 @@ import { fetchBuyerProductByIdAction } from '../../actions/buyer/buyer-product.a
 
 const initialState = {
   product: null,
-  loading: false,
-  error: null,
+  loading: '',
+  apiName: '',
+  alertType: '',
+  message: '',
+  error: false,
 };
 
 const buyerProductSlice = createSlice({
   name: 'buyerProduct',
   initialState,
-  reducers: {},
+  reducers: {
+    clearBuyerProductState: (state) => {
+      state.product = null;
+      state.loading = '';
+      state.apiName = '';
+      state.alertType = '';
+      state.message = '';
+      state.error = false;
+    },
+  },
   extraReducers: (builder) => {
-    builder
-      .addCase(fetchBuyerProductByIdAction.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchBuyerProductByIdAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.product = action.payload;
-      })
-      .addCase(fetchBuyerProductByIdAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      });
+    // === Fetch Product By ID ===
+    builder.addCase(fetchBuyerProductByIdAction.pending, (state) => {
+      state.apiName = 'buyerProduct/fetchById';
+      state.loading = 'buyerProduct/fetchById';
+    });
+    builder.addCase(fetchBuyerProductByIdAction.fulfilled, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'success';
+      state.message = 'Product fetched successfully';
+      state.product = payload;
+    });
+    builder.addCase(fetchBuyerProductByIdAction.rejected, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'error';
+      if (payload) {
+        state.message = payload.message;
+      }
+    });
   },
 });
 
+export const { clearBuyerProductState } = buyerProductSlice.actions;
 export default buyerProductSlice.reducer;

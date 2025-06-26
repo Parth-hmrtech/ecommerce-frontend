@@ -10,23 +10,23 @@ const getAuthHeaders = () => {
 
 const fetchAllProductsAction = createAsyncThunk(
   'products/fetchAll',
-  async (_, { rejectWithValue }) => {
+  async (_, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'GET',
         url: '/seller/products',
         headers: getAuthHeaders(),
       });
-      return response.data.data;
+      return fulfillWithValue(response.data?.data || []);
     } catch (error) {
-      return rejectWithValue(error?.response?.data?.message || 'Failed to fetch products');
+      return rejectWithValue('Something is wrong here');
     }
   }
 );
 
 const addProductAction = createAsyncThunk(
   'products/add',
-  async (data, { rejectWithValue }) => {
+  async (data, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'POST',
@@ -34,16 +34,16 @@ const addProductAction = createAsyncThunk(
         data,
         headers: getAuthHeaders(),
       });
-      return response.data.data;
+      return fulfillWithValue(response.data?.data || []);
     } catch (error) {
-      return rejectWithValue(error?.response?.data?.message || 'Failed to add product');
+      return rejectWithValue('Something is wrong here');
     }
   }
 );
 
 const updateProductAction = createAsyncThunk(
   'products/update',
-  async ({ id, ...productData }, { rejectWithValue }) => {
+  async ({ id, ...productData }, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'PUT',
@@ -51,35 +51,34 @@ const updateProductAction = createAsyncThunk(
         data: productData,
         headers: getAuthHeaders(),
       });
-      return response.data.data;
+      return fulfillWithValue(response.data?.data || []);
     } catch (error) {
-      return rejectWithValue(error?.response?.data?.message || 'Failed to update product');
+      return rejectWithValue('Something is wrong here');
     }
   }
 );
 
 const deleteProductAction = createAsyncThunk(
   'products/delete',
-  async (id, { rejectWithValue }) => {
+  async (id, { fulfillWithValue, rejectWithValue }) => {
     try {
       await apiRequest({
         method: 'DELETE',
         url: `/seller/products/${id}`,
         headers: getAuthHeaders(),
       });
-      return id;
+      return fulfillWithValue(id);
     } catch (error) {
-      return rejectWithValue(error?.response?.data?.message || 'Failed to delete product');
+      return rejectWithValue('Something is wrong here');
     }
   }
 );
 
 const uploadProductImageAction = createAsyncThunk(
   'productImages/upload',
-  async (formData, { rejectWithValue }) => {
+  async (formData, { fulfillWithValue, rejectWithValue }) => {
     try {
       const token = localStorage.getItem('access_token');
-
       const response = await apiRequest({
         method: 'POST',
         url: '/seller/products/image',
@@ -89,10 +88,9 @@ const uploadProductImageAction = createAsyncThunk(
           Authorization: `Bearer ${token}`,
         },
       });
-
-      return response.data.data;
+      return fulfillWithValue(response.data?.data || []);
     } catch (error) {
-      return rejectWithValue(error?.response?.data?.message || 'Failed to upload image');
+      return rejectWithValue('Something is wrong here');
     }
   }
 );

@@ -10,9 +10,11 @@ import {
 const initialState = {
   orders: [],
   order: null,
-  loading: false,
-  error: null,
-  success: false,
+  loading: '',
+  apiName: '',
+  alertType: '',
+  message: '',
+  error: false,
 };
 
 const buyerOrderSlice = createSlice({
@@ -20,82 +22,97 @@ const buyerOrderSlice = createSlice({
   initialState,
   reducers: {
     clearOrderState: (state) => {
-      state.success = false;
-      state.error = null;
+      state.apiName = '';
+      state.alertType = '';
+      state.message = '';
+      state.error = false;
     },
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(placeBuyerOrderAction.pending, (state) => {
-        state.loading = true;
-        state.success = false;
-        state.error = null;
-      })
-      .addCase(placeBuyerOrderAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.success = true;
-        state.orders.push(action.payload);
-      })
-      .addCase(placeBuyerOrderAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+    // === PLACE ORDER ===
+    builder.addCase(placeBuyerOrderAction.pending, (state) => {
+      state.apiName = 'buyerOrder/place';
+      state.loading = 'buyerOrder/place';
+    });
+    builder.addCase(placeBuyerOrderAction.fulfilled, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'success';
+      state.message = 'Order placed successfully';
+      state.orders.push(payload);
+    });
+    builder.addCase(placeBuyerOrderAction.rejected, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'error';
+      if (payload) state.message = payload.message;
+    });
 
-      .addCase(fetchBuyerOrdersAction.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchBuyerOrdersAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.orders = action.payload;
-      })
-      .addCase(fetchBuyerOrdersAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+    // === FETCH ALL ORDERS ===
+    builder.addCase(fetchBuyerOrdersAction.pending, (state) => {
+      state.apiName = 'buyerOrder/fetchAll';
+      state.loading = 'buyerOrder/fetchAll';
+    });
+    builder.addCase(fetchBuyerOrdersAction.fulfilled, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'success';
+      state.message = 'Orders fetched successfully';
+      state.orders = payload;
+    });
+    builder.addCase(fetchBuyerOrdersAction.rejected, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'error';
+      if (payload) state.message = payload.message;
+    });
 
-      .addCase(fetchBuyerOrderByIdAction.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchBuyerOrderByIdAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.order = action.payload;
-      })
-      .addCase(fetchBuyerOrderByIdAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+    // === FETCH ORDER BY ID ===
+    builder.addCase(fetchBuyerOrderByIdAction.pending, (state) => {
+      state.apiName = 'buyerOrder/fetchById';
+      state.loading = 'buyerOrder/fetchById';
+    });
+    builder.addCase(fetchBuyerOrderByIdAction.fulfilled, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'success';
+      state.message = 'Order details loaded';
+      state.order = payload;
+    });
+    builder.addCase(fetchBuyerOrderByIdAction.rejected, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'error';
+      if (payload) state.message = payload.message;
+    });
 
-      .addCase(updateBuyerOrderAddressAction.pending, (state) => {
-        state.loading = true;
-        state.success = false;
-        state.error = null;
-      })
-      .addCase(updateBuyerOrderAddressAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.success = true;
-        state.order = action.payload;
-      })
-      .addCase(updateBuyerOrderAddressAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+    // === UPDATE ORDER ADDRESS ===
+    builder.addCase(updateBuyerOrderAddressAction.pending, (state) => {
+      state.apiName = 'buyerOrder/updateAddress';
+      state.loading = 'buyerOrder/updateAddress';
+    });
+    builder.addCase(updateBuyerOrderAddressAction.fulfilled, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'success';
+      state.message = 'Address updated successfully';
+      state.order = payload;
+    });
+    builder.addCase(updateBuyerOrderAddressAction.rejected, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'error';
+      if (payload) state.message = payload.message;
+    });
 
-      .addCase(deleteBuyerOrderAction.pending, (state) => {
-        state.loading = true;
-        state.success = false;
-        state.error = null;
-      })
-      .addCase(deleteBuyerOrderAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.success = true;
-        state.orders = state.orders.filter((o) => o.id !== action.meta.arg);
-      })
-      .addCase(deleteBuyerOrderAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      });
+    // === DELETE ORDER ===
+    builder.addCase(deleteBuyerOrderAction.pending, (state) => {
+      state.apiName = 'buyerOrder/delete';
+      state.loading = 'buyerOrder/delete';
+    });
+    builder.addCase(deleteBuyerOrderAction.fulfilled, (state, action) => {
+      state.loading = '';
+      state.alertType = 'success';
+      state.message = 'Order deleted successfully';
+      state.orders = state.orders.filter((o) => o.id !== action.meta.arg);
+    });
+    builder.addCase(deleteBuyerOrderAction.rejected, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'error';
+      if (payload) state.message = payload.message;
+    });
   },
 });
 

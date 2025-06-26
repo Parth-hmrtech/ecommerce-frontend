@@ -1,40 +1,68 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchSellerReviewsAction, deleteSellerReviewAction } from '../../actions/seller/seller-review.action';
+import {
+  fetchSellerReviewsAction,
+  deleteSellerReviewAction,
+} from '../../actions/seller/seller-review.action';
+
+const initialState = {
+  reviews: [],
+  loading: '',
+  apiName: '',
+  alertType: '',
+  message: '',
+};
 
 const sellerReviewsSlice = createSlice({
   name: 'sellerReviews',
-  initialState: {
-    reviews: [],
-    loading: false,
-    error: null,
+  initialState,
+  reducers: {
+    clearSellerReviewState: (state) => {
+      state.loading = '';
+      state.apiName = '';
+      state.alertType = '';
+      state.message = '';
+    },
   },
-  reducers: {},
   extraReducers: (builder) => {
-    builder
-      .addCase(fetchSellerReviewsAction.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchSellerReviewsAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.reviews = action.payload;
-      })
-      .addCase(fetchSellerReviewsAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      .addCase(deleteSellerReviewAction.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(deleteSellerReviewAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.reviews = state.reviews.filter((review) => review.id !== action.payload);
-      })
-      .addCase(deleteSellerReviewAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      });
+    // 🟡 FETCH REVIEWS
+    builder.addCase(fetchSellerReviewsAction.pending, (state) => {
+      state.apiName = 'seller/fetchReviews';
+      state.loading = 'seller/fetchReviews';
+    });
+    builder.addCase(fetchSellerReviewsAction.fulfilled, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'success';
+      state.message = 'Reviews fetched successfully';
+      state.reviews = payload;
+    });
+    builder.addCase(fetchSellerReviewsAction.rejected, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'error';
+      if (payload) {
+        state.message = payload.message;
+      }
+    });
+
+    // ❌ DELETE REVIEW
+    builder.addCase(deleteSellerReviewAction.pending, (state) => {
+      state.apiName = 'seller/deleteReview';
+      state.loading = 'seller/deleteReview';
+    });
+    builder.addCase(deleteSellerReviewAction.fulfilled, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'success';
+      state.message = 'Review deleted successfully';
+      state.reviews = state.reviews.filter((review) => review.id !== payload);
+    });
+    builder.addCase(deleteSellerReviewAction.rejected, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'error';
+      if (payload) {
+        state.message = payload.message;
+      }
+    });
   },
 });
 
+export const { clearSellerReviewState } = sellerReviewsSlice.actions;
 export default sellerReviewsSlice.reducer;

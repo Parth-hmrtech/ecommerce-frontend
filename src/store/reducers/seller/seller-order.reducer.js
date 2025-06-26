@@ -1,29 +1,50 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { fetchSellerOrdersAction } from '../../actions/seller/seller-order.action';
 
-const orderSlice = createSlice({
+const initialState = {
+  list: [],
+  loading: '',
+  apiName: '',
+  alertType: '',
+  message: '',
+  error: false,
+};
+
+const sellerOrderSlice = createSlice({
   name: 'sellerOrders',
-  initialState: {
-    list: [],
-    loading: false,
-    error: null,
+  initialState,
+  reducers: {
+    clearSellerOrderState: (state) => {
+      state.list = [];
+      state.loading = '';
+      state.apiName = '';
+      state.alertType = '';
+      state.message = '';
+      state.error = false;
+    },
   },
-  reducers: {},
   extraReducers: (builder) => {
-    builder
-      .addCase(fetchSellerOrdersAction.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchSellerOrdersAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.list = action.payload || [];
-      })
-      .addCase(fetchSellerOrdersAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || 'Failed to fetch orders';
-      });
+    builder.addCase(fetchSellerOrdersAction.pending, (state) => {
+      state.apiName = 'seller/fetchOrders';
+      state.loading = 'seller/fetchOrders';
+    });
+
+    builder.addCase(fetchSellerOrdersAction.fulfilled, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'success';
+      state.message = 'Orders fetched successfully';
+      state.list = payload || [];
+    });
+
+    builder.addCase(fetchSellerOrdersAction.rejected, (state, { payload }) => {
+      state.loading = '';
+      state.alertType = 'error';
+      if (payload) {
+        state.message = payload.message;
+      }
+    });
   },
 });
 
-export default orderSlice.reducer;
+export const { clearSellerOrderState } = sellerOrderSlice.actions;
+export default sellerOrderSlice.reducer;

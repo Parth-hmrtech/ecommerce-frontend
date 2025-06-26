@@ -10,36 +10,37 @@ const getTokenHeader = () => {
 
 const fetchSellerPaymentsAction = createAsyncThunk(
   'payments/fetchAll',
-  async (_, { rejectWithValue }) => {
+  async (_, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'GET',
         url: '/seller/payments',
         headers: getTokenHeader(),
       });
-      return response.data.data;
-    } catch (err) {
-      const errorMsg = err?.response?.data?.message || err.message || 'Failed to fetch payments';
-      return rejectWithValue(errorMsg);
+      return fulfillWithValue(response.data?.data || []);
+    } catch (error) {
+      return rejectWithValue('Something is wrong here');
     }
   }
 );
 
 const fetchSellerEarningsAction = createAsyncThunk(
   'earnings/fetchAll',
-  async (_, { rejectWithValue }) => {
+  async (_, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await apiRequest({
         method: 'GET',
         url: '/seller/earnings',
         headers: getTokenHeader(),
       });
-      return response.data.data;
-    } catch (err) {
-      const errorMsg = err?.response?.data?.message || err.message || 'Failed to fetch earnings';
-      return rejectWithValue(errorMsg);
+      return fulfillWithValue(response.data?.data || []);
+    } catch (error) {
+      return rejectWithValue('Something is wrong here');
     }
   }
 );
 
-export { fetchSellerPaymentsAction, fetchSellerEarningsAction };
+export {
+  fetchSellerPaymentsAction,
+  fetchSellerEarningsAction,
+};
