@@ -12,15 +12,16 @@ export const apiRequest = async ({ method, url, headers = {}, data = null, param
     const config = {
       method: method.toLowerCase(),
       url,
-      headers,
+      headers: {
+        ...axiosInstance.defaults.headers,
+        ...headers,
+      },
       params,
     };
 
-    if ((method === 'POST' || method === 'PUT') && data) {
+    if (['post', 'put'].includes(method.toLowerCase()) && data) {
       config.data = data;
     }
-
-
 
     const response = await axiosInstance(config);
     return response;
@@ -29,6 +30,7 @@ export const apiRequest = async ({ method, url, headers = {}, data = null, param
       throw {
         status: error.response.status,
         message: error.response.data?.message || 'Request failed.',
+        error: error.response.data, // optional: useful for debugging
       };
     }
 

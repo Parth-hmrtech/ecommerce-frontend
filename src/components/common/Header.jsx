@@ -11,10 +11,10 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from 'react-router-dom';
+import logo from '@/assets/images/ecommerce-logo.png';
 
 const Header = ({ sidebarOpen, onToggleSidebar }) => {
   const [showOptions, setShowOptions] = useState(false);
@@ -38,7 +38,7 @@ const Header = ({ sidebarOpen, onToggleSidebar }) => {
       }}
     >
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Box display="flex" alignItems="center">
+          <Box display="flex" alignItems="center">
           <IconButton
             color="inherit"
             edge="start"
@@ -48,9 +48,13 @@ const Header = ({ sidebarOpen, onToggleSidebar }) => {
             {sidebarOpen ? <ChevronLeftIcon /> : <MenuIcon />}
           </IconButton>
 
-          <ShoppingBagIcon sx={{ fontSize: 30, color: '#fff', mr: 1 }} />
+          <img
+                     src={logo}
+                     alt="E-commerce Logo"
+                     style={{ height: 40, width: 'auto' }}
+                   />
           <Typography variant="h6" noWrap color="#fff">
-            eCommerce Dashboard
+            Seller Dashboard
           </Typography>
         </Box>
 

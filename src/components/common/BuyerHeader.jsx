@@ -14,7 +14,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
 import { useNavigate } from 'react-router-dom';
-
+import logo from '@/assets/images/ecommerce-logo.png';
 const BuyerHeader = () => {
   const navigate = useNavigate();
   const [isHovering, setIsHovering] = useState(false);
@@ -28,13 +28,19 @@ const BuyerHeader = () => {
   return (
     <AppBar position="static" color="primary">
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Typography
-          variant="h6"
-          sx={{ fontWeight: 'bold', cursor: 'pointer' }}
-          onClick={() => navigate('/')}
+        <Box
+          sx={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+          onClick={() => navigate('/buyer-dashboard')}
         >
-          Buyer Dashboard
-        </Typography>
+          <img
+            src={logo}
+            alt="E-commerce Logo"
+            style={{ height: 40, width: 'auto' }}
+          />
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+            eCommerce
+          </Typography>
+        </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <Button color="inherit" onClick={() => navigate('/buyer-dashboard')}>
