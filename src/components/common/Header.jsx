@@ -8,11 +8,14 @@ import {
   Avatar,
   Button,
   Paper,
+  ClickAwayListener,
+  Stack,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { useNavigate } from 'react-router-dom';
 import logo from '@/assets/images/ecommerce-logo.png';
 
@@ -30,6 +33,15 @@ const Header = ({ sidebarOpen, onToggleSidebar }) => {
 
   const handleProfileClick = () => {
     navigate('/seller-dashboard/profile');
+    setShowOptions(false);
+  };
+
+  const toggleDropdown = () => {
+    setShowOptions((prev) => !prev);
+  };
+
+  const closeDropdown = () => {
+    setShowOptions(false);
   };
 
   return (
@@ -61,57 +73,59 @@ const Header = ({ sidebarOpen, onToggleSidebar }) => {
           </Typography>
         </Box>
 
-        <Box
-          position="relative"
-          onMouseEnter={() => setShowOptions(true)}
-          onMouseLeave={() => setShowOptions(false)}
-        >
-          <IconButton>
-            <Avatar
-              alt="User"
-              src={profileImage || ''}
-              sx={{ width: 32, height: 32 }}
+        <ClickAwayListener onClickAway={closeDropdown}>
+          <Box position="relative">
+            <Button
+              onClick={toggleDropdown}
+              sx={{ display: 'flex', alignItems: 'center', color: '#fff' }}
+              startIcon={
+                <Avatar
+                  alt="User"
+                  src={profileImage || ''}
+                  sx={{ width: 32, height: 32 }}
+                >
+                  {!profileImage && <AccountCircleIcon />}
+                </Avatar>
+              }
+              endIcon={<ArrowDropDownIcon />}
             >
-              {!profileImage && <AccountCircleIcon />}
-            </Avatar>
-          </IconButton>
+            </Button>
 
-          {showOptions && (
-            <Paper
-              elevation={3}
-              sx={{
-                position: 'absolute',
-                top: '100%',
-                right: 0,
-                mt: 0.5,
-                p: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 1,
-                minWidth: 150,
-              }}
-            >
-              <Button
-                onClick={handleProfileClick}
-                sx={{ justifyContent: 'flex-start', px: 2 }}
-                startIcon={<AccountCircleIcon />}
-                fullWidth
-                variant="text"
+            {showOptions && (
+              <Paper
+                elevation={3}
+                sx={{
+                  position: 'absolute',
+                  top: 'calc(100% + 4px)',
+                  right: 0,
+                  p: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 1,
+                  minWidth: 150,
+                  zIndex: 10,
+                }}
               >
-                Profile
-              </Button>
-              <Button
-                sx={{ justifyContent: 'flex-start', px: 2 }}
-                onClick={handleLogout}
-                startIcon={<LogoutIcon />}
-                fullWidth
-                variant="text"
-              >
-                Logout
-              </Button>
-            </Paper>
-          )}
-        </Box>
+                <Button
+                  onClick={handleProfileClick}
+                  sx={{ justifyContent: 'flex-start', px: 2 }}
+                  startIcon={<AccountCircleIcon />}
+                  fullWidth
+                >
+                  Profile
+                </Button>
+                <Button
+                  onClick={handleLogout}
+                  sx={{ justifyContent: 'flex-start', px: 2 }}
+                  startIcon={<LogoutIcon />}
+                  fullWidth
+                >
+                  Logout
+                </Button>
+              </Paper>
+            )}
+          </Box>
+        </ClickAwayListener>
       </Toolbar>
     </AppBar>
   );

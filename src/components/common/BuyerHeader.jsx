@@ -8,30 +8,45 @@ import {
   Button,
   Paper,
   Avatar,
+  ClickAwayListener,
 } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { useNavigate } from 'react-router-dom';
 import logo from '@/assets/images/ecommerce-logo.png';
 
 const BuyerHeader = () => {
   const navigate = useNavigate();
-  const [isHovering, setIsHovering] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
 
-  // Get user from localStorage
   const user = JSON.parse(localStorage.getItem('user'));
   const profileImage = user?.image_url;
 
   const handleLogout = () => {
     localStorage.clear();
-    setIsHovering(false);
+    setShowMenu(false);
     navigate('/');
+  };
+
+  const handleProfileClick = () => {
+    navigate('/buyer-dashboard/profile');
+    setShowMenu(false);
+  };
+
+  const toggleMenu = () => {
+    setShowMenu((prev) => !prev);
+  };
+
+  const closeMenu = () => {
+    setShowMenu(false);
   };
 
   return (
     <AppBar position="static" color="primary">
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        {/* Logo + Title */}
         <Box
           sx={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
           onClick={() => navigate('/buyer-dashboard')}
@@ -46,6 +61,7 @@ const BuyerHeader = () => {
           </Typography>
         </Box>
 
+        {/* Menu & Avatar */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <Button color="inherit" onClick={() => navigate('/buyer-dashboard')}>
             Products
@@ -61,45 +77,45 @@ const BuyerHeader = () => {
             <ShoppingCartIcon />
           </IconButton>
 
-          <Box
-            sx={{ position: 'relative' }}
-            onMouseEnter={() => setIsHovering(true)}
-            onMouseLeave={() => setIsHovering(false)}
-          >
-            <IconButton color="inherit">
-              {profileImage ? (
-                <Avatar
-                  src={profileImage}
-                  alt="Profile"
-                  sx={{ width: 32, height: 32 }}
-                />
-              ) : (
-                <Avatar sx={{ width: 32, height: 32 }}>
-                  <PersonIcon fontSize="small" />
-                </Avatar>
-              )}
-            </IconButton>
-
-            {isHovering && (
-              <Paper
-                elevation={3}
-                sx={{
-                  position: 'absolute',
-                  right: 0,
-                  mt: 0,
-                  zIndex: 10,
-                  minWidth: 150,
-                  backgroundColor: 'background.paper',
-                }}
+          <ClickAwayListener onClickAway={closeMenu}>
+            <Box sx={{ position: 'relative' }}>
+              <Button
+                onClick={toggleMenu}
+                sx={{ display: 'flex', alignItems: 'center', color: 'white' }}
+                startIcon={
+                  profileImage ? (
+                    <Avatar src={profileImage} alt="Profile" sx={{ width: 32, height: 32 }} />
+                  ) : (
+                    <Avatar sx={{ width: 32, height: 32 }}>
+                      <PersonIcon fontSize="small" />
+                    </Avatar>
+                  )
+                }
+                endIcon={<ArrowDropDownIcon />}
               >
-                <Box sx={{ display: 'flex', flexDirection: 'column', py: 1 }}>
+                {/* optional: user name */}
+              </Button>
+
+              {showMenu && (
+                <Paper
+                  elevation={3}
+                  sx={{
+                    position: 'absolute',
+                    top: 'calc(100% + 4px)',
+                    right: 0,
+                    p: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 1,
+                    minWidth: 150,
+                    zIndex: 10,
+                  }}
+                >
                   <Button
-                    onClick={() => {
-                      navigate('/buyer-dashboard/profile');
-                      setIsHovering(false);
-                    }}
+                    onClick={handleProfileClick}
                     sx={{ justifyContent: 'flex-start', px: 2 }}
                     startIcon={<PersonIcon fontSize="small" />}
+                    fullWidth
                   >
                     Profile
                   </Button>
@@ -107,13 +123,14 @@ const BuyerHeader = () => {
                     onClick={handleLogout}
                     sx={{ justifyContent: 'flex-start', px: 2 }}
                     startIcon={<LogoutIcon fontSize="small" />}
+                    fullWidth
                   >
                     Logout
                   </Button>
-                </Box>
-              </Paper>
-            )}
-          </Box>
+                </Paper>
+              )}
+            </Box>
+          </ClickAwayListener>
         </Box>
       </Toolbar>
     </AppBar>
