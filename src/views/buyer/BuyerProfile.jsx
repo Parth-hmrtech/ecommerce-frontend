@@ -9,8 +9,21 @@ import {
   Alert,
   InputAdornment,
   IconButton,
+  Divider,
+  Avatar,
+  Stack,
 } from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import {
+  Visibility,
+  VisibilityOff,
+  Person,
+  Edit,
+  LockReset,
+  PhotoCamera,
+  Email,
+  Phone,
+} from '@mui/icons-material';
+
 
 import BuyerHeader from '../../components/common/BuyerHeader';
 import BuyerFooter from '../../components/common/BuyerFooter';
@@ -34,20 +47,25 @@ const BuyerProfile = () => {
     resetPassword,
   } = useBuyerProfile();
 
-  const [formData, setFormData] = useState(null);
+  const [formData, setFormData] = useState({
+    first_name: '',
+    last_name: '',
+    email: '',
+    phone_number: '',
+    image: null,
+    image_url: '',
+  });
+
   const [formErrors, setFormErrors] = useState({});
   const [passwordErrors, setPasswordErrors] = useState({});
-
   const [updating, setUpdating] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
-
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [passwordResetMessage, setPasswordResetMessage] = useState('');
   const [passwordResetSeverity, setPasswordResetSeverity] = useState('error');
   const [resetting, setResetting] = useState(false);
-
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
 
@@ -57,8 +75,15 @@ const BuyerProfile = () => {
 
   useEffect(() => {
     if (profile?.user) {
-      const { first_name, last_name, email, phone_number } = profile.user;
-      setFormData({ first_name, last_name, email, phone_number });
+      const { first_name, last_name, email, phone_number, image_url } = profile.user;
+      setFormData((prev) => ({
+        ...prev,
+        first_name,
+        last_name,
+        email,
+        phone_number,
+        image_url,
+      }));
     }
   }, [profile]);
 
@@ -72,7 +97,6 @@ const BuyerProfile = () => {
       errors.email = 'Enter a valid email';
     }
     if (!formData.phone_number?.trim()) errors.phone_number = 'Phone number is required';
-
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -85,7 +109,6 @@ const BuyerProfile = () => {
     } else if (!/^(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/.test(newPassword)) {
       errors.newPassword = 'Min 8 chars, 1 uppercase, 1 special char';
     }
-
     setPasswordErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -96,6 +119,17 @@ const BuyerProfile = () => {
     setFormErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData((prev) => ({
+        ...prev,
+        image: file,
+        image_url: URL.createObjectURL(file),
+      }));
+    }
+  };
+
   const handleUpdate = () => {
     if (!validateForm()) return;
 
@@ -103,10 +137,21 @@ const BuyerProfile = () => {
     setSuccessMsg('');
     setUpdating(true);
 
-    updateProfile({ id: userId, data: formData })
+    const data = new FormData();
+    data.append('first_name', formData.first_name);
+    data.append('last_name', formData.last_name);
+    data.append('email', formData.email);
+    data.append('phone_number', formData.phone_number);
+    if (formData.image) {
+      data.append('image', formData.image);
+    }
+
+    updateProfile({ id: userId, data })
+
       .unwrap()
       .then(() => {
         setSuccessMsg('Profile updated successfully');
+        fetchProfile(userId);
         setTimeout(() => setSuccessMsg(''), 4000);
       })
       .catch((err) => {
@@ -118,6 +163,11 @@ const BuyerProfile = () => {
         setUpdating(false);
       });
   };
+  useEffect(() => {
+    if (profile?.user) {
+      localStorage.setItem('user', JSON.stringify(profile.user));
+    }
+  }, [profile?.user]);
 
   const handlePasswordReset = () => {
     if (!validatePassword()) return;
@@ -131,11 +181,9 @@ const BuyerProfile = () => {
       .then((res) => {
         const message =
           res?.data?.data?.message || res?.data?.message || res?.message || '';
-
-        const isError =
-          message.toLowerCase().includes('incorrect') ||
-          message.toLowerCase().includes('not match') ||
-          message.toLowerCase().includes('wrong');
+          console.log(res);
+          
+        const isError = /incorrect|not match|wrong/i.test(message);
 
         if (isError) {
           setPasswordResetSeverity('warning');
@@ -144,7 +192,8 @@ const BuyerProfile = () => {
           setOldPassword('');
           setNewPassword('');
         }
-
+        console.log(message);
+        
         setPasswordResetMessage(message);
         setTimeout(() => setPasswordResetMessage(''), 3000);
       })
@@ -162,69 +211,139 @@ const BuyerProfile = () => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#f4f6f8' }}>
       <BuyerHeader />
+      <Box sx={{ flex: 1, p: 3, display: 'flex', justifyContent: 'center' }}>
+        <Paper elevation={3} sx={{ p: 4, borderRadius: 3, display: 'flex', flexDirection: 'row', gap: 4, maxWidth: 1200, width: '100%' }}>
+          <Box
+            component={Paper}
+            elevation={3}
+            sx={{
+              p: 3,
+              borderRadius: 3,
+              minWidth: 300,
+              flex: 1,
+              backgroundColor: '#f9f9f9',
+            }}
+          >
+            <Stack direction="row" alignItems="center" spacing={2}>
+              <Avatar
+                src={profile?.user?.image_url}
+                alt="Profile"
+                sx={{ width: 80, height: 80 }}
+              />
+              <Box>
+                <Typography variant="h6" fontWeight="bold" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Person color="action" /> Profile Info
+                </Typography>
+                <Divider sx={{ my: 1 }} />
+              </Box>
+            </Stack>
 
-      <Box sx={{ flex: 1, p: 3 }}>
-        <Typography variant="h5" gutterBottom>
-          My Profile
-        </Typography>
-
-        {loading || !formData ? (
-          <CircularProgress />
-        ) : (
-          <Paper sx={{ p: 4, maxWidth: '100%', display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-            <Box sx={{ flex: 1, minWidth: 300 }}>
-              <Typography variant="h6" gutterBottom>
-                Update Profile
+            <Box
+              mt={2}
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 1.5,
+                alignItems: { xs: 'center', sm: 'flex-start' },
+                textAlign: { xs: 'center', sm: 'left' },
+              }}
+            >
+              <Typography sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Person fontSize="small" color="action" />
+                <strong>First Name:</strong> {profile?.user?.first_name || '—'}
               </Typography>
+              <Typography sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Person fontSize="small" color="action" />
+                <strong>Last Name:</strong> {profile?.user?.last_name || '—'}
+              </Typography>
+              <Typography sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Email fontSize="small" color="action" />
+                <strong>Email:</strong> {profile?.user?.email || '—'}
+              </Typography>
+              <Typography sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Phone fontSize="small" color="action" />
+                <strong>Phone:</strong> {profile?.user?.phone_number || '—'}
+              </Typography>
+            </Box>
 
-              <TextField
-                label="First Name"
-                name="first_name"
-                fullWidth
-                margin="normal"
-                value={formData.first_name}
-                onChange={handleChange}
-                error={!!formErrors.first_name}
-                helperText={formErrors.first_name}
-              />
-              <TextField
-                label="Last Name"
-                name="last_name"
-                fullWidth
-                margin="normal"
-                value={formData.last_name}
-                onChange={handleChange}
-                error={!!formErrors.last_name}
-                helperText={formErrors.last_name}
-              />
-              <TextField
-                label="Email"
-                name="email"
-                fullWidth
-                margin="normal"
-                value={formData.email}
-                onChange={handleChange}
-                error={!!formErrors.email}
-                helperText={formErrors.email}
-              />
-              <TextField
-                label="Phone Number"
-                name="phone_number"
-                fullWidth
-                margin="normal"
-                value={formData.phone_number}
-                onChange={handleChange}
-                error={!!formErrors.phone_number}
-                helperText={formErrors.phone_number}
-              />
 
-              {successMsg && <Alert severity="success" sx={{ mt: 1 }}>{successMsg}</Alert>}
-              {errorMsg && <Alert severity="error" sx={{ mt: 1 }}>{errorMsg}</Alert>}
+          </Box>
+
+          <Box sx={{ flex: 2, minWidth: 300 }}>
+            <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Edit color="primary" /> Edit Profile
+            </Typography>
+            <Divider sx={{ my: 1 }} />
+            {successMsg && <Alert severity="success" sx={{ mt: 2 }}>{successMsg}</Alert>}
+            {errorMsg && <Alert severity="error" sx={{ mt: 2 }}>{errorMsg}</Alert>}
+
+            <TextField
+              label="First Name"
+              name="first_name"
+              fullWidth
+              margin="normal"
+              value={formData.first_name || ''}
+              onChange={handleChange}
+              error={!!formErrors.first_name}
+              helperText={formErrors.first_name}
+            />
+            <TextField
+              label="Last Name"
+              name="last_name"
+              fullWidth
+              margin="normal"
+              value={formData.last_name || ''}
+              onChange={handleChange}
+              error={!!formErrors.last_name}
+              helperText={formErrors.last_name}
+            />
+            <TextField
+              label="Email"
+              name="email"
+              fullWidth
+              margin="normal"
+              value={formData.email || ''}
+              onChange={handleChange}
+              error={!!formErrors.email}
+              helperText={formErrors.email}
+            />
+            <TextField
+              label="Phone Number"
+              name="phone_number"
+              fullWidth
+              margin="normal"
+              value={formData.phone_number || ''}
+              onChange={handleChange}
+              error={!!formErrors.phone_number}
+              helperText={formErrors.phone_number}
+            />
+
+            <Box mt={2} display="flex" alignItems="center" gap={2}>
+              {formData.image_url && (
+                <img
+                  src={formData.image_url}
+                  alt="Preview"
+                  style={{
+                    width: 100,
+                    height: 100,
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                  }}
+                />
+              )}
+
+              <Button
+                variant="outlined"
+                component="label"
+                startIcon={<PhotoCamera />}
+              >
+                Choose Image
+                <input type="file" hidden accept="image/*" onChange={handleImageChange} />
+              </Button>
 
               <Button
                 variant="contained"
                 color="primary"
-                sx={{ mt: 2 }}
                 onClick={handleUpdate}
                 disabled={updating}
               >
@@ -232,76 +351,77 @@ const BuyerProfile = () => {
               </Button>
             </Box>
 
-            <Box sx={{ flex: 1, minWidth: 300 }}>
-              <Typography variant="h6" gutterBottom>
-                Reset Password
-              </Typography>
 
-              <TextField
-                label="Old Password"
-                type={showOldPassword ? 'text' : 'password'}
-                fullWidth
-                margin="normal"
-                value={oldPassword}
-                onChange={(e) => {
-                  setOldPassword(e.target.value);
-                  setPasswordErrors((prev) => ({ ...prev, oldPassword: '' }));
-                }}
-                error={!!passwordErrors.oldPassword}
-                helperText={passwordErrors.oldPassword}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton onClick={() => setShowOldPassword((prev) => !prev)}>
-                        {showOldPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
+            <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 5 }}>
+              <LockReset color="error" /> Reset Password
+            </Typography>
+            <Divider sx={{ my: 1 }} />
+            {passwordResetMessage && (
+              <Alert severity={passwordResetSeverity} sx={{ mt: 2 }}>
+                {passwordResetMessage}
+              </Alert>
+            )}
 
-              <TextField
-                label="New Password"
-                type={showNewPassword ? 'text' : 'password'}
-                fullWidth
-                margin="normal"
-                value={newPassword}
-                onChange={(e) => {
-                  setNewPassword(e.target.value);
-                  setPasswordErrors((prev) => ({ ...prev, newPassword: '' }));
-                }}
-                error={!!passwordErrors.newPassword}
-                helperText={passwordErrors.newPassword}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton onClick={() => setShowNewPassword((prev) => !prev)}>
-                        {showNewPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
+            <TextField
+              label="Old Password"
+              type={showOldPassword ? 'text' : 'password'}
+              fullWidth
+              margin="normal"
+              value={oldPassword}
+              onChange={(e) => {
+                setOldPassword(e.target.value);
+                setPasswordErrors((prev) => ({ ...prev, oldPassword: '' }));
+              }}
+              error={!!passwordErrors.oldPassword}
+              helperText={passwordErrors.oldPassword}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={() => setShowOldPassword((prev) => !prev)}>
+                      {showOldPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
 
-              {passwordResetMessage && (
-                <Alert severity={passwordResetSeverity} sx={{ mt: 1 }}>
-                  {passwordResetMessage}
-                </Alert>
-              )}
+            <TextField
+              label="New Password"
+              type={showNewPassword ? 'text' : 'password'}
+              fullWidth
+              margin="normal"
+              value={newPassword}
+              onChange={(e) => {
+                setNewPassword(e.target.value);
+                setPasswordErrors((prev) => ({ ...prev, newPassword: '' }));
+              }}
+              error={!!passwordErrors.newPassword}
+              helperText={passwordErrors.newPassword}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={() => setShowNewPassword((prev) => !prev)}>
+                      {showNewPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
 
-              <Button
-                variant="outlined"
-                color="secondary"
-                sx={{ mt: 2 }}
-                onClick={handlePasswordReset}
-                disabled={resetting}
-              >
-                {resetting ? 'Resetting...' : 'Reset Password'}
-              </Button>
-            </Box>
-          </Paper>
-        )}
+
+            <Button
+              variant="contained"
+              color="secondary"
+              sx={{ mt: 3 }}
+              onClick={handlePasswordReset}
+              disabled={resetting}
+            >
+              {resetting ? 'Resetting...' : 'Reset Password'}
+            </Button>
+          </Box>
+        </Paper>
       </Box>
+
 
       <Box mt="auto">
         <BuyerFooter />

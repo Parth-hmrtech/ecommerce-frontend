@@ -81,7 +81,7 @@ const sellerProfileSlice = createSlice({
     builder.addCase(resetSellerPasswordAction.fulfilled, (state, { payload }) => {
       state.passwordResetLoading = false;
       state.alertType = 'success';
-      state.message = 'Password reset successfully';
+      state.message = payload?.message || 'Password updated';
       state.passwordResetSuccess = payload;
     });
     builder.addCase(resetSellerPasswordAction.rejected, (state, { payload }) => {

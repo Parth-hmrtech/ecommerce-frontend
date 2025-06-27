@@ -12,7 +12,7 @@ const useSellerProfile = () => {
 
   const { profile, loading } = useSelector((state) => state.sellerProfile);
 
-  const fetchSellerProfile = () => {
+  const fetchSellerProfile = (id) => {
     return dispatch(fetchSellerProfileAction(id));
   };
 
@@ -24,9 +24,9 @@ const useSellerProfile = () => {
     return dispatch(resetSellerPasswordAction(payload));
   };
 
-  useEffect(() => {
-    if (id) fetchSellerProfile();
-  }, [id]);
+  // useEffect(() => {
+  //   if (id) fetchSellerProfile();
+  // }, [id]);
 
   return {
     profile,

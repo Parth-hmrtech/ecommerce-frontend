@@ -19,7 +19,6 @@ import {
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import useAuthentication from '@/hooks/auth/useAuthentication';
-import { InputAdornment } from '@mui/material';
 
 const PasswordField = ({ label, name, value, onChange, show, toggleShow, error, helperText }) => (
   <TextField
@@ -46,11 +45,11 @@ const SignUp = () => {
   const { signUp, loading, error, success, resetAuth } = useAuthentication();
 
   useEffect(() => {
-  if (success) {
-    navigate('/signin');    
-    resetAuth();           
-  }
-}, [success, navigate, resetAuth]);
+    if (success) {
+      navigate('/signin');
+      resetAuth();
+    }
+  }, [success, navigate, resetAuth]);
 
   const [formData, setFormData] = useState({
     first_name: '',
@@ -59,8 +58,10 @@ const SignUp = () => {
     password_hash: '',
     role: '',
     phone_number: '',
+    image_url: '', 
   });
 
+  const [imageFile, setImageFile] = useState(null);
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -77,6 +78,17 @@ const SignUp = () => {
       setFormData((prev) => ({
         ...prev,
         [name]: value,
+      }));
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      setFormData((prev) => ({
+        ...prev,
+        image_url: file.name, // or file path if needed
       }));
     }
   };
@@ -98,6 +110,7 @@ const SignUp = () => {
       newErrors.confirm_password = 'Passwords do not match';
     }
     if (!formData.role) newErrors.role = 'Role is required';
+    if (!formData.image_url) newErrors.image_url = 'Image is required';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -106,18 +119,37 @@ const SignUp = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validate()) return;
-    signUp(formData);
-  };
 
+    // If you need to send FormData with image, adjust `signUp` function accordingly
+    const payload = new FormData();
+    for (const key in formData) {
+      payload.append(key, formData[key]);
+    }
+    if (imageFile) payload.append('image', imageFile);
+
+    signUp(payload); // Make sure the signUp function accepts FormData
+  };
 
   return (
     <Box minHeight="100vh" display="flex" justifyContent="center" alignItems="center" bgcolor="#f9f9f9" px={2}>
       <Paper elevation={3} sx={{ p: 4, width: '100%', maxWidth: 500 }}>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} encType="multipart/form-data">
           <Typography variant="h5" gutterBottom>Sign Up</Typography>
 
           <Stack spacing={2}>
             {error && <Alert severity="error">{error}</Alert>}
+
+            {/* Image Upload */}
+            <FormControl error={!!errors.image_url}>
+              <Button variant="outlined" component="label">
+                Upload Profile Image
+                <input type="file" accept="image/*" hidden onChange={handleImageChange} />
+              </Button>
+              {formData.image_url && (
+                <Typography variant="body2" mt={1}>Selected: {formData.image_url}</Typography>
+              )}
+              {errors.image_url && <FormHelperText>{errors.image_url}</FormHelperText>}
+            </FormControl>
 
             <TextField
               label="First Name"

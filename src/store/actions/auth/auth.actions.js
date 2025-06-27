@@ -3,26 +3,25 @@ import { apiRequest } from '../../../hooks/useApiRequest';
 
 const signUpUserAction = createAsyncThunk(
   'auth/signUpUser',
-  async (userData, { fulfillWithValue, rejectWithValue }) => {
-    console.log(userData);
-    
+  async (formData, { fulfillWithValue, rejectWithValue }) => {
     try {
-      
       const response = await apiRequest({
         method: 'POST',
         url: '/auth/register',
-        data: userData,
+        data: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
 
       if (response?.status !== 200) {
-        return rejectWithValue(new Error("Something is wrong here"));
+        return rejectWithValue("Something is wrong here");
       }
-      console.log(response);
-      
-      return fulfillWithValue(response?.data);
+
+      return fulfillWithValue(response.data);
     } catch (error) {
       return rejectWithValue(
-        new Error(error?.data?.message || "Something is wrong here")
+        error?.response?.data?.message || "Something is wrong here"
       );
     }
   }

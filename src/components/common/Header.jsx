@@ -20,6 +20,9 @@ const Header = ({ sidebarOpen, onToggleSidebar }) => {
   const [showOptions, setShowOptions] = useState(false);
   const navigate = useNavigate();
 
+  const user = JSON.parse(localStorage.getItem('user'));
+  const profileImage = user?.image_url;
+
   const handleLogout = () => {
     localStorage.removeItem('user');
     window.location.href = '/signin';
@@ -38,7 +41,7 @@ const Header = ({ sidebarOpen, onToggleSidebar }) => {
       }}
     >
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Box display="flex" alignItems="center">
+        <Box display="flex" alignItems="center">
           <IconButton
             color="inherit"
             edge="start"
@@ -49,10 +52,10 @@ const Header = ({ sidebarOpen, onToggleSidebar }) => {
           </IconButton>
 
           <img
-                     src={logo}
-                     alt="E-commerce Logo"
-                     style={{ height: 40, width: 'auto' }}
-                   />
+            src={logo}
+            alt="E-commerce Logo"
+            style={{ height: 40, width: 'auto', marginRight: 8 }}
+          />
           <Typography variant="h6" noWrap color="#fff">
             Seller Dashboard
           </Typography>
@@ -64,7 +67,13 @@ const Header = ({ sidebarOpen, onToggleSidebar }) => {
           onMouseLeave={() => setShowOptions(false)}
         >
           <IconButton>
-            <Avatar alt="User" src="/path/to/user-image.jpg" />
+            <Avatar
+              alt="User"
+              src={profileImage || ''}
+              sx={{ width: 32, height: 32 }}
+            >
+              {!profileImage && <AccountCircleIcon />}
+            </Avatar>
           </IconButton>
 
           {showOptions && (
@@ -74,7 +83,7 @@ const Header = ({ sidebarOpen, onToggleSidebar }) => {
                 position: 'absolute',
                 top: '100%',
                 right: 0,
-                mt: 0,
+                mt: 0.5,
                 p: 1,
                 display: 'flex',
                 flexDirection: 'column',
@@ -84,7 +93,7 @@ const Header = ({ sidebarOpen, onToggleSidebar }) => {
             >
               <Button
                 onClick={handleProfileClick}
-                                    sx={{ justifyContent: 'flex-start', px: 2 }}
+                sx={{ justifyContent: 'flex-start', px: 2 }}
                 startIcon={<AccountCircleIcon />}
                 fullWidth
                 variant="text"

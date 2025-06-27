@@ -6,18 +6,22 @@ import {
   IconButton,
   Box,
   Button,
-  ListItemIcon,
   Paper,
+  Avatar,
 } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
 import { useNavigate } from 'react-router-dom';
 import logo from '@/assets/images/ecommerce-logo.png';
+
 const BuyerHeader = () => {
   const navigate = useNavigate();
   const [isHovering, setIsHovering] = useState(false);
+
+  // Get user from localStorage
+  const user = JSON.parse(localStorage.getItem('user'));
+  const profileImage = user?.image_url;
 
   const handleLogout = () => {
     localStorage.clear();
@@ -35,7 +39,7 @@ const BuyerHeader = () => {
           <img
             src={logo}
             alt="E-commerce Logo"
-            style={{ height: 40, width: 'auto' }}
+            style={{ height: 40, width: 'auto', marginRight: 8 }}
           />
           <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
             eCommerce
@@ -63,7 +67,17 @@ const BuyerHeader = () => {
             onMouseLeave={() => setIsHovering(false)}
           >
             <IconButton color="inherit">
-              <AccountCircleIcon />
+              {profileImage ? (
+                <Avatar
+                  src={profileImage}
+                  alt="Profile"
+                  sx={{ width: 32, height: 32 }}
+                />
+              ) : (
+                <Avatar sx={{ width: 32, height: 32 }}>
+                  <PersonIcon fontSize="small" />
+                </Avatar>
+              )}
             </IconButton>
 
             {isHovering && (
@@ -73,18 +87,12 @@ const BuyerHeader = () => {
                   position: 'absolute',
                   right: 0,
                   mt: 0,
-                  zIndex: 0,
+                  zIndex: 10,
                   minWidth: 150,
                   backgroundColor: 'background.paper',
                 }}
               >
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    py: 1,
-                  }}
-                >
+                <Box sx={{ display: 'flex', flexDirection: 'column', py: 1 }}>
                   <Button
                     onClick={() => {
                       navigate('/buyer-dashboard/profile');

@@ -26,17 +26,30 @@ const fetchSellerProfileAction = createAsyncThunk(
 
 const updateSellerProfileAction = createAsyncThunk(
   'sellerProfile/update',
-  async ({ id, data }, { fulfillWithValue, rejectWithValue }) => {
+  async ({ id, data }, { rejectWithValue }) => {
     try {
+  
       const response = await apiRequest({
         method: 'PUT',
         url: `/profile/${id}`,
         data,
-        headers: getAuthHeaders(),
+        headers: {
+          ...getAuthHeaders(),
+          ...(data instanceof FormData && { 'Content-Type': 'multipart/form-data' }),
+        },
       });
-      return fulfillWithValue(response.data?.data || []);
+
+      if (response.status !== 200) {
+        throw new Error('Update failed');
+      }
+
+      console.log('Profile update successful. Server response:', response.data);
+      return response.data?.data || {};
     } catch (error) {
-      return rejectWithValue('Something is wrong here');
+      console.error('Profile update error:', error);
+      return rejectWithValue(
+        error?.response?.data?.message || error.message || 'Something went wrong'
+      );
     }
   }
 );
@@ -51,7 +64,7 @@ const resetSellerPasswordAction = createAsyncThunk(
         data: { oldPassword, newPassword },
         headers: getAuthHeaders(),
       });
-      return fulfillWithValue(response.data?.data || []);
+      return fulfillWithValue(response.data || []);
     } catch (error) {
       return rejectWithValue('Something is wrong here');
     }
