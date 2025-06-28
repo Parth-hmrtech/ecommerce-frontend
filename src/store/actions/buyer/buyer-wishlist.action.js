@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { apiRequest } from '../../../hooks/useApiRequest';
+import { apiRequest } from '@/hooks/useApiRequest';
 
 const getTokenHeader = () => {
   const token = localStorage.getItem('access_token');

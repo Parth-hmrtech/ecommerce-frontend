@@ -24,10 +24,10 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import Header from '../../components/common/Header';
-import Footer from '../../components/common/Footer';
-import Sidebar from '../../components/common/Sidebar';
-import useSellerProduct from '../../hooks/seller/useSellerProduct';
+import Header from '@/components/common/Header';
+import Footer from '@/components/common/Footer';
+import Sidebar from '@/components/common/Sidebar';
+import useSellerProduct from '@/hooks/seller/useSellerProduct';
 
 const SellerProduct = () => {
   const {

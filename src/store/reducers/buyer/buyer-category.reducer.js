@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchBuyerCategoriesAction } from '../../actions/buyer/buyer-category.action';
+import { fetchBuyerCategoriesAction } from '@/store/actions/buyer/buyer-category.action';
 
 const initialState = {
   categories: [],

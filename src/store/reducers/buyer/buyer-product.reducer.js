@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchBuyerProductByIdAction } from '../../actions/buyer/buyer-product.action';
+import { fetchBuyerProductByIdAction } from '@/store/actions/buyer/buyer-product.action';
 
 const initialState = {
   product: null,

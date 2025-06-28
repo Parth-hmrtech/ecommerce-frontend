@@ -3,7 +3,7 @@ import {
   buyerCheckoutPaymentAction,
   buyerVerifyPaymentAction,
   buyerCheckPaymentStatusAction,
-} from '../../actions/buyer/buyer-payment.action';
+} from '@/store/actions/buyer/buyer-payment.action';
 
 const initialState = {
   loading: false,

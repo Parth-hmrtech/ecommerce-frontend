@@ -12,9 +12,9 @@ import {
 import { Delete } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
-import BuyerHeader from '../../components/common/BuyerHeader';
-import BuyerFooter from '../../components/common/BuyerFooter';
-import useBuyerWishlist from '../../hooks/buyer/useBuyerWiahlist';
+import BuyerHeader from '@/components/common/BuyerHeader';
+import BuyerFooter from '@/components/common/BuyerFooter';
+import useBuyerWishlist from '@/hooks/buyer/useBuyerWiahlist';
 
 const BuyerWishlist = () => {
   const navigate = useNavigate();

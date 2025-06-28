@@ -8,8 +8,8 @@ import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
-import BuyerHeader from '../../components/common/BuyerHeader';
-import BuyerFooter from '../../components/common/BuyerFooter';
+import BuyerHeader from '@/components/common/BuyerHeader';
+import BuyerFooter from '@/components/common/BuyerFooter';
 
 import { fetchProductsAction } from '@/store/actions/product.actions';
 import useBuyerOrder from '@/hooks/buyer/useBuyerOrder';

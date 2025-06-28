@@ -20,9 +20,9 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import Header from '../../components/common/Header';
-import Footer from '../../components/common/Footer';
-import Sidebar from '../../components/common/Sidebar';
+import Header from '@/components/common/Header';
+import Footer from '@/components/common/Footer';
+import Sidebar from '@/components/common/Sidebar';
 
 import useSellerProduct from '@/hooks/seller/useSellerProduct';
 

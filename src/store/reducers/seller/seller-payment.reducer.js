@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import {
   fetchSellerPaymentsAction,
   fetchSellerEarningsAction,
-} from '../../actions/seller/seller-payment.action';
+} from '@/store/actions/seller/seller-payment.action';
 
 const initialState = {
   payments: [],

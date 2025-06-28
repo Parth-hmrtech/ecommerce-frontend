@@ -15,17 +15,17 @@ import RateReviewIcon from '@mui/icons-material/RateReview';
 import StarIcon from '@mui/icons-material/Star';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 
-import Header from '../../components/common/Header';
-import Footer from '../../components/common/Footer';
-import Sidebar from '../../components/common/Sidebar';
+import Header from '@/components/common/Header';
+import Footer from '@/components/common/Footer';
+import Sidebar from '@/components/common/Sidebar';
 
-import { fetchSellerReviewsAction } from '../../store/actions/seller/seller-review.action';
-import { fetchAllProductsAction } from '../../store/actions/seller/seller-product.action';
+import { fetchSellerReviewsAction } from '@/store/actions/seller/seller-review.action';
+import { fetchAllProductsAction } from '@/store/actions/seller/seller-product.action';
 import {
   fetchSellerPaymentsAction,
   fetchSellerEarningsAction,
-} from '../../store/actions/seller/seller-payment.action';
-import { fetchSellerOrdersAction } from '../../store/actions/seller/seller-order.action'; 
+} from '@/store/actions/seller/seller-payment.action';
+import { fetchSellerOrdersAction } from '@/store/actions/seller/seller-order.action'; 
 
 const SellerDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);

@@ -3,7 +3,7 @@ import {
   fetchSellerProfileAction,
   updateSellerProfileAction,
   resetSellerPasswordAction,
-} from '../../actions/seller/seller-profile.action';
+} from '@/store/actions/seller/seller-profile.action';
 
 const initialState = {
   profile: null,

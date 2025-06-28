@@ -15,9 +15,9 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-import Header from '../../components/common/Header';
-import Sidebar from '../../components/common/Sidebar';
-import Footer from '../../components/common/Footer';
+import Header from '@/components/common/Header';
+import Sidebar from '@/components/common/Sidebar';
+import Footer from '@/components/common/Footer';
 
 import useSellerProduct from '@/hooks/seller/useSellerProduct';
 

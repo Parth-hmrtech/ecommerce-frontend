@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import {
   fetchSellerReviewsAction,
   deleteSellerReviewAction,
-} from '../../actions/seller/seller-review.action';
+} from '@/store/actions/seller/seller-review.action';
 
 const initialState = {
   reviews: [],

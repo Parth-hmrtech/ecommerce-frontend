@@ -26,9 +26,9 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import Header from '../../components/common/Header';
-import Sidebar from '../../components/common/Sidebar';
-import Footer from '../../components/common/Footer';
+import Header from '@/components/common/Header';
+import Sidebar from '@/components/common/Sidebar';
+import Footer from '@/components/common/Footer';
 
 import useSellerCategory from '@/hooks/seller/useSellerCategory'; // 👈 using the hook
 

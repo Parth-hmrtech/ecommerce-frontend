@@ -5,7 +5,7 @@ import {
   updateSubCategoryAction,
   deleteSubCategoryAction,
   fetchAllSubCategoriesByIdAction,
-} from '../../actions/seller/seller-sub-category.action';
+} from '@/store/actions/seller/seller-sub-category.action';
 
 const initialState = {
   list: [],

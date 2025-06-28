@@ -24,9 +24,9 @@ import {
   Phone,
 } from '@mui/icons-material';
 
-import Header from '../../components/common/Header';
-import Sidebar from '../../components/common/Sidebar';
-import Footer from '../../components/common/Footer';
+import Header from '@/components/common/Header';
+import Sidebar from '@/components/common/Sidebar';
+import Footer from '@/components/common/Footer';
 
 import useSellerProfile from '@/hooks/seller/useSellerProfile';
 

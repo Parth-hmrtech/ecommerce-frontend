@@ -23,9 +23,9 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import Header from '../../components/common/Header';
-import Footer from '../../components/common/Footer';
-import Sidebar from '../../components/common/Sidebar';
+import Header from '@/components/common/Header';
+import Footer from '@/components/common/Footer';
+import Sidebar from '@/components/common/Sidebar';
 
 import { useDispatch } from 'react-redux';
 import {

@@ -5,7 +5,7 @@ import {
   updateBuyerCartAction,
   deleteBuyerCartAction,
   deleteBuyerIdCartAction,
-} from '../../actions/buyer/buyer-cart.action';
+} from '@/store/actions/buyer/buyer-cart.action';
 
 const initialState = {
   cart: [],

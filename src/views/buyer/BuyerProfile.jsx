@@ -25,8 +25,8 @@ import {
 } from '@mui/icons-material';
 
 
-import BuyerHeader from '../../components/common/BuyerHeader';
-import BuyerFooter from '../../components/common/BuyerFooter';
+import BuyerHeader from '@/components/common/BuyerHeader';
+import BuyerFooter from '@/components/common/BuyerFooter';
 
 import useBuyerProfile from '@/hooks/buyer/useBuyerProfile';
 

@@ -3,7 +3,7 @@ import {
   signUpUserAction,
   signInUserAction,
   forgotPasswordAction,
-} from '../../actions/auth/auth.actions';
+} from '@/store/actions/auth/auth.actions';
 
 const initialState = {
   user: null,

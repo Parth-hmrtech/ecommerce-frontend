@@ -4,7 +4,7 @@ import {
   addCategoryAction,
   updateCategoryAction,
   deleteCategoryAction,
-} from '../../actions/seller/seller-category.action';
+} from '@/store/actions/seller/seller-category.action';
 
 const initialState = {
   list: [],

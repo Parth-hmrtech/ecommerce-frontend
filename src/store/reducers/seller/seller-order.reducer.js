@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchSellerOrdersAction } from '../../actions/seller/seller-order.action';
+import { fetchSellerOrdersAction } from '@/store/actions/seller/seller-order.action';
 
 const initialState = {
   list: [],

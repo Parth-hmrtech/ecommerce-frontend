@@ -88,7 +88,7 @@ const SignUp = () => {
       setImageFile(file);
       setFormData((prev) => ({
         ...prev,
-        image_url: file.name, // or file path if needed
+        image_url: file.name,
       }));
     }
   };
@@ -120,14 +120,13 @@ const SignUp = () => {
     e.preventDefault();
     if (!validate()) return;
 
-    // If you need to send FormData with image, adjust `signUp` function accordingly
     const payload = new FormData();
     for (const key in formData) {
       payload.append(key, formData[key]);
     }
     if (imageFile) payload.append('image', imageFile);
 
-    signUp(payload); // Make sure the signUp function accepts FormData
+    signUp(payload); 
   };
 
   return (
@@ -139,7 +138,6 @@ const SignUp = () => {
           <Stack spacing={2}>
             {error && <Alert severity="error">{error}</Alert>}
 
-            {/* Image Upload */}
             <FormControl error={!!errors.image_url}>
               <Button variant="outlined" component="label">
                 Upload Profile Image

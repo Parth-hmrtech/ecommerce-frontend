@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { apiRequest } from '../../../hooks/useApiRequest';
+import { apiRequest } from '@/hooks/useApiRequest';
 
 const fetchBuyerCategoriesAction = createAsyncThunk(
   'buyer/fetchBuyerCategories',

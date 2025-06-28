@@ -1,6 +1,6 @@
 import React from "react";
 import { RouterProvider } from "react-router-dom";
-import AppRoutes from "./routes"; // This is the object created by createBrowserRouter
+import AppRoutes from "./routes"; 
 import './App.css';
 
 function App() {

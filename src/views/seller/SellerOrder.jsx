@@ -19,9 +19,9 @@ import {
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
-import Header from '../../components/common/Header';
-import Footer from '../../components/common/Footer';
-import Sidebar from '../../components/common/Sidebar';
+import Header from '@/components/common/Header';
+import Footer from '@/components/common/Footer';
+import Sidebar from '@/components/common/Sidebar';
 
 import useSellerOrder from '@/hooks/seller/useSellerOrder';
 

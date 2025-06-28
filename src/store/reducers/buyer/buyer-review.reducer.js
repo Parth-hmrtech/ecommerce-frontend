@@ -4,7 +4,7 @@ import {
   addBuyerReviewAction,
   updateBuyerReviewAction,
   deleteBuyerReviewAction,
-} from '../../actions/buyer/buyer-review.action';
+} from '@/store/actions/buyer/buyer-review.action';
 
 const initialState = {
   items: [],

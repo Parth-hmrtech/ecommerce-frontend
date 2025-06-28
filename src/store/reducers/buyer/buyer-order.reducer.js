@@ -5,7 +5,7 @@ import {
   fetchBuyerOrderByIdAction,
   updateBuyerOrderAddressAction,
   deleteBuyerOrderAction,
-} from '../../actions/buyer/buyer-order.action';
+} from '@/store/actions/buyer/buyer-order.action';
 
 const initialState = {
   orders: [],
