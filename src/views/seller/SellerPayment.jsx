@@ -19,7 +19,7 @@ import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import Sidebar from '@/components/common/Sidebar';
 
-import useSellerPayment from '@/hooks/seller/useSellerPayment';
+import useSellerPayment from '@/hooks/usePayment';
 
 const SellerPayments = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -28,9 +28,10 @@ const SellerPayments = () => {
   const {
     fetchSellerPayments,
     fetchSellerEarnings,
-    sellerPayments: { payments = [], earnings = {}, loading, error },
+    sellerPayments
   } = useSellerPayment();
-
+    const payments = sellerPayments.sellerPayments;
+    const earnings = sellerPayments.sellerEarnings
   useEffect(() => {
     fetchSellerPayments();
     fetchSellerEarnings();
@@ -39,6 +40,8 @@ const SellerPayments = () => {
   const handleToggleSidebar = () => {
     setSidebarOpen((prev) => !prev);
   };
+  const loading = sellerPayments.loading || false;
+  const error = sellerPayments.error || false;
 
   const uniqueOrderIds = new Set(payments.map((p) => p.order_id));
   const totalOrders = uniqueOrderIds.size;

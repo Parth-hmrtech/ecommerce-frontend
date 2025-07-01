@@ -1,34 +1,15 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Paper,
-  CircularProgress,
-  Alert,
-  InputAdornment,
-  IconButton,
-  Divider,
-  Avatar,
-  Stack,
+  Box, Typography, TextField, Button, Paper, Alert, InputAdornment,
+  IconButton, Divider, Avatar, Stack
 } from '@mui/material';
 import {
-  Visibility,
-  VisibilityOff,
-  Person,
-  Edit,
-  LockReset,
-  PhotoCamera,
-  Email,
-  Phone,
+  Visibility, VisibilityOff, Person, Edit, LockReset, PhotoCamera
 } from '@mui/icons-material';
-
 
 import BuyerHeader from '@/components/common/BuyerHeader';
 import BuyerFooter from '@/components/common/BuyerFooter';
-
-import useBuyerProfile from '@/hooks/buyer/useBuyerProfile';
+import useUserProfile from '@/hooks/useUser';
 
 const BuyerProfile = () => {
   const userId = useMemo(() => {
@@ -41,11 +22,13 @@ const BuyerProfile = () => {
 
   const {
     profile,
+    fetchUserProfile,
+    updateUserProfile,
+    resetUserPassword,
     loading,
-    fetchProfile,
-    updateProfile,
-    resetPassword,
-  } = useBuyerProfile();
+    alertType,
+    message,
+  } = useUserProfile();
 
   const [formData, setFormData] = useState({
     first_name: '',
@@ -57,55 +40,88 @@ const BuyerProfile = () => {
   });
 
   const [formErrors, setFormErrors] = useState({});
-  const [passwordErrors, setPasswordErrors] = useState({});
-  const [updating, setUpdating] = useState(false);
-  const [successMsg, setSuccessMsg] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
-  const [passwordResetMessage, setPasswordResetMessage] = useState('');
-  const [passwordResetSeverity, setPasswordResetSeverity] = useState('error');
-  const [resetting, setResetting] = useState(false);
+  const [passwordErrors, setPasswordErrors] = useState({});
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
+  const [resetting, setResetting] = useState(false);
+  const [passwordResetMessage, setPasswordResetMessage] = useState('');
+  const [passwordResetSeverity, setPasswordResetSeverity] = useState('error');
+  const [updateMessage, setUpdateMessage] = useState('');
+  const [updateAlertType, setUpdateAlertType] = useState('success');
 
+  // Fetch profile on mount
   useEffect(() => {
-    if (userId) fetchProfile(userId);
-  }, [fetchProfile, userId]);
+    if (userId) fetchUserProfile(userId);
+  }, [userId]);
 
+  // Fill form when profile is fetched
   useEffect(() => {
-    if (profile?.user) {
-      const { first_name, last_name, email, phone_number, image_url } = profile.user;
-      setFormData((prev) => ({
-        ...prev,
-        first_name,
-        last_name,
-        email,
-        phone_number,
-        image_url,
-      }));
+    const user = profile?.user;
+    if (user) {
+      const { first_name, last_name, email, phone_number, image_url } = user;
+      setFormData({
+        first_name: first_name || '',
+        last_name: last_name || '',
+        email: email || '',
+        phone_number: phone_number || '',
+        image: null,
+        image_url: image_url || '',
+      });
+
+      localStorage.setItem('user', JSON.stringify(user)); // only if valid user exists
     }
   }, [profile]);
 
   const validateForm = () => {
     const errors = {};
-    if (!formData.first_name?.trim()) errors.first_name = 'First name is required';
-    if (!formData.last_name?.trim()) errors.last_name = 'Last name is required';
-    if (!formData.email?.trim()) {
+    if (!formData.first_name.trim()) errors.first_name = 'First name is required';
+    if (!formData.last_name.trim()) errors.last_name = 'Last name is required';
+    if (!formData.email.trim()) {
       errors.email = 'Email is required';
     } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
-      errors.email = 'Enter a valid email';
+      errors.email = 'Invalid email';
     }
-    if (!formData.phone_number?.trim()) errors.phone_number = 'Phone number is required';
+    if (!formData.phone_number.trim()) errors.phone_number = 'Phone number is required';
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
+  const handleUpdate = async () => {
+    if (!validateForm() || !userId) return;
+
+    const data = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      if (key === 'image' && value instanceof File) {
+        data.append('image', value);
+      } else if (key !== 'image_url') {
+        data.append(key, value);
+      }
+    });
+
+    try {
+      const res = await updateUserProfile({ id: userId, data }).unwrap();
+      fetchUserProfile(userId);
+      console.log(res);
+
+      const msg = res?.data?.message || res?.message;
+      setUpdateAlertType('success');
+      setUpdateMessage(msg);
+    } catch (err) {
+      const msg = err?.response?.data?.message || err?.message;
+      setUpdateAlertType('error');
+      setUpdateMessage(msg);
+    } finally {
+      setTimeout(() => setUpdateMessage(''), 3000);
+    }
+  };
+
   const validatePassword = () => {
     const errors = {};
-    if (!oldPassword.trim()) errors.oldPassword = 'Old password is required';
-    if (!newPassword.trim()) {
-      errors.newPassword = 'New password is required';
+    if (!oldPassword) errors.oldPassword = 'Old password required';
+    if (!newPassword) {
+      errors.newPassword = 'New password required';
     } else if (!/^(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/.test(newPassword)) {
       errors.newPassword = 'Min 8 chars, 1 uppercase, 1 special char';
     }
@@ -113,14 +129,34 @@ const BuyerProfile = () => {
     return Object.keys(errors).length === 0;
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    setFormErrors((prev) => ({ ...prev, [name]: '' }));
+  const handlePasswordReset = async () => {
+    if (!validatePassword()) return;
+    setResetting(true);
+    setPasswordResetMessage('');
+
+    try {
+      const res = await resetUserPassword({ oldPassword, newPassword }).unwrap();
+      const msg = res?.data?.data?.message || res?.data?.message || res?.message || '';
+      const isError = /incorrect|not match|wrong/i.test(msg);
+
+      setPasswordResetSeverity(isError ? 'warning' : 'success');
+      setPasswordResetMessage(msg);
+      if (!isError) {
+        setOldPassword('');
+        setNewPassword('');
+      }
+    } catch (err) {
+      const msg = err?.response?.data?.message;
+      setPasswordResetSeverity('error');
+      setPasswordResetMessage(msg);
+    } finally {
+      setResetting(false);
+      setTimeout(() => setPasswordResetMessage(''), 3000);
+    }
   };
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (file) {
       setFormData((prev) => ({
         ...prev,
@@ -130,193 +166,50 @@ const BuyerProfile = () => {
     }
   };
 
-  const handleUpdate = () => {
-    if (!validateForm()) return;
-
-    setErrorMsg('');
-    setSuccessMsg('');
-    setUpdating(true);
-
-    const data = new FormData();
-    data.append('first_name', formData.first_name);
-    data.append('last_name', formData.last_name);
-    data.append('email', formData.email);
-    data.append('phone_number', formData.phone_number);
-    if (formData.image) {
-      data.append('image', formData.image);
-    }
-
-    updateProfile({ id: userId, data })
-
-      .unwrap()
-      .then(() => {
-        setSuccessMsg('Profile updated successfully');
-        fetchProfile(userId);
-        setTimeout(() => setSuccessMsg(''), 4000);
-      })
-      .catch((err) => {
-        const message = err?.message || err?.error || 'Update failed';
-        setErrorMsg(message);
-        setTimeout(() => setErrorMsg(''), 4000);
-      })
-      .finally(() => {
-        setUpdating(false);
-      });
-  };
-  useEffect(() => {
-    if (profile?.user) {
-      localStorage.setItem('user', JSON.stringify(profile.user));
-    }
-  }, [profile?.user]);
-
-  const handlePasswordReset = () => {
-    if (!validatePassword()) return;
-
-    setResetting(true);
-    setPasswordResetMessage('');
-    setPasswordResetSeverity('error');
-
-    resetPassword({ oldPassword, newPassword })
-      .unwrap()
-      .then((res) => {
-        const message =
-          res?.data?.data?.message || res?.data?.message || res?.message || '';
-          console.log(res);
-          
-        const isError = /incorrect|not match|wrong/i.test(message);
-
-        if (isError) {
-          setPasswordResetSeverity('warning');
-        } else {
-          setPasswordResetSeverity('success');
-          setOldPassword('');
-          setNewPassword('');
-        }
-        console.log(message);
-        
-        setPasswordResetMessage(message);
-        setTimeout(() => setPasswordResetMessage(''), 3000);
-      })
-      .catch((err) => {
-        const message = err?.response?.data?.message || err?.message || 'Reset failed';
-        setPasswordResetSeverity('error');
-        setPasswordResetMessage(message);
-        setTimeout(() => setPasswordResetMessage(''), 3000);
-      })
-      .finally(() => {
-        setResetting(false);
-      });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#f4f6f8' }}>
       <BuyerHeader />
       <Box sx={{ flex: 1, p: 3, display: 'flex', justifyContent: 'center' }}>
-        <Paper elevation={3} sx={{ p: 4, borderRadius: 3, display: 'flex', flexDirection: 'row', gap: 4, maxWidth: 1200, width: '100%' }}>
-          <Box
-            component={Paper}
-            elevation={3}
-            sx={{
-              p: 3,
-              borderRadius: 3,
-              minWidth: 300,
-              flex: 1,
-              backgroundColor: '#f9f9f9',
-            }}
-          >
-            <Stack direction="row" alignItems="center" spacing={2}>
-              <Avatar
-                src={profile?.user?.image_url}
-                alt="Profile"
-                sx={{ width: 80, height: 80 }}
-              />
-              <Box>
-                <Typography variant="h6" fontWeight="bold" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Person color="action" /> Profile Info
-                </Typography>
-                <Divider sx={{ my: 1 }} />
-              </Box>
+        <Paper elevation={3} sx={{ p: 4, borderRadius: 3, maxWidth: 1200, width: '100%', gap: 4, display: 'flex', flexDirection: 'row' }}>
+          {/* Profile Info */}
+          <Box component={Paper} elevation={2} sx={{ p: 3, borderRadius: 3, flex: 1, bgcolor: '#fafafa' }}>
+            <Stack direction="row" spacing={2} alignItems="center">
+              <Avatar src={profile?.user?.image_url} sx={{ width: 80, height: 80 }} />
+              <Typography variant="h6" fontWeight="bold">
+                <Person fontSize="small" /> Profile Info
+              </Typography>
             </Stack>
-
-            <Box
-              mt={2}
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 1.5,
-                alignItems: { xs: 'center', sm: 'flex-start' },
-                textAlign: { xs: 'center', sm: 'left' },
-              }}
-            >
-              <Typography sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Person fontSize="small" color="action" />
-                <strong>First Name:</strong> {profile?.user?.first_name || '—'}
+            <Divider sx={{ my: 2 }} />
+            {['first_name', 'last_name', 'email', 'phone_number'].map((field) => (
+              <Typography key={field} sx={{ mt: 1 }}>
+                <strong>{field.replace('_', ' ').toUpperCase()}:</strong> {profile?.user?.[field] || '—'}
               </Typography>
-              <Typography sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Person fontSize="small" color="action" />
-                <strong>Last Name:</strong> {profile?.user?.last_name || '—'}
-              </Typography>
-              <Typography sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Email fontSize="small" color="action" />
-                <strong>Email:</strong> {profile?.user?.email || '—'}
-              </Typography>
-              <Typography sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Phone fontSize="small" color="action" />
-                <strong>Phone:</strong> {profile?.user?.phone_number || '—'}
-              </Typography>
-            </Box>
-
-
+            ))}
           </Box>
 
-          <Box sx={{ flex: 2, minWidth: 300 }}>
-            <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Edit color="primary" /> Edit Profile
-            </Typography>
-            <Divider sx={{ my: 1 }} />
-            {successMsg && <Alert severity="success" sx={{ mt: 2 }}>{successMsg}</Alert>}
-            {errorMsg && <Alert severity="error" sx={{ mt: 2 }}>{errorMsg}</Alert>}
+          {/* Edit Form */}
+          <Box sx={{ flex: 2 }}>
+            <Typography variant="h6"><Edit color="primary" /> Edit Profile</Typography>
+            <Divider sx={{ my: 2 }} />
 
-            <TextField
-              label="First Name"
-              name="first_name"
-              fullWidth
-              margin="normal"
-              value={formData.first_name || ''}
-              onChange={handleChange}
-              error={!!formErrors.first_name}
-              helperText={formErrors.first_name}
-            />
-            <TextField
-              label="Last Name"
-              name="last_name"
-              fullWidth
-              margin="normal"
-              value={formData.last_name || ''}
-              onChange={handleChange}
-              error={!!formErrors.last_name}
-              helperText={formErrors.last_name}
-            />
-            <TextField
-              label="Email"
-              name="email"
-              fullWidth
-              margin="normal"
-              value={formData.email || ''}
-              onChange={handleChange}
-              error={!!formErrors.email}
-              helperText={formErrors.email}
-            />
-            <TextField
-              label="Phone Number"
-              name="phone_number"
-              fullWidth
-              margin="normal"
-              value={formData.phone_number || ''}
-              onChange={handleChange}
-              error={!!formErrors.phone_number}
-              helperText={formErrors.phone_number}
-            />
+            {updateMessage && (
+              <Alert severity={updateAlertType} sx={{ mb: 2 }}>{updateMessage}</Alert>
+            )}
+
+            <TextField label="First Name" name="first_name" fullWidth value={formData.first_name} onChange={handleChange}
+              margin="normal" error={!!formErrors.first_name} helperText={formErrors.first_name} />
+            <TextField label="Last Name" name="last_name" fullWidth value={formData.last_name} onChange={handleChange}
+              margin="normal" error={!!formErrors.last_name} helperText={formErrors.last_name} />
+            <TextField label="Email" name="email" fullWidth value={formData.email} onChange={handleChange}
+              margin="normal" error={!!formErrors.email} helperText={formErrors.email} />
+            <TextField label="Phone Number" name="phone_number" fullWidth value={formData.phone_number} onChange={handleChange}
+              margin="normal" error={!!formErrors.phone_number} helperText={formErrors.phone_number} />
 
             <Box mt={2} display="flex" alignItems="center" gap={2}>
               {formData.image_url && (
@@ -330,34 +223,19 @@ const BuyerProfile = () => {
                     objectFit: 'cover',
                   }}
                 />
-              )}
-
-              <Button
-                variant="outlined"
-                component="label"
-                startIcon={<PhotoCamera />}
-              >
-                Choose Image
+              )}              <Button variant="outlined" component="label" startIcon={<PhotoCamera />}>
+                Upload Image
                 <input type="file" hidden accept="image/*" onChange={handleImageChange} />
               </Button>
-
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleUpdate}
-                disabled={updating}
-              >
-                {updating ? 'Updating...' : 'Update Profile'}
+              <Button variant="contained" onClick={handleUpdate} disabled={loading === 'userProfile/update'}>
+                {loading === 'userProfile/update' ? 'Updating...' : 'Update'}
               </Button>
             </Box>
 
-
-            <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 5 }}>
-              <LockReset color="error" /> Reset Password
-            </Typography>
-            <Divider sx={{ my: 1 }} />
+            <Typography variant="h6" sx={{ mt: 4 }}><LockReset color="error" /> Reset Password</Typography>
+            <Divider sx={{ my: 2 }} />
             {passwordResetMessage && (
-              <Alert severity={passwordResetSeverity} sx={{ mt: 2 }}>
+              <Alert severity={passwordResetSeverity} sx={{ mb: 2 }}>
                 {passwordResetMessage}
               </Alert>
             )}
@@ -368,10 +246,7 @@ const BuyerProfile = () => {
               fullWidth
               margin="normal"
               value={oldPassword}
-              onChange={(e) => {
-                setOldPassword(e.target.value);
-                setPasswordErrors((prev) => ({ ...prev, oldPassword: '' }));
-              }}
+              onChange={(e) => setOldPassword(e.target.value)}
               error={!!passwordErrors.oldPassword}
               helperText={passwordErrors.oldPassword}
               InputProps={{
@@ -391,10 +266,7 @@ const BuyerProfile = () => {
               fullWidth
               margin="normal"
               value={newPassword}
-              onChange={(e) => {
-                setNewPassword(e.target.value);
-                setPasswordErrors((prev) => ({ ...prev, newPassword: '' }));
-              }}
+              onChange={(e) => setNewPassword(e.target.value)}
               error={!!passwordErrors.newPassword}
               helperText={passwordErrors.newPassword}
               InputProps={{
@@ -408,12 +280,11 @@ const BuyerProfile = () => {
               }}
             />
 
-
             <Button
               variant="contained"
               color="secondary"
-              sx={{ mt: 3 }}
               onClick={handlePasswordReset}
+              sx={{ mt: 2 }}
               disabled={resetting}
             >
               {resetting ? 'Resetting...' : 'Reset Password'}
@@ -421,8 +292,6 @@ const BuyerProfile = () => {
           </Box>
         </Paper>
       </Box>
-
-
       <Box mt="auto">
         <BuyerFooter />
       </Box>

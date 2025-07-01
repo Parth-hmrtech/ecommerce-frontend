@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import {
   Box,
@@ -27,7 +28,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import Sidebar from '@/components/common/Sidebar';
-import useSellerProduct from '@/hooks/seller/useSellerProduct';
+import useSellerProduct from '@/hooks/useProduct';
 
 const SellerProduct = () => {
   const {
@@ -37,15 +38,18 @@ const SellerProduct = () => {
     updateSellerProduct,
     fetchSellerCategories,
     fetchSellerSubcategoriesByCategoryId,
-    sellerProduct,
+    sellerProducts,
     sellerCategories,
     sellerSubcategories,
+    sellerLoading,
+    sellerError,
   } = useSellerProduct();
+  const loading = sellerLoading;
+  const error = sellerError;
 
-  const { list: products, loading, error } = sellerProduct;
-  const { list: categories } = sellerCategories;
-  const { list: subcategories } = sellerSubcategories;
-
+  const products = sellerProducts;
+  const categories = sellerCategories;
+  const subcategories = sellerSubcategories;
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddForm, setShowAddForm] = useState(false);
@@ -170,8 +174,8 @@ const SellerProduct = () => {
 
   const filteredList = Array.isArray(products)
     ? products.filter((p) =>
-        p.product_name?.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+      p.product_name?.toLowerCase().includes(searchTerm.toLowerCase())
+    )
     : [];
 
   return (

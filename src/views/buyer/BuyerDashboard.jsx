@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 
 import BuyerHeader from '@/components/common/BuyerHeader';
 import BuyerFooter from '@/components/common/BuyerFooter';
-import useBuyerDashboard from '@/hooks/buyer/useBuyerDashboard';
+import useBuyerDashboard from '@/hooks/useBuyerDashboard'; 
 
 const BuyerDashboard = () => {
   const navigate = useNavigate();
@@ -30,6 +30,7 @@ const BuyerDashboard = () => {
     refreshCart,
   } = useBuyerDashboard();
 
+    
   const [quantities, setQuantities] = useState({});
   const [search, setSearch] = useState('');
 

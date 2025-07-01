@@ -17,7 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import BuyerHeader from '@/components/common/BuyerHeader';
 import BuyerFooter from '@/components/common/BuyerFooter';
 
-import useBuyerCart from '@/hooks/buyer/useBuyerCart';
+import useBuyerCart from '@/hooks/useCart';
 
 const BuyerCart = () => {
   const navigate = useNavigate();

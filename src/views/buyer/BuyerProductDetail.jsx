@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
@@ -22,54 +23,16 @@ import 'slick-carousel/slick/slick-theme.css';
 
 import BuyerHeader from '@/components/common/BuyerHeader';
 import BuyerFooter from '@/components/common/BuyerFooter';
-import useBuyerProductDetail from '@/hooks/buyer/useBuyerProductDetail';
+import useProductManager from '@/hooks/useProduct';
 
 const NextArrow = ({ onClick }) => (
-    <Box
-        onClick={onClick}
-        sx={{
-            position: 'absolute',
-            top: '50%',
-            right: -20,
-            transform: 'translateY(-50%)',
-            width: 36,
-            height: 60,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            bgcolor: 'white',
-            borderTopLeftRadius: '30px',
-            borderBottomLeftRadius: '30px',
-            boxShadow: 3,
-            cursor: 'pointer',
-            zIndex: 1,
-        }}
-    >
+    <Box onClick={onClick} sx={{ position: 'absolute', top: '50%', right: -20, transform: 'translateY(-50%)', width: 36, height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'white', borderTopLeftRadius: '30px', borderBottomLeftRadius: '30px', boxShadow: 3, cursor: 'pointer', zIndex: 1 }}>
         ❯
     </Box>
 );
 
 const PrevArrow = ({ onClick }) => (
-    <Box
-        onClick={onClick}
-        sx={{
-            position: 'absolute',
-            top: '50%',
-            left: -20,
-            transform: 'translateY(-50%)',
-            width: 36,
-            height: 60,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            bgcolor: 'white',
-            borderTopRightRadius: '30px',
-            borderBottomRightRadius: '30px',
-            boxShadow: 3,
-            cursor: 'pointer',
-            zIndex: 1,
-        }}
-    >
+    <Box onClick={onClick} sx={{ position: 'absolute', top: '50%', left: -20, transform: 'translateY(-50%)', width: 36, height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'white', borderTopRightRadius: '30px', borderBottomRightRadius: '30px', boxShadow: 3, cursor: 'pointer', zIndex: 1 }}>
         ❮
     </Box>
 );
@@ -91,7 +54,7 @@ const BuyerProductDetail = () => {
         addToWishlist,
         updateReview,
         deleteReview,
-    } = useBuyerProductDetail(productId);
+    } = useProductManager(productId);
 
     const [wishlisted, setWishlisted] = useState(false);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -100,19 +63,16 @@ const BuyerProductDetail = () => {
     const [editedComment, setEditedComment] = useState('');
 
     useEffect(() => {
-        setWishlisted(wishlist.some((item) => item.product_id === product?.id));
-    }, [wishlist, product]);
+        const isWished = wishlist.some((item) => item.product_id === product?.id);
+        if (wishlisted !== isWished) {
+            setWishlisted(isWished);
+        }
+    }, [wishlist, product?.id]);
 
     const getImages = (imageString) => {
         try {
             const parsed = JSON.parse(imageString);
-            return Array.isArray(parsed)
-                ? parsed.map((img) => img.image_url || img)
-                : typeof parsed === 'object' && parsed.image_url
-                    ? [parsed.image_url]
-                    : typeof parsed === 'string'
-                        ? [parsed]
-                        : [];
+            return Array.isArray(parsed) ? parsed.map((img) => img.image_url || img) : [parsed?.image_url || parsed];
         } catch {
             return [];
         }
@@ -120,24 +80,18 @@ const BuyerProductDetail = () => {
 
     const handleUpdateQuantity = async (item, delta) => {
         const newQty = item.quantity + delta;
-
         if (newQty < 1) {
             await deleteCartItem(item.id);
         } else {
             await updateCart({ id: item.id, quantity: newQty });
         }
-
-        fetchCart(); // ✅ update cart in Redux + UI
+        fetchCart();
     };
 
     const handleAddToCart = () => {
         const user = JSON.parse(localStorage.getItem('user'));
         if (user?.id && product?.id) {
-            addToCart({
-                buyer_id: user.id,
-                product_id: product.id,
-                quantity: 1,
-            });
+            addToCart({ buyer_id: user.id, product_id: product.id, quantity: 1 });
         }
     };
 
@@ -157,24 +111,20 @@ const BuyerProductDetail = () => {
     };
 
     const handleUpdateReview = async (reviewId) => {
-        await updateReview({
-            id: reviewId,
-            rating: editedRating,
-            comment: editedComment,
-        });
-
+        await updateReview({ id: reviewId, rating: editedRating, comment: editedComment });
         setEditingReviewId(null);
         fetchReviews(product.id);
     };
+
     const handleDeleteReview = async (reviewId) => {
         await deleteReview(reviewId);
         fetchReviews(product.id);
     };
 
-    const images = getImages(product?.image_urls || product?.image_url);
+    const images = getImages(product?.image_url);
     const cartItem = cart.find((item) => item.product_id === product?.id);
     const quantity = cartItem?.quantity || 0;
-    const totalPrice = (product?.price || 0) * quantity;
+    const totalPrice = (parseFloat(product?.price || 0) * quantity).toFixed(2);
 
     const sliderSettings = {
         dots: true,
@@ -194,7 +144,7 @@ const BuyerProductDetail = () => {
                 open={snackbarOpen}
                 autoHideDuration={2000}
                 onClose={() => setSnackbarOpen(false)}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }} 
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             >
                 <Alert severity="success" onClose={() => setSnackbarOpen(false)}>
                     Added to wishlist!
@@ -261,7 +211,7 @@ const BuyerProductDetail = () => {
                                 ) : (
                                     <Box>
                                         <img
-                                            src="https://via.placeholder.com/300"
+                                            src="No image"
                                             alt="placeholder"
                                             style={{
                                                 width: '100%',

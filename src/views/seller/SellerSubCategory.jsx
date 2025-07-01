@@ -30,7 +30,7 @@ import Header from '@/components/common/Header';
 import Sidebar from '@/components/common/Sidebar';
 import Footer from '@/components/common/Footer';
 
-import useSellerCategory from '@/hooks/seller/useSellerCategory'; // 👈 using the hook
+import useSellerCategory from '@/hooks/useCategory'; // 👈 using the hook
 
 const SellerSubCategory = () => {
   const {
@@ -121,9 +121,13 @@ const SellerSubCategory = () => {
       .catch((err) => console.error('Delete failed:', err));
   };
 
-  const filteredList = subCategories.filter((sub) =>
-    sub.sub_category_name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredList = Array.isArray(subCategories)
+    ? subCategories.filter(
+      (sub) =>
+        sub?.sub_category_name?.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    : [];
+
 
   const getCategoryName = (id) => {
     const category = categories.find((cat) => cat.id === id);

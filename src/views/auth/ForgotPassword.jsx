@@ -11,7 +11,7 @@ import {
   MenuItem,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import useAuthentication from '@/hooks/auth/useAuthentication';
+import useAuthentication from '@/hooks/useAuthentication';
 
 const ForgotPassword = () => {
   const navigate = useNavigate();

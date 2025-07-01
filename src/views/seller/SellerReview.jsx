@@ -24,23 +24,26 @@ import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import Sidebar from '@/components/common/Sidebar';
 
-import useSellerProduct from '@/hooks/seller/useSellerProduct';
+import useSellerProduct from '@/hooks/useProduct';
 
 const SellerReview = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [selectedReviewId, setSelectedReviewId] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   const {
     fetchSellerProducts,
     fetchSellerReviews,
     deleteSellerReview,
-    sellerProduct,
+    sellerProducts,
     sellerReviews,
   } = useSellerProduct();
 
-  const { list: productList = [] } = sellerProduct;
-  const { reviews = [], loading, error } = sellerReviews;
+  const loading = sellerReviews?.loading || false;
+  const error = sellerReviews?.error || '';
+  const productList = sellerProducts || [];
+  const reviews = sellerReviews || [];
 
   useEffect(() => {
     fetchSellerProducts();
@@ -61,18 +64,27 @@ const SellerReview = () => {
     setConfirmOpen(true);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (selectedReviewId) {
-      deleteSellerReview(selectedReviewId);
+      setDeleting(true);
+      try {
+        await deleteSellerReview(selectedReviewId); // wait for delete to complete
+        await fetchSellerReviews(); // refresh reviews after delete
+      } catch (error) {
+        console.error('Error deleting review:', error);
+      } finally {
+        setDeleting(false);
+        setConfirmOpen(false);
+        setSelectedReviewId(null);
+      }
     }
-    setConfirmOpen(false);
-    setSelectedReviewId(null);
   };
 
-  const filteredReviews =
-    reviews?.filter((review) =>
-      productList.some((product) => product.id === review.product_id)
-    ) || [];
+  const filteredReviews = Array.isArray(reviews)
+    ? reviews.filter((review) =>
+        productList.some((product) => product.id === review.product_id)
+      )
+    : [];
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', flexDirection: 'column' }}>
@@ -82,7 +94,9 @@ const SellerReview = () => {
         <Sidebar open={sidebarOpen} />
 
         <Box sx={{ flexGrow: 1, p: 3, backgroundColor: '#f5f5f5' }}>
-          <Typography variant="h5" mb={2}>Seller Reviews</Typography>
+          <Typography variant="h5" mb={2}>
+            Seller Reviews
+          </Typography>
 
           {loading ? (
             <CircularProgress />
@@ -105,7 +119,9 @@ const SellerReview = () => {
                   {filteredReviews.map((review) => (
                     <TableRow key={review.id}>
                       <TableCell>{getProductName(review.product_id)}</TableCell>
-                      <TableCell><Rating value={review.rating} readOnly /></TableCell>
+                      <TableCell>
+                        <Rating value={review.rating} readOnly />
+                      </TableCell>
                       <TableCell>{review.comment}</TableCell>
                       <TableCell>{new Date(review.created_at).toLocaleString()}</TableCell>
                       <TableCell>{new Date(review.updated_at).toLocaleString()}</TableCell>
@@ -116,6 +132,7 @@ const SellerReview = () => {
                           size="small"
                           onClick={() => handleDeleteClick(review.id)}
                           startIcon={<DeleteIcon />}
+                          disabled={deleting}
                         >
                           Delete
                         </Button>
@@ -141,11 +158,16 @@ const SellerReview = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setConfirmOpen(false)} color="primary">
+          <Button onClick={() => setConfirmOpen(false)} color="primary" disabled={deleting}>
             Cancel
           </Button>
-          <Button onClick={confirmDelete} color="error" variant="contained">
-            Delete
+          <Button
+            onClick={confirmDelete}
+            color="error"
+            variant="contained"
+            disabled={deleting}
+          >
+            {deleting ? 'Deleting...' : 'Delete'}
           </Button>
         </DialogActions>
       </Dialog>

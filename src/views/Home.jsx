@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -14,7 +15,7 @@ import {
 } from '@mui/material';
 import ecommerceLogo from '@/assets/images/ecommerce-logo.png';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProductsAction } from '@/store/actions/product.actions';
+import { fetchProductsAction } from '@/store/actions/product.action';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';

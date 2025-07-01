@@ -11,8 +11,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import BuyerHeader from '@/components/common/BuyerHeader';
 import BuyerFooter from '@/components/common/BuyerFooter';
 
-import { fetchProductsAction } from '@/store/actions/product.actions';
-import useBuyerOrder from '@/hooks/buyer/useBuyerOrder';
+import { fetchProductsAction } from '@/store/actions/product.action';
+import useBuyerOrder from '@/hooks/useOrder';
 
 const BuyerOrders = () => {
   const location = useLocation();
@@ -23,7 +23,7 @@ const BuyerOrders = () => {
     loading,
     error,
     buyerCheckPayments,
-    reviewResponses,
+    buyerReviews, // ✅ correct based on current redux state
     fetchOrders,
     deleteOrder,
     updateOrderAddress,
@@ -35,6 +35,7 @@ const BuyerOrders = () => {
     deleteReview,
     fetchReviewsByProductId,
   } = useBuyerOrder();
+
 
   const { products = [] } = useSelector((state) => state.product);
 
@@ -48,25 +49,37 @@ const BuyerOrders = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [reviewInputs, setReviewInputs] = useState({});
+useEffect(() => {
+  const fetchData = async () => {
+    await dispatch(fetchProductsAction()).unwrap(); 
+    fetchOrders(); 
+  };
+
+  fetchData();
+}, [dispatch, location]);
+
 
   useEffect(() => {
-    dispatch(fetchProductsAction());
-  }, [dispatch, location]);
+    if (!Array.isArray(orders) || orders.length === 0) return;
 
-  useEffect(() => {
     const uniqueProductIds = new Set();
+
     orders.forEach((order) => {
-      order.order_items?.forEach((item) => {
-        if (item.product_id) {
+      order?.order_items?.forEach((item) => {
+        if (item?.product_id) {
           uniqueProductIds.add(item.product_id);
         }
       });
     });
 
     uniqueProductIds.forEach((productId) => {
-      fetchReviewsByProductId(productId);
+      if (productId) {
+        fetchReviewsByProductId(productId);
+      }
     });
-  }, [orders]);
+  }, [orders, fetchReviewsByProductId]);
+
+
 
   const handleToggleRow = (orderId) => {
     setOpenRows((prev) => ({ ...prev, [orderId]: !prev[orderId] }));
@@ -90,27 +103,27 @@ const BuyerOrders = () => {
     fetchOrders();
   };
 
-  const getProductName = (product_id) => {
-    const product = products.find((p) => p.id === product_id);
-    return product?.product_name || 'Unknown Product';
-  };
+
+
 
   const calculateOrderTotal = (items = []) =>
     items.reduce((sum, item) => sum + (Number(item?.price) || 0) * (Number(item?.quantity) || 0), 0);
-
   const handlePayNowClick = (order) => {
+    if (!order) return;
     setSelectedOrder(order);
-    setPaymentMethod('UPI');
+    setPaymentMethod('UPI'); // default payment method
     setPaymentModalOpen(true);
   };
-
   const handleVerifyPayment = async () => {
     if (!selectedOrder || isOrderPaid(selectedOrder.id)) return;
+
     const totalAmount = calculateOrderTotal(selectedOrder?.order_items || []);
     const transactionId = `txn_${Date.now()}_${selectedOrder.id}`;
+
     setPayingOrderId(selectedOrder.id);
 
     try {
+      // Step 1: Initiate checkout
       await checkoutPayment({
         order_id: selectedOrder.id,
         seller_id: selectedOrder.seller_id,
@@ -118,19 +131,24 @@ const BuyerOrders = () => {
         payment_method: paymentMethod,
         transaction_id: transactionId,
       });
+
       setSuccessMessage(`Checkout initiated for Order #${selectedOrder.id}`);
       setOpenSnackbar(true);
 
+      // Step 2: Simulate payment verification
       await verifyPayment({
         status: 'success',
         transaction_id: transactionId,
       });
 
       setSuccessMessage(`Payment verified for Order #${selectedOrder.id}`);
+
+      // Step 3: Refresh UI and close modal
       setPaymentModalOpen(false);
       setSelectedOrder(null);
       fetchOrders();
       fetchPaymentStatus();
+
     } catch (error) {
       console.error('Payment error:', error);
       setSuccessMessage(`Payment failed for Order #${selectedOrder.id}`);
@@ -140,9 +158,15 @@ const BuyerOrders = () => {
     }
   };
 
+  // 🔸 Utility to check if payment status is already completed
   const isOrderPaid = (orderId) => {
+    if (!Array.isArray(buyerCheckPayments)) return false;
+
     const entry = buyerCheckPayments.find((p) => p.order_id === orderId);
-    return entry?.payment_status?.toLowerCase() === 'success' || entry?.payment_status?.toLowerCase() === 'paid';
+    return (
+      entry?.payment_status?.toLowerCase() === 'success' ||
+      entry?.payment_status?.toLowerCase() === 'paid'
+    );
   };
 
   const handleReviewInputChange = (orderId, field, value) => {
@@ -167,6 +191,8 @@ const BuyerOrders = () => {
       comment,
     });
     setReviewInputs((prev) => ({ ...prev, [order.id]: {} }));
+    console.log(productId);
+
     fetchReviewsByProductId(productId);
   };
 
@@ -189,6 +215,12 @@ const BuyerOrders = () => {
   const handleDeleteReview = async (reviewId, productId) => {
     await deleteReview(reviewId);
     fetchReviewsByProductId(productId);
+  };
+
+
+  const getProductName = (product_id) => {
+    const product = products.find((p) => p.id === product_id);
+    return product?.product_name;
   };
 
   return (
@@ -226,9 +258,11 @@ const BuyerOrders = () => {
               <TableBody>
                 {orders
                   .filter((order) => order.status?.toLowerCase() !== 'cancelled')
-                  .map((order) => (
-                    <React.Fragment key={order.id}>
-                      <TableRow hover>
+                  .map((order) => {
+                    const orderKey = `order-${order.id}`;
+                    return [
+                      // Main order row
+                      <TableRow hover key={`${orderKey}-main`}>
                         <TableCell>
                           <IconButton size="small" onClick={() => handleToggleRow(order.id)}>
                             {openRows[order.id] ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
@@ -237,7 +271,12 @@ const BuyerOrders = () => {
                         <TableCell>{order.id}</TableCell>
                         <TableCell>
                           {editAddressRow === order.id ? (
-                            <TextField size="small" value={newAddress} onChange={(e) => setNewAddress(e.target.value)} fullWidth />
+                            <TextField
+                              size="small"
+                              value={newAddress}
+                              onChange={(e) => setNewAddress(e.target.value)}
+                              fullWidth
+                            />
                           ) : (
                             order.delivery_address
                           )}
@@ -263,18 +302,27 @@ const BuyerOrders = () => {
                             Delete
                           </Button>
                           {!isOrderPaid(order.id) && (
-                            <Button size="small" variant="contained" color="primary" onClick={() => handlePayNowClick(order)} disabled={payingOrderId === order.id}>
+                            <Button
+                              size="small"
+                              variant="contained"
+                              color="primary"
+                              onClick={() => handlePayNowClick(order)}
+                              disabled={isOrderPaid(order.id)}
+                            >
                               {payingOrderId === order.id ? 'Processing...' : 'Pay Now'}
                             </Button>
                           )}
                         </TableCell>
-                      </TableRow>
+                      </TableRow>,
 
-                      <TableRow>
+                      // Collapsible row
+                      <TableRow key={`${orderKey}-collapse`}>
                         <TableCell colSpan={7} sx={{ padding: 0 }}>
                           <Collapse in={openRows[order.id]} timeout="auto" unmountOnExit>
                             <Box margin={2}>
-                              <Typography variant="subtitle1" gutterBottom>Ordered Items</Typography>
+                              <Typography variant="subtitle1" gutterBottom>
+                                Ordered Items
+                              </Typography>
                               <Table size="small">
                                 <TableHead>
                                   <TableRow>
@@ -285,7 +333,7 @@ const BuyerOrders = () => {
                                 </TableHead>
                                 <TableBody>
                                   {order.order_items?.map((item, idx) => (
-                                    <TableRow key={`${order.id}-${item.product_id}-${idx}`}>
+                                    <TableRow key={`${orderKey}-item-${item.product_id}-${idx}`}>
                                       <TableCell>{getProductName(item.product_id)}</TableCell>
                                       <TableCell>{item.quantity}</TableCell>
                                       <TableCell>₹{Number(item.price || 0).toLocaleString()}</TableCell>
@@ -293,20 +341,15 @@ const BuyerOrders = () => {
                                   ))}
 
                                   {/* Reviews */}
-                                  {(() => {
-                                    const uniqueReviews = reviewResponses
-                                      .filter(
-                                        (review) =>
-                                          review.order_id === order.id &&
-                                          review.order_id !== null &&
-                                          order.order_items.some((item) => item.product_id === review.product_id)
-                                      )
-                                      .filter(
-                                        (review, index, self) =>
-                                          index === self.findIndex((r) => r.id === review.id)
-                                      );
-
-                                    return uniqueReviews.map((review) => (
+                                  {buyerReviews
+                                    .filter(
+                                      (review) =>
+                                        review.order_id === order.id &&
+                                        review.order_id !== null &&
+                                        order.order_items.some((item) => item.product_id === review.product_id)
+                                    )
+                                    .filter((review, index, self) => index === self.findIndex((r) => r.id === review.id))
+                                    .map((review) => (
                                       <TableRow key={`review-${review.id}`}>
                                         <TableCell colSpan={4}>
                                           <Box
@@ -362,11 +405,10 @@ const BuyerOrders = () => {
                                           </Box>
                                         </TableCell>
                                       </TableRow>
-                                    ));
-                                  })()}
+                                    ))}
 
                                   {order.status === 'delivered' && (
-                                    <TableRow>
+                                    <TableRow key={`${orderKey}-add-review`}>
                                       <TableCell colSpan={4}>
                                         <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
                                           <FormControl size="small" sx={{ minWidth: 220 }}>
@@ -379,25 +421,18 @@ const BuyerOrders = () => {
                                               }
                                               label="Select Product"
                                               displayEmpty
-                                              MenuProps={{
-                                                disableAutoFocusItem: true,
-                                              }}
+                                              MenuProps={{ disableAutoFocusItem: true }}
                                               sx={{
                                                 backgroundColor: '#f9f9f9',
                                                 borderRadius: 1,
-                                                '.MuiSelect-select': {
-                                                  padding: '8px 12px',
-                                                },
+                                                '.MuiSelect-select': { padding: '8px 12px' },
                                               }}
                                             >
                                               <MenuItem disabled value="">
                                                 <em>Choose a product...</em>
                                               </MenuItem>
                                               {order.order_items?.map((item, idx) => (
-                                                <MenuItem
-                                                  key={`${order.id}-${item.product_id}-${idx}`}
-                                                  value={item.product_id}
-                                                >
+                                                <MenuItem key={`${orderKey}-dropdown-${item.product_id}-${idx}`} value={item.product_id}>
                                                   {getProductName(item.product_id)}
                                                 </MenuItem>
                                               ))}
@@ -411,13 +446,12 @@ const BuyerOrders = () => {
                                             <Rating
                                               name={`rating-${order.id}`}
                                               value={Number(reviewInputs[order.id]?.rating || 0)}
-                                              onChange={(event, newValue) => {
-                                                handleReviewInputChange(order.id, 'rating', newValue);
-                                              }}
+                                              onChange={(event, newValue) =>
+                                                handleReviewInputChange(order.id, 'rating', newValue)
+                                              }
                                               size="small"
                                             />
                                           </Box>
-
 
                                           <TextField
                                             label="Comment"
@@ -445,19 +479,14 @@ const BuyerOrders = () => {
                                               color="success"
                                               variant="contained"
                                               onClick={() =>
-                                                handleUpdateReview(
-                                                  reviewInputs[order.id].review_id,
-                                                  order.id
-                                                )
+                                                handleUpdateReview(reviewInputs[order.id].review_id, order.id)
                                               }
                                             >
                                               Update
                                             </Button>
                                           )}
-
                                         </Box>
                                       </TableCell>
-
                                     </TableRow>
                                   )}
                                 </TableBody>
@@ -465,9 +494,9 @@ const BuyerOrders = () => {
                             </Box>
                           </Collapse>
                         </TableCell>
-                      </TableRow>
-                    </React.Fragment>
-                  ))}
+                      </TableRow>,
+                    ];
+                  })}
               </TableBody>
             </Table>
           </TableContainer>

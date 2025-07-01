@@ -33,9 +33,9 @@ import {
   addCategoryAction,
   deleteCategoryAction,
   updateCategoryAction,
-} from '@/store/actions/seller/seller-category.action';
+} from '@/store/actions/category.action';
 
-import useSellerCategory from '@/hooks/seller/useSellerCategory';
+import useSellerCategory from '@/hooks/useCategory';
 
 const SellerCategory = () => {
   const dispatch = useDispatch();
@@ -56,7 +56,6 @@ const SellerCategory = () => {
   const [sortField, setSortField] = useState('createdAt');
   const [sortDirection, setSortDirection] = useState('desc');
 
-  // 🔁 Initial fetch
   useEffect(() => {
     dispatch(fetchAllCategoriesAction());
   }, [dispatch]);

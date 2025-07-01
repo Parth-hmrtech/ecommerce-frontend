@@ -23,19 +23,28 @@ import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import Sidebar from '@/components/common/Sidebar';
 
-import useSellerOrder from '@/hooks/seller/useSellerOrder';
+import useSellerOrder from '@/hooks/useOrder';
 
 const SellerOrderList = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [openRowIndex, setOpenRowIndex] = useState(null);
 
   const {
-    sellerOrders: { list: orders = [], loading },
-    sellerProduct: { list: productList = [] },
+    sellerOrders,
+    sellerProducts,
     fetchSellerOrders,
     fetchSellerProducts,
     updateOrderStatus,
   } = useSellerOrder();
+
+  const orders = sellerOrders;
+  const loading = sellerOrders.loading || false;
+  const productList = sellerProducts;
+
+  console.log(orders);
+  console.log(sellerProducts);
+  
+  
 
   useEffect(() => {
     fetchSellerOrders();
@@ -60,10 +69,15 @@ const SellerOrderList = () => {
     return product?.price || 0;
   };
 
-  const handleStatusChange = (orderId, newStatus) => {
-    updateOrderStatus(orderId, newStatus);
-    fetchSellerOrders();
-  };
+  const handleStatusChange = async (orderId, newStatus) => {
+  try {
+    await updateOrderStatus(orderId, newStatus); // Wait for update to finish
+    await fetchSellerOrders(); // Then re-fetch the updated list
+  } catch (error) {
+    console.error('Failed to update order status:', error);
+  }
+};
+
 
   const sellerProductIds = productList.map((product) => product.id);
 
@@ -113,106 +127,92 @@ const SellerOrderList = () => {
                         const price = getProductPrice(item.product_id);
                         return total + price * item.quantity;
                       }, 0);
+                      return [
+                        <TableRow key={`${order.id}-main`}>
+                          <TableCell>
+                            <IconButton size="small" onClick={() => toggleRow(index)}>
+                              {openRowIndex === index ? (
+                                <KeyboardArrowUpIcon />
+                              ) : (
+                                <KeyboardArrowDownIcon />
+                              )}
+                            </IconButton>
+                          </TableCell>
 
-                      return (
-                        <React.Fragment key={order.id}>
-                          <TableRow>
-                            <TableCell>
-                              <IconButton size="small" onClick={() => toggleRow(index)}>
-                                {openRowIndex === index ? (
-                                  <KeyboardArrowUpIcon />
-                                ) : (
-                                  <KeyboardArrowDownIcon />
-                                )}
-                              </IconButton>
-                            </TableCell>
+                          <TableCell>{order.id}</TableCell>
+                          <TableCell>{order.delivery_address}</TableCell>
 
-                            <TableCell>{order.id}</TableCell>
-                            <TableCell>{order.delivery_address}</TableCell>
-
-                            <TableCell>
-                              <Typography
-                                variant="body2"
-                                sx={{
-                                  textTransform: 'capitalize',
-                                  fontWeight: 500,
-                                  color:
-                                    order.status === 'pending'
-                                      ? 'orange'
-                                      : order.status === 'delivered'
+                          <TableCell>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                textTransform: 'capitalize',
+                                fontWeight: 500,
+                                color:
+                                  order.status === 'pending'
+                                    ? 'orange'
+                                    : order.status === 'delivered'
                                       ? 'green'
                                       : order.status === 'cancelled'
-                                      ? 'red'
-                                      : 'black',
-                                }}
-                              >
-                                {order.status}
-                              </Typography>
-                            </TableCell>
+                                        ? 'red'
+                                        : 'black',
+                              }}
+                            >
+                              {order.status}
+                            </Typography>
+                          </TableCell>
 
-                            <TableCell>₹{sellerTotal.toFixed(2)}</TableCell>
-                            <TableCell>
-                              {new Date(order.order_date).toLocaleString()}
-                            </TableCell>
+                          <TableCell>₹{sellerTotal.toFixed(2)}</TableCell>
+                          <TableCell>{new Date(order.order_date).toLocaleString()}</TableCell>
 
-                            <TableCell>
-                              <Select
-                                size="small"
-                                value={order.status?.toLowerCase() || 'pending'}
-                                onChange={(e) =>
-                                  handleStatusChange(order.id, e.target.value)
-                                }
-                              >
-                                <MenuItem value="pending">Pending</MenuItem>
-                                <MenuItem value="accepted">Accepted</MenuItem>
-                                <MenuItem value="shipped">Shipped</MenuItem>
-                                <MenuItem value="delivered">Delivered</MenuItem>
-                                <MenuItem value="cancelled">Cancelled</MenuItem>
-                              </Select>
-                            </TableCell>
-                          </TableRow>
+                          <TableCell>
+                            <Select
+                              size="small"
+                              value={order.status?.toLowerCase() || 'pending'}
+                              onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                            >
+                              <MenuItem value="pending">Pending</MenuItem>
+                              <MenuItem value="accepted">Accepted</MenuItem>
+                              <MenuItem value="shipped">Shipped</MenuItem>
+                              <MenuItem value="delivered">Delivered</MenuItem>
+                              <MenuItem value="cancelled">Cancelled</MenuItem>
+                            </Select>
+                          </TableCell>
+                        </TableRow>,
 
-                          <TableRow>
-                            <TableCell colSpan={7} sx={{ paddingBottom: 0, paddingTop: 0 }}>
-                              <Collapse
-                                in={openRowIndex === index}
-                                timeout="auto"
-                                unmountOnExit
-                              >
-                                <Box sx={{ margin: 1 }}>
-                                  <Typography variant="subtitle1" gutterBottom>
-                                    Your Items
-                                  </Typography>
-                                  <Table size="small">
-                                    <TableHead>
-                                      <TableRow>
-                                        <TableCell>Product ID</TableCell>
-                                        <TableCell>Product Name</TableCell>
-                                        <TableCell>Price</TableCell>
-                                        <TableCell>Quantity</TableCell>
+                        <TableRow key={`${order.id}-collapse`}>
+                          <TableCell colSpan={7} sx={{ paddingBottom: 0, paddingTop: 0 }}>
+                            <Collapse in={openRowIndex === index} timeout="auto" unmountOnExit>
+                              <Box sx={{ margin: 1 }}>
+                                <Typography variant="subtitle1" gutterBottom>
+                                  Your Items
+                                </Typography>
+                                <Table size="small">
+                                  <TableHead>
+                                    <TableRow>
+                                      <TableCell>Product ID</TableCell>
+                                      <TableCell>Product Name</TableCell>
+                                      <TableCell>Price</TableCell>
+                                      <TableCell>Quantity</TableCell>
+                                    </TableRow>
+                                  </TableHead>
+                                  <TableBody>
+                                    {sellerItems.map((item) => (
+                                      <TableRow key={item.id}>
+                                        <TableCell>{item.product_id}</TableCell>
+                                        <TableCell>{getProductName(item.product_id)}</TableCell>
+                                        <TableCell>₹{getProductPrice(item.product_id)}</TableCell>
+                                        <TableCell>{item.quantity}</TableCell>
                                       </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                      {sellerItems.map((item) => (
-                                        <TableRow key={item.id}>
-                                          <TableCell>{item.product_id}</TableCell>
-                                          <TableCell>
-                                            {getProductName(item.product_id)}
-                                          </TableCell>
-                                          <TableCell>
-                                            ₹{getProductPrice(item.product_id)}
-                                          </TableCell>
-                                          <TableCell>{item.quantity}</TableCell>
-                                        </TableRow>
-                                      ))}
-                                    </TableBody>
-                                  </Table>
-                                </Box>
-                              </Collapse>
-                            </TableCell>
-                          </TableRow>
-                        </React.Fragment>
-                      );
+                                    ))}
+                                  </TableBody>
+                                </Table>
+                              </Box>
+                            </Collapse>
+                          </TableCell>
+                        </TableRow>,
+                      ];
+
                     })}
                 </TableBody>
               </Table>

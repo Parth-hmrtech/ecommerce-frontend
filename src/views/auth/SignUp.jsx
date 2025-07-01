@@ -18,7 +18,7 @@ import {
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import useAuthentication from '@/hooks/auth/useAuthentication';
+import useAuthentication from '@/hooks/useAuthentication';
 
 const PasswordField = ({ label, name, value, onChange, show, toggleShow, error, helperText }) => (
   <TextField

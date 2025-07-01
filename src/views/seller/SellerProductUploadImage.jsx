@@ -19,7 +19,7 @@ import Header from '@/components/common/Header';
 import Sidebar from '@/components/common/Sidebar';
 import Footer from '@/components/common/Footer';
 
-import useSellerProduct from '@/hooks/seller/useSellerProduct';
+import useSellerProduct from '@/hooks/useProduct';
 
 const NextArrow = ({ onClick }) => (
     <Box
@@ -89,9 +89,14 @@ const SellerProductImages = () => {
     const {
         fetchSellerProducts,
         uploadProductImage,
-        sellerProduct: { list: products = [], loading, error },
+        sellerProducts,
+        sellerLoading,
+        sellerError,
     } = useSellerProduct();
+    const loading = sellerLoading;
+    const error = sellerError;
 
+    const products = sellerProducts;
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [file, setFile] = useState(null);
     const [productId, setProductId] = useState('');
