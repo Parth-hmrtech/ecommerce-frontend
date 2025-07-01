@@ -105,7 +105,7 @@ const reviewSlice = createSlice({
       state.loading = '';
       state.sellerReviews = payload;
       state.alertType = 'success';
-      state.message = 'Seller reviews fetched';
+      state.message = payload?.message ;
     });
     builder.addCase(fetchSellerReviewsAction.rejected, (state, { payload }) => {
       state.loading = '';

@@ -50,8 +50,8 @@ const authSlice = createSlice({
       state.loading = '';
       state.success = true;
       state.alertType = 'success';
-      state.message = payload?.message || 'Sign up successful';
-      state.user = payload?.data?.user || null;
+      state.message = payload?.message ;
+      state.user = payload?.data?.user ;
     });
     builder.addCase(signUpUserAction.rejected, (state, { payload }) => {
       state.loading = '';
@@ -69,8 +69,8 @@ const authSlice = createSlice({
     builder.addCase(signInUserAction.fulfilled, (state, { payload }) => {
       state.loading = '';
       state.alertType = 'success';
-      state.message = payload?.message || 'Sign in successful';
-      state.user = payload?.data?.user || null;
+      state.message = payload?.message ;
+      state.user = payload?.data?.user;
       localStorage.setItem('user', JSON.stringify(payload?.data?.user));
       localStorage.setItem('access_token', payload?.data?.token);
     });
@@ -89,7 +89,7 @@ const authSlice = createSlice({
     builder.addCase(forgotPasswordAction.fulfilled, (state, { payload }) => {
       state.loading = '';
       state.alertType = 'success';
-      state.message = payload?.message || 'Reset link sent to your email';
+      state.message = payload?.message ;
     });
     builder.addCase(forgotPasswordAction.rejected, (state, { payload }) => {
       state.loading = '';

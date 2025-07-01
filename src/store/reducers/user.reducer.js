@@ -35,13 +35,13 @@ const userSlice = createSlice({
       state.loading = '';
       state.profile = payload;
       state.alertType = 'success';
-      state.message = payload?.message || 'Profile loaded';
+      state.message = payload?.message ;
       state.error = false;
     });
     builder.addCase(fetchUserProfileAction.rejected, (state, { payload }) => {
       state.loading = '';
       state.alertType = 'error';
-      state.message = payload || 'Failed to fetch profile';
+      state.message = payload ;
       state.error = true;
     });
 
@@ -53,13 +53,13 @@ const userSlice = createSlice({
       state.loading = '';
       state.profile = payload;
       state.alertType = 'success';
-      state.message = payload?.message || 'Profile updated';
+      state.message = payload?.message ;
       state.error = false;
     });
     builder.addCase(updateUserProfileAction.rejected, (state, { payload }) => {
       state.loading = '';
       state.alertType = 'error';
-      state.message = payload || 'Failed to update profile';
+      state.message = payload;
       state.error = true;
     });
 
@@ -70,13 +70,13 @@ const userSlice = createSlice({
     builder.addCase(resetUserPasswordAction.fulfilled, (state, { payload }) => {
       state.loading = '';
       state.alertType = 'success';
-      state.message = payload?.message || 'Password reset successful';
+      state.message = payload?.message ;
       state.error = false;
     });
     builder.addCase(resetUserPasswordAction.rejected, (state, { payload }) => {
       state.loading = '';
       state.alertType = 'error';
-      state.message = payload || 'Failed to reset password';
+      state.message = payload ;
       state.error = true;
     });
   },
