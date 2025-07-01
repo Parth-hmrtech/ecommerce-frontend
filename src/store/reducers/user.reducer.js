@@ -6,7 +6,7 @@ import {
 } from '@/store/actions/user.action';
 
 const initialState = {
-  profile: null,         // unified user profile
+  profile: null,       
   loading: '',
   apiName: '',
   alertType: '',
@@ -27,7 +27,6 @@ const userSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // 📥 Fetch User Profile
     builder.addCase(fetchUserProfileAction.pending, (state) => {
       state.apiName = 'userProfile/fetch';
       state.loading = 'userProfile/fetch';
@@ -46,7 +45,6 @@ const userSlice = createSlice({
       state.error = true;
     });
 
-    // 📝 Update User Profile
     builder.addCase(updateUserProfileAction.pending, (state) => {
       state.apiName = 'userProfile/update';
       state.loading = 'userProfile/update';
@@ -65,7 +63,6 @@ const userSlice = createSlice({
       state.error = true;
     });
 
-    // 🔐 Reset Password
     builder.addCase(resetUserPasswordAction.pending, (state) => {
       state.apiName = 'userProfile/resetPassword';
       state.loading = 'userProfile/resetPassword';

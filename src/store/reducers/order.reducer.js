@@ -33,7 +33,6 @@ const orderSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // 🔹 Place Buyer Order
     builder.addCase(placeBuyerOrderAction.pending, (state) => {
       state.apiName = 'buyer/placeOrder';
       state.loading = 'buyer/placeOrder';
@@ -50,7 +49,6 @@ const orderSlice = createSlice({
       if (payload) state.message = payload;
     });
 
-    // 🔹 Fetch Buyer Orders
     builder.addCase(fetchBuyerOrdersAction.pending, (state) => {
       state.apiName = 'buyer/fetchOrders';
       state.loading = 'buyer/fetchOrders';
@@ -67,7 +65,6 @@ const orderSlice = createSlice({
       if (payload) state.message = payload;
     });
 
-    // 🔹 Fetch Buyer Order By ID
     builder.addCase(fetchBuyerOrderByIdAction.pending, (state) => {
       state.apiName = 'buyer/fetchOrderById';
       state.loading = 'buyer/fetchOrderById';
@@ -84,7 +81,6 @@ const orderSlice = createSlice({
       if (payload) state.message = payload;
     });
 
-    // 🔹 Update Buyer Order Address
     builder.addCase(updateBuyerOrderAddressAction.pending, (state) => {
       state.apiName = 'buyer/updateAddress';
       state.loading = 'buyer/updateAddress';
@@ -103,7 +99,6 @@ const orderSlice = createSlice({
       if (payload) state.message = payload;
     });
 
-    // 🔹 Delete Buyer Order
     builder.addCase(deleteBuyerOrderAction.pending, (state) => {
       state.apiName = 'buyer/deleteOrder';
       state.loading = 'buyer/deleteOrder';
@@ -120,7 +115,6 @@ const orderSlice = createSlice({
       if (payload) state.message = payload;
     });
 
-    // 🔹 Fetch Seller Orders
     builder.addCase(fetchSellerOrdersAction.pending, (state) => {
       state.apiName = 'seller/fetchOrders';
       state.loading = 'seller/fetchOrders';
@@ -137,7 +131,6 @@ const orderSlice = createSlice({
       if (payload) state.message = payload;
     });
 
-    // 🔹 Update Order Status
     builder.addCase(updateOrderStatusAction.pending, (state) => {
       state.apiName = 'seller/updateOrderStatus';
       state.loading = 'seller/updateOrderStatus';

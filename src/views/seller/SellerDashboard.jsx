@@ -1,79 +1,45 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
   Card,
   CircularProgress,
 } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 
 import StoreIcon from '@mui/icons-material/Store';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import RateReviewIcon from '@mui/icons-material/RateReview';
 import StarIcon from '@mui/icons-material/Star';
-import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import Sidebar from '@/components/common/Sidebar';
 
-import { fetchSellerReviewsAction } from '@/store/actions/review.action';
-import { fetchAllProductsAction } from '@/store/actions/product.action';
-import {
-  fetchSellerPaymentsAction,
-  fetchSellerEarningsAction,
-} from '@/store/actions/payment.action';
-import { fetchSellerOrdersAction } from '@/store/actions/order.action'; 
+import useSellerDashboard from '@/hooks/useSellerDashboard';
 
 const SellerDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
 
-  const { reviews = [], loading: reviewLoading } = useSelector((state) => state.sellerReviews || {});
-  const { list: products = [], loading: productLoading } = useSelector((state) => state.sellerProduct || {});
-  const { payments = [], earnings = {}, loading: paymentLoading } = useSelector((state) => state.sellerPayments || {});
-  const { list: orders = [], loading: orderLoading } = useSelector((state) => state.sellerOrders || {});
-
-  useEffect(() => {
-    dispatch(fetchSellerReviewsAction());
-    dispatch(fetchAllProductsAction());
-    dispatch(fetchSellerPaymentsAction());
-    dispatch(fetchSellerEarningsAction());
-    dispatch(fetchSellerOrdersAction()); 
-  }, [dispatch]);
+  const {
+    isLoading,
+    totalProducts,
+    totalOrders,
+    totalEarnings,
+    totalReviews,
+    averageRating,
+  } = useSellerDashboard();
 
   const handleToggleSidebar = () => {
     setSidebarOpen((prev) => !prev);
   };
 
-  const sellerProductIds = products.map((p) => p.id);
-
-  const filteredReviews = reviews.filter((review) =>
-    sellerProductIds.includes(review.product_id)
-  );
-
-  const totalReviews = filteredReviews.length;
-  const totalRating = filteredReviews.reduce((sum, review) => sum + parseFloat(review.rating || 0), 0);
-  const averageRating = totalReviews > 0 ? (totalRating / totalReviews).toFixed(1) : '0.0';
-
-  const totalProducts = products.length;
-
-  const filteredOrders = orders.filter((order) =>
-    order.order_items?.some((item) => sellerProductIds.includes(item.product_id))
-  );
-
-  const totalOrders = filteredOrders.length;
-  const totalEarnings = earnings?.total_earnings || 0;
-
-  const isLoading = reviewLoading || productLoading || paymentLoading || orderLoading;
-
-  const CardBox = ({ icon, title, value, bg }) => (
-    <Card sx={{ p: 2, textAlign: 'center', backgroundColor: bg }}>
-      <Box display="flex" justifyContent="center" mb={1}>{icon}</Box>
-      <Typography variant="h6">{title}</Typography>
+  const StatCard = ({ icon, title, value, bg }) => (
+    <Card sx={{ p: 2, textAlign: 'center', backgroundColor: bg, borderRadius: 3 }}>
+      <Box display="flex" justifyContent="center" mb={1}>
+        {icon}
+      </Box>
+      <Typography variant="subtitle1">{title}</Typography>
       <Typography variant="h5" fontWeight="bold">{value}</Typography>
     </Card>
   );
@@ -102,7 +68,7 @@ const SellerDashboard = () => {
               }}
             >
               <Box sx={{ flex: '1 1 200px', maxWidth: '250px' }}>
-                <CardBox
+                <StatCard
                   icon={<StoreIcon fontSize="large" color="secondary" />}
                   title="Total Products"
                   value={totalProducts}
@@ -111,7 +77,7 @@ const SellerDashboard = () => {
               </Box>
 
               <Box sx={{ flex: '1 1 200px', maxWidth: '250px' }}>
-                <CardBox
+                <StatCard
                   icon={<ShoppingCartIcon fontSize="large" color="success" />}
                   title="Total Orders"
                   value={totalOrders}
@@ -120,16 +86,16 @@ const SellerDashboard = () => {
               </Box>
 
               <Box sx={{ flex: '1 1 200px', maxWidth: '250px' }}>
-                <CardBox
+                <StatCard
                   icon={<CurrencyRupeeIcon fontSize="large" color="success" />}
                   title="Total Earnings"
-                  value={`${totalEarnings.toFixed(2)}`}
+                  value={`₹${parseFloat(totalEarnings).toFixed(2)}`}
                   bg="#c8e6c9"
                 />
               </Box>
 
               <Box sx={{ flex: '1 1 200px', maxWidth: '250px' }}>
-                <CardBox
+                <StatCard
                   icon={<RateReviewIcon fontSize="large" color="warning" />}
                   title="Total Reviews"
                   value={totalReviews}
@@ -138,7 +104,7 @@ const SellerDashboard = () => {
               </Box>
 
               <Box sx={{ flex: '1 1 200px', maxWidth: '250px' }}>
-                <CardBox
+                <StatCard
                   icon={<StarIcon fontSize="large" color="primary" />}
                   title="Avg. Rating"
                   value={averageRating}

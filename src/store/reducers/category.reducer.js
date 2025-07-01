@@ -36,7 +36,6 @@ const categorySlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // 🟢 Fetch Seller Categories
     builder.addCase(fetchAllCategoriesAction.pending, (state) => {
       state.apiName = 'seller/fetchCategories';
       state.loading = 'seller/fetchCategories';
@@ -53,7 +52,6 @@ const categorySlice = createSlice({
       if (payload) state.message = payload;
     });
 
-    // 🟢 Add Category
     builder.addCase(addCategoryAction.pending, (state) => {
       state.apiName = 'seller/addCategory';
       state.loading = 'seller/addCategory';
@@ -70,7 +68,6 @@ const categorySlice = createSlice({
       if (payload) state.message = payload;
     });
 
-    // 🟢 Update Category
     builder.addCase(updateCategoryAction.pending, (state) => {
       state.apiName = 'seller/updateCategory';
       state.loading = 'seller/updateCategory';
@@ -87,7 +84,6 @@ const categorySlice = createSlice({
       if (payload) state.message = payload;
     });
 
-    // 🟢 Delete Category
     builder.addCase(deleteCategoryAction.pending, (state) => {
       state.apiName = 'seller/deleteCategory';
       state.loading = 'seller/deleteCategory';
@@ -104,7 +100,6 @@ const categorySlice = createSlice({
       if (payload) state.message = payload;
     });
 
-    // 🟢 Fetch Buyer Categories
     builder.addCase(fetchBuyerCategoriesAction.pending, (state) => {
       state.apiName = 'buyer/fetchCategories';
       state.loading = 'buyer/fetchCategories';
@@ -121,7 +116,6 @@ const categorySlice = createSlice({
       if (payload) state.message = payload;
     });
 
-    // 🟢 Fetch All Subcategories
     builder.addCase(fetchAllSubCategoriesAction.pending, (state) => {
       state.apiName = 'seller/fetchSubcategories';
       state.loading = 'seller/fetchSubcategories';
@@ -138,7 +132,6 @@ const categorySlice = createSlice({
       if (payload) state.message = payload;
     });
 
-    // 🟢 Fetch Subcategories By Category ID
     builder.addCase(fetchAllSubCategoriesByIdAction.pending, (state) => {
       state.apiName = 'seller/fetchSubcategoriesByCategory';
       state.loading = 'seller/fetchSubcategoriesByCategory';
@@ -155,7 +148,6 @@ const categorySlice = createSlice({
       if (payload) state.message = payload;
     });
 
-    // 🟢 Add Subcategory
     builder.addCase(addSubCategoryAction.pending, (state) => {
       state.apiName = 'seller/addSubcategory';
       state.loading = 'seller/addSubcategory';
@@ -172,7 +164,6 @@ const categorySlice = createSlice({
       if (payload) state.message = payload;
     });
 
-    // 🟢 Update Subcategory
     builder.addCase(updateSubCategoryAction.pending, (state) => {
       state.apiName = 'seller/updateSubcategory';
       state.loading = 'seller/updateSubcategory';
@@ -191,7 +182,6 @@ const categorySlice = createSlice({
       if (payload) state.message = payload;
     });
 
-    // 🟢 Delete Subcategory
     builder.addCase(deleteSubCategoryAction.pending, (state) => {
       state.apiName = 'seller/deleteSubcategory';
       state.loading = 'seller/deleteSubcategory';

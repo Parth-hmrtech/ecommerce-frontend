@@ -32,7 +32,6 @@ const paymentSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // 🔸 Buyer Checkout Payment
     builder.addCase(buyerCheckoutPaymentAction.pending, (state) => {
       state.apiName = 'buyerPayment/checkout';
       state.loading = 'buyerPayment/checkout';
@@ -49,7 +48,6 @@ const paymentSlice = createSlice({
       if (payload) state.message = payload;
     });
 
-    // 🔸 Buyer Verify Payment
     builder.addCase(buyerVerifyPaymentAction.pending, (state) => {
       state.apiName = 'buyerPayment/verify';
       state.loading = 'buyerPayment/verify';
@@ -66,7 +64,6 @@ const paymentSlice = createSlice({
       if (payload) state.message = payload;
     });
 
-    // 🔸 Buyer Check Payment Status
     builder.addCase(buyerCheckPaymentStatusAction.pending, (state) => {
       state.apiName = 'buyerPayment/checkStatus';
       state.loading = 'buyerPayment/checkStatus';
@@ -83,7 +80,6 @@ const paymentSlice = createSlice({
       if (payload) state.message = payload;
     });
 
-    // 🔸 Fetch Seller Payments
     builder.addCase(fetchSellerPaymentsAction.pending, (state) => {
       state.apiName = 'seller/fetchPayments';
       state.loading = 'seller/fetchPayments';
@@ -100,7 +96,6 @@ const paymentSlice = createSlice({
       if (payload) state.message = payload;
     });
 
-    // 🔸 Fetch Seller Earnings
     builder.addCase(fetchSellerEarningsAction.pending, (state) => {
       state.apiName = 'seller/fetchEarnings';
       state.loading = 'seller/fetchEarnings';

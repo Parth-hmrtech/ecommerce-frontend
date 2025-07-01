@@ -31,14 +31,13 @@ const reviewSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // 📘 Fetch Buyer Reviews by Product
     builder.addCase(fetchBuyerReviewByProductIdAction.pending, (state) => {
       state.apiName = 'buyerReview/fetchByProductId';
       state.loading = 'buyerReview/fetchByProductId';
     });
     builder.addCase(fetchBuyerReviewByProductIdAction.fulfilled, (state, { payload }) => {
       state.loading = '';
-      state.buyerReviews = payload;
+      state.buyerReviews = payload;      
       state.alertType = 'success';
       state.message = 'Buyer reviews fetched';
     });
@@ -48,7 +47,6 @@ const reviewSlice = createSlice({
       if (payload) state.message = payload;
     });
 
-    // ➕ Add Buyer Review
     builder.addCase(addBuyerReviewAction.pending, (state) => {
       state.apiName = 'buyerReview/add';
       state.loading = 'buyerReview/add';
@@ -56,8 +54,6 @@ const reviewSlice = createSlice({
     builder.addCase(addBuyerReviewAction.fulfilled, (state, { payload }) => {
       state.loading = '';
       state.buyerReviews.push(payload);
-      console.log(payload);
-      
       state.alertType = 'success';
       state.message = 'Review added';
     });
@@ -67,7 +63,6 @@ const reviewSlice = createSlice({
       if (payload) state.message = payload;
     });
 
-    // ✏️ Update Buyer Review
     builder.addCase(updateBuyerReviewAction.pending, (state) => {
       state.apiName = 'buyerReview/update';
       state.loading = 'buyerReview/update';
@@ -86,7 +81,6 @@ const reviewSlice = createSlice({
       if (payload) state.message = payload;
     });
 
-    // ❌ Delete Buyer Review
     builder.addCase(deleteBuyerReviewAction.pending, (state) => {
       state.apiName = 'buyerReview/delete';
       state.loading = 'buyerReview/delete';
@@ -103,7 +97,6 @@ const reviewSlice = createSlice({
       if (payload) state.message = payload;
     });
 
-    // 🧾 Fetch Seller Reviews
     builder.addCase(fetchSellerReviewsAction.pending, (state) => {
       state.apiName = 'seller/fetchReviews';
       state.loading = 'seller/fetchReviews';
@@ -120,7 +113,6 @@ const reviewSlice = createSlice({
       if (payload) state.message = payload;
     });
 
-    // ❌ Delete Seller Review
     builder.addCase(deleteSellerReviewAction.pending, (state) => {
       state.apiName = 'seller/deleteReview';
       state.loading = 'seller/deleteReview';

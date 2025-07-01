@@ -110,10 +110,10 @@ const useProductManager = (productId) => {
 
   // Load reviews for this product
   useEffect(() => {
-    if (product?._id) {
-      fetchReviews(product._id);
+    if (product?.id) {
+      fetchReviews(product.id);
     }
-  }, [product?._id]);
+  }, [product?.id]);
 
   return {
     // Buyer

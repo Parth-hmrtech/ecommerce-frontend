@@ -51,12 +51,10 @@ const BuyerProfile = () => {
   const [updateMessage, setUpdateMessage] = useState('');
   const [updateAlertType, setUpdateAlertType] = useState('success');
 
-  // Fetch profile on mount
   useEffect(() => {
     if (userId) fetchUserProfile(userId);
   }, [userId]);
 
-  // Fill form when profile is fetched
   useEffect(() => {
     const user = profile?.user;
     if (user) {
@@ -70,7 +68,7 @@ const BuyerProfile = () => {
         image_url: image_url || '',
       });
 
-      localStorage.setItem('user', JSON.stringify(user)); // only if valid user exists
+      localStorage.setItem('user', JSON.stringify(user)); 
     }
   }, [profile]);
 
@@ -177,7 +175,6 @@ const BuyerProfile = () => {
       <BuyerHeader />
       <Box sx={{ flex: 1, p: 3, display: 'flex', justifyContent: 'center' }}>
         <Paper elevation={3} sx={{ p: 4, borderRadius: 3, maxWidth: 1200, width: '100%', gap: 4, display: 'flex', flexDirection: 'row' }}>
-          {/* Profile Info */}
           <Box component={Paper} elevation={2} sx={{ p: 3, borderRadius: 3, flex: 1, bgcolor: '#fafafa' }}>
             <Stack direction="row" spacing={2} alignItems="center">
               <Avatar src={profile?.user?.image_url} sx={{ width: 80, height: 80 }} />
@@ -193,7 +190,6 @@ const BuyerProfile = () => {
             ))}
           </Box>
 
-          {/* Edit Form */}
           <Box sx={{ flex: 2 }}>
             <Typography variant="h6"><Edit color="primary" /> Edit Profile</Typography>
             <Divider sx={{ my: 2 }} />

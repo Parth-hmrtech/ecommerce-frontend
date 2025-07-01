@@ -38,7 +38,6 @@ const productSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // 🔹 Buyer Product List
       .addCase(fetchProductsAction.pending, (state) => {
         state.apiName = 'buyer/fetchProducts';
         state.loading = 'buyer/fetchProducts';
@@ -53,12 +52,11 @@ const productSlice = createSlice({
       })
       .addCase(fetchProductsAction.rejected, (state, { payload }) => {
         state.loading = '';
-        state.products = []; // Optional: clear products on error
+        state.products = []; 
         state.alertType = 'error';
         state.message = payload?.message || 'Failed to fetch buyer products';
       })
 
-      // 🔹 Buyer Product Detail
       .addCase(fetchBuyerProductByIdAction.pending, (state) => {
         state.apiName = 'buyer/fetchProductById';
         state.loading = 'buyer/fetchProductById';
@@ -75,7 +73,6 @@ const productSlice = createSlice({
         state.message = payload || 'Failed to fetch product detail';
       })
 
-      // 🔹 Seller Product List
       .addCase(fetchAllProductsAction.pending, (state) => {
         state.apiName = 'seller/fetchProducts';
         state.loading = 'seller/fetchProducts';
@@ -92,7 +89,6 @@ const productSlice = createSlice({
         state.message = payload || 'Failed to fetch seller products';
       })
 
-      // 🔹 Seller Product Add
       .addCase(addProductAction.pending, (state) => {
         state.apiName = 'seller/addProduct';
         state.loading = 'seller/addProduct';
@@ -111,7 +107,6 @@ const productSlice = createSlice({
         state.message = payload || 'Failed to add product';
       })
 
-      // 🔹 Seller Product Update
       .addCase(updateProductAction.pending, (state) => {
         state.apiName = 'seller/updateProduct';
         state.loading = 'seller/updateProduct';
@@ -130,7 +125,6 @@ const productSlice = createSlice({
         state.message = payload || 'Failed to update product';
       })
 
-      // 🔹 Seller Product Delete
       .addCase(deleteProductAction.pending, (state) => {
         state.apiName = 'seller/deleteProduct';
         state.loading = 'seller/deleteProduct';
@@ -147,7 +141,6 @@ const productSlice = createSlice({
         state.message = payload || 'Failed to delete product';
       })
 
-      // 🔹 Image Upload
       .addCase(uploadProductImageAction.pending, (state) => {
         state.apiName = 'seller/uploadProductImage';
         state.loading = 'seller/uploadProductImage';
@@ -164,7 +157,6 @@ const productSlice = createSlice({
         state.message = payload || 'Image upload failed';
       })
 
-      // 🔹 Wishlist Fetch
       .addCase(fetchBuyerWishlistAction.pending, (state) => {
         state.apiName = 'buyer/fetchWishlist';
         state.loading = 'buyer/fetchWishlist';
@@ -181,7 +173,6 @@ const productSlice = createSlice({
         state.message = payload || 'Failed to fetch wishlist';
       })
 
-      // 🔹 Wishlist Add
       .addCase(addToBuyerWishlistAction.pending, (state) => {
         state.apiName = 'buyer/addToWishlist';
         state.loading = 'buyer/addToWishlist';
@@ -201,7 +192,6 @@ const productSlice = createSlice({
         state.message = payload || 'Failed to add to wishlist';
       })
 
-      // 🔹 Wishlist Delete
       .addCase(deleteFromBuyerWishlistAction.pending, (state) => {
         state.apiName = 'buyer/deleteFromWishlist';
         state.loading = 'buyer/deleteFromWishlist';

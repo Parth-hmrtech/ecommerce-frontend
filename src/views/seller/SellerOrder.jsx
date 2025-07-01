@@ -40,12 +40,6 @@ const SellerOrderList = () => {
   const orders = sellerOrders;
   const loading = sellerOrders.loading || false;
   const productList = sellerProducts;
-
-  console.log(orders);
-  console.log(sellerProducts);
-  
-  
-
   useEffect(() => {
     fetchSellerOrders();
     fetchSellerProducts();
@@ -71,8 +65,8 @@ const SellerOrderList = () => {
 
   const handleStatusChange = async (orderId, newStatus) => {
   try {
-    await updateOrderStatus(orderId, newStatus); // Wait for update to finish
-    await fetchSellerOrders(); // Then re-fetch the updated list
+    await updateOrderStatus(orderId, newStatus); 
+    await fetchSellerOrders(); 
   } catch (error) {
     console.error('Failed to update order status:', error);
   }

@@ -23,7 +23,7 @@ const BuyerOrders = () => {
     loading,
     error,
     buyerCheckPayments,
-    buyerReviews, // ✅ correct based on current redux state
+    buyerReviews, 
     fetchOrders,
     deleteOrder,
     updateOrderAddress,
@@ -158,7 +158,6 @@ useEffect(() => {
     }
   };
 
-  // 🔸 Utility to check if payment status is already completed
   const isOrderPaid = (orderId) => {
     if (!Array.isArray(buyerCheckPayments)) return false;
 
@@ -261,7 +260,6 @@ useEffect(() => {
                   .map((order) => {
                     const orderKey = `order-${order.id}`;
                     return [
-                      // Main order row
                       <TableRow hover key={`${orderKey}-main`}>
                         <TableCell>
                           <IconButton size="small" onClick={() => handleToggleRow(order.id)}>
@@ -315,7 +313,6 @@ useEffect(() => {
                         </TableCell>
                       </TableRow>,
 
-                      // Collapsible row
                       <TableRow key={`${orderKey}-collapse`}>
                         <TableCell colSpan={7} sx={{ padding: 0 }}>
                           <Collapse in={openRows[order.id]} timeout="auto" unmountOnExit>
@@ -340,7 +337,6 @@ useEffect(() => {
                                     </TableRow>
                                   ))}
 
-                                  {/* Reviews */}
                                   {buyerReviews
                                     .filter(
                                       (review) =>

@@ -90,7 +90,7 @@ const SellerSubCategory = () => {
   const handleEditSave = () => {
     if (!editSubCategoryName.trim()) return;
 
-    updateSubCategory(editSubCategoryId, null, editSubCategoryName) // null for category_id if unchanged
+    updateSubCategory(editSubCategoryId, null, editSubCategoryName)
       .unwrap()
       .then(() => {
         setEditSubCategoryId(null);
@@ -272,7 +272,6 @@ const SellerSubCategory = () => {
         </Box>
       </Box>
 
-      {/* Delete Confirmation Dialog */}
       <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
         <DialogTitle>Delete Confirmation</DialogTitle>
         <DialogContent>

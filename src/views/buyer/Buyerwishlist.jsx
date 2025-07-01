@@ -31,7 +31,6 @@ const BuyerWishlist = () => {
     navigate(`/buyer-dashboard/product-details/${productId}`);
   };
 
-  // ✅ Remove duplicate product IDs
   const uniqueWishlist = useMemo(() => {
     const seen = new Set();
     return wishlist.filter(item => {
@@ -82,7 +81,6 @@ const BuyerWishlist = () => {
                   imageUrl = parsed[0]?.image_url || imageUrl;
                 }
               } catch (err) {
-                // fallback image remains
               }
 
               return (
