@@ -30,7 +30,7 @@ export const apiRequest = async ({ method, url, headers = {}, data = null, param
       throw {
         status: error.response.status,
         message: error.response.data?.message || 'Request failed.',
-        error: error.response.data, // optional: useful for debugging
+        error: error.response.data, 
       };
     }
 

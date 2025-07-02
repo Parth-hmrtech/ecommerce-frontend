@@ -23,7 +23,7 @@ const BuyerOrders = () => {
     loading,
     error,
     buyerCheckPayments,
-    buyerReviews, 
+    buyerReviews,
     fetchOrders,
     deleteOrder,
     updateOrderAddress,
@@ -49,15 +49,17 @@ const BuyerOrders = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [reviewInputs, setReviewInputs] = useState({});
-useEffect(() => {
-  const fetchData = async () => {
-    await dispatch(fetchProductsAction()).unwrap(); 
-    fetchOrders(); 
-  };
+  const [reloadData, setReloadData] = useState(false);
 
-  fetchData();
-}, [dispatch, location]);
 
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     await dispatch(fetchProductsAction()).unwrap();
+  //     fetchOrders();
+  //   };
+
+  //   fetchData();
+  // }, [dispatch, location]);
 
   useEffect(() => {
     if (!Array.isArray(orders) || orders.length === 0) return;
@@ -87,6 +89,8 @@ useEffect(() => {
 
   const handleDelete = async (orderId) => {
     await deleteOrder(orderId);
+    console.log("hello");
+
     fetchOrders();
     fetchPaymentStatus();
   };
@@ -111,62 +115,54 @@ useEffect(() => {
   const handlePayNowClick = (order) => {
     if (!order) return;
     setSelectedOrder(order);
-    setPaymentMethod('UPI'); // default payment method
+    setPaymentMethod('UPI');
     setPaymentModalOpen(true);
   };
-  const handleVerifyPayment = async () => {
-    if (!selectedOrder || isOrderPaid(selectedOrder.id)) return;
+const handleVerifyPayment = async () => {
+  if (!selectedOrder || isOrderPaid(selectedOrder.id)) return;
 
-    const totalAmount = calculateOrderTotal(selectedOrder?.order_items || []);
-    const transactionId = `txn_${Date.now()}_${selectedOrder.id}`;
+  const totalAmount = calculateOrderTotal(selectedOrder?.order_items || []);
+  const transactionId = `txn_${Date.now()}_${selectedOrder.id}`;
 
-    setPayingOrderId(selectedOrder.id);
+  setPayingOrderId(selectedOrder.id);
 
-    try {
-      // Step 1: Initiate checkout
-      await checkoutPayment({
-        order_id: selectedOrder.id,
-        seller_id: selectedOrder.seller_id,
-        amount: totalAmount,
-        payment_method: paymentMethod,
-        transaction_id: transactionId,
-      });
+  try {
+    await checkoutPayment({
+      order_id: selectedOrder.id,
+      seller_id: selectedOrder.seller_id,
+      amount: totalAmount,
+      payment_method: paymentMethod,
+      transaction_id: transactionId,
+    });
 
-      setSuccessMessage(`Checkout initiated for Order #${selectedOrder.id}`);
-      setOpenSnackbar(true);
+    await verifyPayment({
+      status: 'success',
+      transaction_id: transactionId,
+    });
 
-      // Step 2: Simulate payment verification
-      await verifyPayment({
-        status: 'success',
-        transaction_id: transactionId,
-      });
+    setSuccessMessage(`✅ Payment verified for Order #${selectedOrder.id}`);
+  } catch (error) {
+    console.error('❌ Payment error:', error);
+    setSuccessMessage(`❌ Payment failed for Order #${selectedOrder.id}`);
+  } finally {
+    setOpenSnackbar(true);
+    setPayingOrderId(null);
+    setPaymentModalOpen(false);
+    setSelectedOrder(null);
+    fetchOrders(); // Refresh orders after payment attempt
+    fetchPaymentStatus(); // ✅ Optional: make sure payment button updates
+  }
+};
 
-      setSuccessMessage(`Payment verified for Order #${selectedOrder.id}`);
-
-      // Step 3: Refresh UI and close modal
-      setPaymentModalOpen(false);
-      setSelectedOrder(null);
-      fetchOrders();
-      fetchPaymentStatus();
-
-    } catch (error) {
-      console.error('Payment error:', error);
-      setSuccessMessage(`Payment failed for Order #${selectedOrder.id}`);
-    } finally {
-      setOpenSnackbar(true);
-      setPayingOrderId(null);
-    }
-  };
 
   const isOrderPaid = (orderId) => {
     if (!Array.isArray(buyerCheckPayments)) return false;
 
-    const entry = buyerCheckPayments.find((p) => p.order_id === orderId);
-    return (
-      entry?.payment_status?.toLowerCase() === 'success' ||
-      entry?.payment_status?.toLowerCase() === 'paid'
-    );
+    const entry = buyerCheckPayments.find((p) => p?.order_id === orderId);
+    const status = entry?.payment_status?.toLowerCase();
+    return status === 'success' || status === 'paid';
   };
+
 
   const handleReviewInputChange = (orderId, field, value) => {
     setReviewInputs((prev) => ({
@@ -299,17 +295,23 @@ useEffect(() => {
                           <Button color="error" size="small" onClick={() => handleDelete(order.id)} sx={{ mr: 1 }}>
                             Delete
                           </Button>
-                          {!isOrderPaid(order.id) && (
+                          {!isOrderPaid(order.id) ? (
                             <Button
-                              size="small"
                               variant="contained"
                               color="primary"
                               onClick={() => handlePayNowClick(order)}
-                              disabled={isOrderPaid(order.id)}
+                              disabled={payingOrderId === order.id}
                             >
                               {payingOrderId === order.id ? 'Processing...' : 'Pay Now'}
                             </Button>
+                          ) : (
+                            <Button variant="outlined" color="success" disabled>
+                              Paid
+                            </Button>
                           )}
+
+
+
                         </TableCell>
                       </TableRow>,
 

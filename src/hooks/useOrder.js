@@ -27,7 +27,6 @@ import { fetchProductsAction } from '@/store/actions/product.action';
 const useOrderManager = (role = 'buyer') => {
   const dispatch = useDispatch();
 
-  // --- Redux Selectors ---
   const order = useSelector((state) => state.order || {});
   const payment = useSelector((state) => state.payment || {});
   const review = useSelector((state) => state.review || {});
@@ -35,9 +34,8 @@ const useOrderManager = (role = 'buyer') => {
 
   const products = product.products || [];
   const buyerReviews = review.buyerReviews || [];
-  const buyerCheckPayments = payment.buyerPayment; // ✅ this is now safe
+  const buyerCheckPayments = payment.buyerPayment; 
 
-  // --- Buyer Methods ---
   const fetchBuyerOrders = useCallback(() => {
     dispatch(fetchBuyerOrdersAction());
   }, [dispatch]);
@@ -80,7 +78,6 @@ const useOrderManager = (role = 'buyer') => {
     }
   }, [dispatch]);
 
-  // --- Seller Methods ---
   const fetchSellerOrders = useCallback(() => {
     dispatch(fetchSellerOrdersAction());
   }, [dispatch]);
@@ -93,12 +90,11 @@ const useOrderManager = (role = 'buyer') => {
     dispatch(updateOrderStatusAction({ orderId, status }));
   }, [dispatch]);
 
-  // --- Initial Fetch ---
   useEffect(() => {
     if (role === 'buyer') {
       fetchBuyerOrders();
       fetchPaymentStatus();
-      fetchSellerProducts(); // buyer needs products for display/review
+      fetchSellerProducts();
     } else if (role === 'seller') {
       fetchSellerOrders();
       fetchSellerProducts();
@@ -108,7 +104,6 @@ const useOrderManager = (role = 'buyer') => {
   return {
     role,
 
-    // Buyer
     products,
     orders: order.buyerOrders || [],
     loading: order.loading || false,
@@ -127,7 +122,6 @@ const useOrderManager = (role = 'buyer') => {
     deleteReview,
     fetchReviewsByProductId,
 
-    // Seller
     sellerOrders: order.sellerOrders || [],
     sellerProducts: product.products || [],
     fetchSellerOrders,
