@@ -12,23 +12,23 @@ import { fetchSellerOrdersAction } from '@/store/actions/order.action';
 const useSellerDashboard = () => {
   const dispatch = useDispatch();
 
-  const reviewState = useSelector((state) => state.review);
-  const productState = useSelector((state) => state.product);
-  const paymentState = useSelector((state) => state.payment);
-  const orderState = useSelector((state) => state.order);
+  const reviewState = useSelector((state) => state.review || {});
+  const productState = useSelector((state) => state.product || {});
+  const paymentState = useSelector((state) => state.payment || {});
+  const orderState = useSelector((state) => state.order || {});
 
-  const reviews = reviewState?.sellerReviews || [];
-  const reviewLoading = reviewState?.loading;
+  const reviews = reviewState.sellerReviews || [];
+  const reviewLoading = reviewState.loading;
 
-  const products = productState?.products || [];
-  const productLoading = productState?.loading;
+  const products = productState.products || [];
+  const productLoading = productState.loading;
 
-  const payments = paymentState?.sellerPayments || [];
-  const earnings = paymentState?.sellerEarnings || {};
-  const paymentLoading = paymentState?.loading;
+  const payments = paymentState.sellerPayments || [];
+  const earnings = paymentState.sellerEarnings || {};
+  const paymentLoading = paymentState.loading;
 
-  const orders = orderState?.sellerOrders || [];
-  const orderLoading = orderState?.loading;
+  const orders = orderState.sellerOrders || [];
+  const orderLoading = orderState.loading;
 
   const sellerProductIds = products.map((p) => p._id || p.id);
 
@@ -46,18 +46,38 @@ const useSellerDashboard = () => {
     order.order_items?.some((item) => sellerProductIds.includes(item.product_id))
   );
 
-const totalOrders = filteredOrders.length + 1;
+  const totalOrders = filteredOrders.length;
   const totalEarnings = earnings?.total_earnings || 0;
 
   const isLoading = reviewLoading || productLoading || paymentLoading || orderLoading;
 
-  const refreshDashboard = () => {
-    dispatch(fetchSellerReviewsAction());
-    dispatch(fetchAllProductsAction());
-    dispatch(fetchSellerPaymentsAction());
-    dispatch(fetchSellerEarningsAction());
-    dispatch(fetchSellerOrdersAction());
-  }
+  const fetchSellerReviews = async () => {
+    return await dispatch(fetchSellerReviewsAction());
+  };
+
+  const fetchSellerProducts = async () => {
+    return await dispatch(fetchAllProductsAction());
+  };
+
+  const fetchSellerPayments = async () => {
+    return await dispatch(fetchSellerPaymentsAction());
+  };
+
+  const fetchSellerEarnings = async () => {
+    return await dispatch(fetchSellerEarningsAction());
+  };
+
+  const fetchSellerOrders = async () => {
+    return await dispatch(fetchSellerOrdersAction());
+  };
+
+  const refreshDashboard = async () => {
+    await fetchSellerReviews();
+    await fetchSellerProducts();
+    await fetchSellerPayments();
+    await fetchSellerEarnings();
+    await fetchSellerOrders();
+  };
 
   useEffect(() => {
     refreshDashboard();
@@ -70,7 +90,15 @@ const totalOrders = filteredOrders.length + 1;
     totalEarnings,
     totalReviews,
     averageRating,
+
     refreshDashboard,
+
+    // Optional: expose raw data if needed
+    reviews,
+    products,
+    payments,
+    orders,
+    earnings,
   };
 };
 

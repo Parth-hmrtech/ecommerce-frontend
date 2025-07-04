@@ -23,26 +23,41 @@ const useSellerCategory = () => {
 
   const categoryLoading = loading.includes('Category');
   const subCategoryLoading = loading.includes('Subcategory');
-  const categoryError = error; // generic error for both
-  const subCategoryError = error; // same
+  const categoryError = error; 
+  const subCategoryError = error; 
 
-  // --- Category Actions ---
-  const fetchCategories = () => dispatch(fetchAllCategoriesAction());
-  const addCategory = (category_name) => dispatch(addCategoryAction({ category_name }));
-  const updateCategory = (id, category_name) =>
-    dispatch(updateCategoryAction({ id, category_name }));
-  const deleteCategory = (id) => dispatch(deleteCategoryAction(id));
+    const fetchCategories = async () => {
+    return await dispatch(fetchAllCategoriesAction());
+  };
 
-  // --- Subcategory Actions ---
-  const fetchSubCategories = () => dispatch(fetchAllSubCategoriesAction());
-  const addSubCategory = (category_id, sub_category_name) =>
-    dispatch(addSubCategoryAction({ category_id, sub_category_name }));
-  const updateSubCategory = (id, category_id, sub_category_name) =>
-    dispatch(updateSubCategoryAction({ id, category_id, sub_category_name }));
-  const deleteSubCategory = (id) => dispatch(deleteSubCategoryAction(id));
+  const addCategory = async (category_name) => {
+    return await dispatch(addCategoryAction({ category_name }));
+  };
 
+  const updateCategory = async (id, category_name) => {
+    return await dispatch(updateCategoryAction({ id, category_name }));
+  };
+
+  const deleteCategory = async (id) => {
+    return await dispatch(deleteCategoryAction(id));
+  };
+
+  const fetchSubCategories = async () => {
+    return await dispatch(fetchAllSubCategoriesAction());
+  };
+
+  const addSubCategory = async (category_id, sub_category_name) => {
+    return await dispatch(addSubCategoryAction({ category_id, sub_category_name }));
+  };
+
+  const updateSubCategory = async (id, category_id, sub_category_name) => {
+    return await dispatch(updateSubCategoryAction({ id, category_id, sub_category_name }));
+  };
+
+  const deleteSubCategory = async (id) => {
+    return await dispatch(deleteSubCategoryAction(id));
+  };
   return {
-    // Category
     categories,
     categoryLoading,
     categoryError,
@@ -51,7 +66,6 @@ const useSellerCategory = () => {
     updateCategory,
     deleteCategory,
 
-    // Subcategory
     subCategories,
     subCategoryLoading,
     subCategoryError,

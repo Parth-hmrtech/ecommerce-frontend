@@ -38,7 +38,6 @@ import {
   fetchSellerReviewsAction,
   deleteSellerReviewAction,
 } from '@/store/actions/review.action';
-
 const useProductManager = (productId) => {
   const dispatch = useDispatch();
 
@@ -54,38 +53,89 @@ const useProductManager = (productId) => {
   const reviewResponses = reviewState.buyerReviews || [];
   const products = productState.allProducts || [];
 
-  const fetchProducts = () => dispatch(fetchProductsAction());
+  const fetchProducts = async () => {
+    return await dispatch(fetchProductsAction());
+  };
 
-  const fetchProduct = () => {
+  const fetchProduct = async () => {
     if (productId) {
-      dispatch(fetchBuyerProductByIdAction(productId));
+      return await dispatch(fetchBuyerProductByIdAction(productId));
     }
   };
-  const fetchCart = () => dispatch(fetchBuyerCartAction());
-  const fetchWishlist = () => dispatch(fetchBuyerWishlistAction());
-  const fetchReviews = (id) => dispatch(fetchBuyerReviewByProductIdAction(id));
 
-  const addToCart = (payload) => dispatch(addToBuyerCartAction(payload));
-  const updateCart = (payload) => dispatch(updateBuyerCartAction(payload));
-  const deleteCartItem = (id) => dispatch(deleteBuyerCartAction(id));
+  const fetchCart = async () => {
+    return await dispatch(fetchBuyerCartAction());
+  };
 
-  const addToWishlist = (payload) => dispatch(addToBuyerWishlistAction(payload));
-  const updateReview = (payload) => dispatch(updateBuyerReviewAction(payload));
-  const deleteReview = (id) => dispatch(deleteBuyerReviewAction(id));
+  const fetchWishlist = async () => {
+    return await dispatch(fetchBuyerWishlistAction());
+  };
 
-  const fetchAllProducts = () => dispatch(fetchAllProductsAction());
+  const fetchReviews = async (id) => {
+    return await dispatch(fetchBuyerReviewByProductIdAction(id));
+  };
+
+  const addToCart = async (payload) => {
+    return await dispatch(addToBuyerCartAction(payload));
+  };
+
+  const updateCart = async (payload) => {
+    return await dispatch(updateBuyerCartAction(payload));
+  };
+
+  const deleteCartItem = async (id) => {
+    return await dispatch(deleteBuyerCartAction(id));
+  };
+
+  const addToWishlist = async (payload) => {
+    return await dispatch(addToBuyerWishlistAction(payload));
+  };
+
+  const updateReview = async (payload) => {
+    return await dispatch(updateBuyerReviewAction(payload));
+  };
+
+  const deleteReview = async (id) => {
+    return await dispatch(deleteBuyerReviewAction(id));
+  };
+
+  const fetchAllProducts = async () => {
+    return await dispatch(fetchAllProductsAction());
+  };
+
   const fetchSellerProducts = fetchAllProducts;
-  const addSellerProduct = (payload) => dispatch(addProductAction(payload));
-  const deleteSellerProduct = (id) => dispatch(deleteProductAction(id));
-  const updateSellerProduct = (payload) => dispatch(updateProductAction(payload));
-  const uploadProductImage = (formData) => dispatch(uploadProductImageAction(formData));
 
-  const fetchSellerCategories = () => dispatch(fetchAllCategoriesAction());
-  const fetchSellerSubcategoriesByCategoryId = (categoryId) =>
-    dispatch(fetchAllSubCategoriesByIdAction(categoryId));
+  const addSellerProduct = async (payload) => {
+    return await dispatch(addProductAction(payload));
+  };
 
-  const fetchSellerReviews = () => dispatch(fetchSellerReviewsAction());
-  const deleteSellerReview = (id) => dispatch(deleteSellerReviewAction(id));
+  const deleteSellerProduct = async (id) => {
+    return await dispatch(deleteProductAction(id));
+  };
+
+  const updateSellerProduct = async (payload) => {
+    return await dispatch(updateProductAction(payload));
+  };
+
+  const uploadProductImage = async (formData) => {
+    return await dispatch(uploadProductImageAction(formData));
+  };
+
+  const fetchSellerCategories = async () => {
+    return await dispatch(fetchAllCategoriesAction());
+  };
+
+  const fetchSellerSubcategoriesByCategoryId = async (categoryId) => {
+    return await dispatch(fetchAllSubCategoriesByIdAction(categoryId));
+  };
+
+  const fetchSellerReviews = async () => {
+    return await dispatch(fetchSellerReviewsAction());
+  };
+
+  const deleteSellerReview = async (id) => {
+    return await dispatch(deleteSellerReviewAction(id));
+  };
 
 
   useEffect(() => {

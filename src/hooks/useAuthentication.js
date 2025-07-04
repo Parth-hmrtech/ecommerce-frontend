@@ -7,32 +7,32 @@ import {
   forgotPasswordAction,
 } from '@/store/actions/auth.actions';
 
-import { resetAuthState } from '@/store/reducers/auth.reducer'; 
+import { resetAuthState } from '@/store/reducers/auth.reducer';
 
 const useAuthentication = () => {
   const dispatch = useDispatch();
 
   const { user, loading, error, success, message } = useSelector((state) => state.auth);
 
-  const signUp = (data) => {
+  const signUp = async (data) => {
     if (!data) return;
-    dispatch(signUpUserAction(data));
+    return await dispatch(signUpUserAction(data));
   };
 
-  const signIn = (data) => {
+  const signIn = async (data) => {
     if (!data) return;
-    dispatch(signInUserAction(data));
+    return await dispatch(signInUserAction(data));
   };
 
-  const forgotPassword = (emailData) => {
+  const forgotPassword = async (emailData) => {
     if (!emailData) return;
-    dispatch(forgotPasswordAction(emailData));
+    return await dispatch(forgotPasswordAction(emailData));
   };
 
   const resetAuth = () => {
     dispatch(resetAuthState());
   };
-
+  
   useEffect(() => {
     return () => {
       resetAuth();
