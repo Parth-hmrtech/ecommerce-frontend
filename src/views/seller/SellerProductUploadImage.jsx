@@ -116,7 +116,6 @@ const SellerProductImages = () => {
         file.forEach((f) => fd.append('image', f));
 
         uploadProductImage(fd)
-            .unwrap()
             .then(() => {
                 setFile(null);
                 document.querySelector('input[type="file"]').value = '';
