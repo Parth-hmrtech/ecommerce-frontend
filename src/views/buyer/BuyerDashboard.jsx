@@ -62,10 +62,10 @@ const BuyerDashboard = () => {
     }
   };
 
-  const handleCardClick = (productId) => {
-    navigate(`/buyer-dashboard/product-details/${productId}`);
-  };
 
+const handleCardClick = (productId) => {
+  navigate(`/buyer-dashboard/product-details/${productId}`);
+};
   const getImageArray = (imageData) => {
     try {
       const parsed = JSON.parse(imageData);

@@ -89,7 +89,6 @@ const BuyerOrders = () => {
 
   const handleDelete = async (orderId) => {
     await deleteOrder(orderId);
-    console.log("hello");
 
     fetchOrders();
     fetchPaymentStatus();

@@ -191,7 +191,16 @@ const HomeView = () => {
                         height: '100%',
                         display: 'flex',
                         flexDirection: 'column',
+                        border: '1px solid transparent',
+                        transition: 'all 0.3s ease',
+                        transform: 'scale(1)',
+                        '&:hover': {
+                          border: '1px solid #1976d2',
+                          boxShadow: 23, 
+                        },
                       }}
+
+
                     >
                       <Box sx={{ width: '100%', position: 'relative' }}>
                         {images.length > 1 ? (
@@ -246,7 +255,7 @@ const HomeView = () => {
                           {isExpanded
                             ? product.description || 'No description available.'
                             : (product.description?.slice(0, 80) || 'No description available.') +
-                              (product.description?.length > 80 ? '...' : '')}
+                            (product.description?.length > 80 ? '...' : '')}
                         </Typography>
                       </CardContent>
 
