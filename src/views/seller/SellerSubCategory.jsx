@@ -34,7 +34,6 @@ import useSellerCategory from '@/hooks/useCategory'; // 👈 using the hook
 
 const SellerSubCategory = () => {
   const {
-    // Subcategory
     subCategories,
     subCategoryLoading,
     subCategoryError,
@@ -42,8 +41,6 @@ const SellerSubCategory = () => {
     addSubCategory,
     updateSubCategory,
     deleteSubCategory,
-
-    // Category
     categories,
     fetchCategories,
   } = useSellerCategory();
