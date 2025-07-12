@@ -39,6 +39,8 @@ const BuyerOrders = () => {
 
   const { products = [] } = useSelector((state) => state.product);
 
+  console.log(orders);
+
   const [openRows, setOpenRows] = useState({});
   const [editAddressRow, setEditAddressRow] = useState(null);
   const [newAddress, setNewAddress] = useState('');
@@ -109,49 +111,61 @@ const BuyerOrders = () => {
 
 
 
-  const calculateOrderTotal = (items = []) =>
-    items.reduce((sum, item) => sum + (Number(item?.price) || 0) * (Number(item?.quantity) || 0), 0);
+ const calculateOrderTotal = (items = []) => {
+  const total = items.reduce((sum, item, index) => {
+    const price = Number(item?.price) || 0;
+    const quantity = Number(item?.quantity) || 0;
+    const subtotal = price * quantity;
+
+
+    return sum + subtotal;
+  }, 0);
+
+  return total;
+};
+
   const handlePayNowClick = (order) => {
     if (!order) return;
     setSelectedOrder(order);
     setPaymentMethod('UPI');
     setPaymentModalOpen(true);
   };
-const handleVerifyPayment = async () => {
-  if (!selectedOrder || isOrderPaid(selectedOrder.id)) return;
 
-  const totalAmount = calculateOrderTotal(selectedOrder?.order_items || []);
-  const transactionId = `txn_${Date.now()}_${selectedOrder.id}`;
+  const handleVerifyPayment = async () => {
+    if (!selectedOrder || isOrderPaid(selectedOrder.id)) return;
 
-  setPayingOrderId(selectedOrder.id);
+    const totalAmount = calculateOrderTotal(selectedOrder?.order_items || []);
+    const transactionId = `txn_${Date.now()}_${selectedOrder.id}`;
 
-  try {
-    await checkoutPayment({
-      order_id: selectedOrder.id,
-      seller_id: selectedOrder.seller_id,
-      amount: totalAmount,
-      payment_method: paymentMethod,
-      transaction_id: transactionId,
-    });
+    setPayingOrderId(selectedOrder.id);
 
-    await verifyPayment({
-      status: 'success',
-      transaction_id: transactionId,
-    });
+    try {
+      await checkoutPayment({
+        order_id: selectedOrder.id,
+        seller_id: selectedOrder.seller_id,
+        amount: totalAmount,
+        payment_method: paymentMethod,
+        transaction_id: transactionId,
+      });
 
-    setSuccessMessage(`✅ Payment verified for Order #${selectedOrder.id}`);
-  } catch (error) {
-    console.error('❌ Payment error:', error);
-    setSuccessMessage(`❌ Payment failed for Order #${selectedOrder.id}`);
-  } finally {
-    setOpenSnackbar(true);
-    setPayingOrderId(null);
-    setPaymentModalOpen(false);
-    setSelectedOrder(null);
-    fetchOrders(); // Refresh orders after payment attempt
-    fetchPaymentStatus(); // ✅ Optional: make sure payment button updates
-  }
-};
+      await verifyPayment({
+        status: 'success',
+        transaction_id: transactionId,
+      });
+
+      setSuccessMessage(` Payment verified for Order #${selectedOrder.id}`);
+    } catch (error) {
+      console.error(' Payment error:', error);
+      setSuccessMessage(` Payment failed for Order #${selectedOrder.id}`);
+    } finally {
+      setOpenSnackbar(true);
+      setPayingOrderId(null);
+      setPaymentModalOpen(false);
+      setSelectedOrder(null);
+      fetchOrders(); 
+      fetchPaymentStatus(); 
+    }
+  };
 
 
   const isOrderPaid = (orderId) => {
