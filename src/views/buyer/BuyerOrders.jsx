@@ -97,9 +97,6 @@ const BuyerOrders = () => {
     fetchOrders();
   };
 
-
-
-
   const calculateOrderTotal = (items = []) => {
     const total = items.reduce((sum, item, index) => {
       const price = Number(item?.price) || 0;
@@ -309,11 +306,6 @@ const BuyerOrders = () => {
                               Paid
                             </Button>
                           )}
-
-
-
-
-
                         </TableCell>
                       </TableRow>,
 
