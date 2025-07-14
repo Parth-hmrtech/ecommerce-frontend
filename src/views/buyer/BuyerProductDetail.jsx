@@ -55,7 +55,6 @@ const BuyerProductDetail = () => {
         updateReview,
         deleteReview,
     } = useProductManager(productId);
-    console.log(reviewResponses);
 
     const [wishlisted, setWishlisted] = useState(false);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
