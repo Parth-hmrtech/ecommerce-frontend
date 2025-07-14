@@ -28,7 +28,6 @@ const buyerCheckoutPaymentAction = createAsyncThunk(
         },
         headers: getTokenHeader(),
       });
-      console.log(response);
       
       return fulfillWithValue(response.data?.data || []);
     } catch (error) {

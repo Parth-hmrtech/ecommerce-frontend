@@ -30,7 +30,7 @@ import Header from '@/components/common/Header';
 import Sidebar from '@/components/common/Sidebar';
 import Footer from '@/components/common/Footer';
 
-import useSellerCategory from '@/hooks/useCategory'; // 👈 using the hook
+import useSellerCategory from '@/hooks/useCategory';
 
 const SellerSubCategory = () => {
   const {
@@ -92,7 +92,7 @@ const SellerSubCategory = () => {
       .then(() => {
         setEditSubCategoryId(null);
         setEditSubCategoryName('');
-        fetchSubCategories();
+        dispatch(fetchSubCategories());
       })
       .catch((err) => console.error('Update failed:', err));
   };

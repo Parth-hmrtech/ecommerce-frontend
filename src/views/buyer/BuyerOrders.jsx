@@ -188,7 +188,6 @@ const BuyerOrders = () => {
 
   const handleAddReview = async (order, productId) => {
     const { comment, rating } = reviewInputs[order.id] || {};
-    if (!comment || !rating) return alert('Please enter rating and comment');
     await addReview({
       order_id: order.id,
       product_id: productId,

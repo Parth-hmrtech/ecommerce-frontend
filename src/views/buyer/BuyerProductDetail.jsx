@@ -56,7 +56,7 @@ const BuyerProductDetail = () => {
         deleteReview,
     } = useProductManager(productId);
     console.log(reviewResponses);
-    
+
     const [wishlisted, setWishlisted] = useState(false);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [editingReviewId, setEditingReviewId] = useState(null);
@@ -280,8 +280,7 @@ const BuyerProductDetail = () => {
                                 </CardContent>
                             </Card>
                         </Box>
-
-                        {reviewResponses.length > 0 && (
+                        {reviewResponses.filter((r) => r.product_id === productId).length > 0 && (
                             <Box
                                 sx={{
                                     border: '1px solid #ccc',
@@ -293,113 +292,116 @@ const BuyerProductDetail = () => {
                                 }}
                             >
                                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                    {reviewResponses.map((review) => {
-                                        const user = JSON.parse(localStorage.getItem('user'));
-                                        const isOwnReview = user?.id === review.buyer_id;
-                                        const isEditing = editingReviewId === review.id;
+                                    {reviewResponses
+                                        .filter((review) => review.product_id === productId)
+                                        .map((review) => {
+                                            const user = JSON.parse(localStorage.getItem('user'));
+                                            const isOwnReview = user?.id === review.buyer_id;
+                                            const isEditing = editingReviewId === review.id;
 
-                                        return (
-                                            <Box
-                                                key={`review-${review.id}`}
-                                                sx={{
-                                                    display: 'flex',
-                                                    justifyContent: isOwnReview ? 'flex-end' : 'flex-start',
-                                                }}
-                                            >
+                                            return (
                                                 <Box
+                                                    key={`review-${review.id}`}
                                                     sx={{
-                                                        backgroundColor: isOwnReview ? '#d1ffd6' : '#e0e0e0',
-                                                        px: 2,
-                                                        py: 1.5,
-                                                        borderRadius: 3,
-                                                        borderBottomRightRadius: isOwnReview ? 0 : 12,
-                                                        borderBottomLeftRadius: isOwnReview ? 12 : 0,
-                                                        maxWidth: '75%',
-                                                        textAlign: 'left',
+                                                        display: 'flex',
+                                                        justifyContent: isOwnReview ? 'flex-end' : 'flex-start',
                                                     }}
                                                 >
-                                                    <Typography variant="caption" color="text.secondary" fontWeight="bold">
-                                                        {isOwnReview ? 'You' : `Buyer: ${review.buyer_id}`}
-                                                    </Typography>
+                                                    <Box
+                                                        sx={{
+                                                            backgroundColor: isOwnReview ? '#d1ffd6' : '#e0e0e0',
+                                                            px: 2,
+                                                            py: 1.5,
+                                                            borderRadius: 3,
+                                                            borderBottomRightRadius: isOwnReview ? 0 : 12,
+                                                            borderBottomLeftRadius: isOwnReview ? 12 : 0,
+                                                            maxWidth: '75%',
+                                                            textAlign: 'left',
+                                                        }}
+                                                    >
+                                                        <Typography variant="caption" color="text.secondary" fontWeight="bold">
+                                                            {isOwnReview ? 'You' : `Buyer: ${review.buyer_id}`}
+                                                        </Typography>
 
-                                                    {isEditing ? (
-                                                        <>
-                                                            <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-                                                                <Rating
-                                                                    value={editedRating}
-                                                                    onChange={(_, val) => setEditedRating(val)}
-                                                                    precision={0.5}
+                                                        {isEditing ? (
+                                                            <>
+                                                                <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+                                                                    <Rating
+                                                                        value={editedRating}
+                                                                        onChange={(_, val) => setEditedRating(val)}
+                                                                        precision={0.5}
+                                                                    />
+                                                                    <Typography variant="body2" sx={{ ml: 1 }}>
+                                                                        ({editedRating}/5)
+                                                                    </Typography>
+                                                                </Box>
+                                                                <textarea
+                                                                    value={editedComment}
+                                                                    onChange={(e) => setEditedComment(e.target.value)}
+                                                                    style={{
+                                                                        width: '100%',
+                                                                        padding: '8px',
+                                                                        marginTop: '10px',
+                                                                        borderRadius: '6px',
+                                                                        border: '1px solid #ccc',
+                                                                        resize: 'vertical',
+                                                                    }}
+                                                                    rows={3}
                                                                 />
-                                                                <Typography variant="body2" sx={{ ml: 1 }}>
-                                                                    ({editedRating}/5)
-                                                                </Typography>
-                                                            </Box>
-                                                            <textarea
-                                                                value={editedComment}
-                                                                onChange={(e) => setEditedComment(e.target.value)}
-                                                                style={{
-                                                                    width: '100%',
-                                                                    padding: '8px',
-                                                                    marginTop: '10px',
-                                                                    borderRadius: '6px',
-                                                                    border: '1px solid #ccc',
-                                                                    resize: 'vertical',
-                                                                }}
-                                                                rows={3}
-                                                            />
-                                                            <Box sx={{ mt: 1, display: 'flex', gap: 1 }}>
-                                                                <Button
-                                                                    variant="contained"
-                                                                    color="success"
-                                                                    size="small"
-                                                                    onClick={() => handleUpdateReview(review.id)}
-                                                                >
-                                                                    Save
-                                                                </Button>
-                                                                <Button
-                                                                    variant="outlined"
-                                                                    size="small"
-                                                                    onClick={() => setEditingReviewId(null)}
-                                                                >
-                                                                    Cancel
-                                                                </Button>
-                                                            </Box>
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
-                                                                <Rating value={review.rating} readOnly precision={0.5} size="small" />
-                                                                <Typography variant="body1">{review.comment}</Typography>
-                                                            </Box>
-
-                                                            <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5 }}>
-                                                                {new Date(review.created_at).toLocaleString('en-IN')}
-                                                            </Typography>
-
-                                                            {isOwnReview && (
                                                                 <Box sx={{ mt: 1, display: 'flex', gap: 1 }}>
-                                                                    <Button variant="text" size="small" onClick={() => handleEditClick(review)}>
-                                                                        Edit
+                                                                    <Button
+                                                                        variant="contained"
+                                                                        color="success"
+                                                                        size="small"
+                                                                        onClick={() => handleUpdateReview(review.id)}
+                                                                    >
+                                                                        Save
                                                                     </Button>
                                                                     <Button
-                                                                        variant="text"
+                                                                        variant="outlined"
                                                                         size="small"
-                                                                        color="error"
-                                                                        onClick={() => handleDeleteReview(review.id)}
+                                                                        onClick={() => setEditingReviewId(null)}
                                                                     >
-                                                                        Delete
+                                                                        Cancel
                                                                     </Button>
                                                                 </Box>
-                                                            )}
-                                                        </>
-                                                    )}
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
+                                                                    <Rating value={review.rating} readOnly precision={0.5} size="small" />
+                                                                    <Typography variant="body1">{review.comment}</Typography>
+                                                                </Box>
+
+                                                                <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5 }}>
+                                                                    {new Date(review.created_at).toLocaleString('en-IN')}
+                                                                </Typography>
+
+                                                                {isOwnReview && (
+                                                                    <Box sx={{ mt: 1, display: 'flex', gap: 1 }}>
+                                                                        <Button variant="text" size="small" onClick={() => handleEditClick(review)}>
+                                                                            Edit
+                                                                        </Button>
+                                                                        <Button
+                                                                            variant="text"
+                                                                            size="small"
+                                                                            color="error"
+                                                                            onClick={() => handleDeleteReview(review.id)}
+                                                                        >
+                                                                            Delete
+                                                                        </Button>
+                                                                    </Box>
+                                                                )}
+                                                            </>
+                                                        )}
+                                                    </Box>
                                                 </Box>
-                                            </Box>
-                                        );
-                                    })}
+                                            );
+                                        })}
                                 </Box>
                             </Box>
                         )}
+
                     </>
                 )}
             </Container>
