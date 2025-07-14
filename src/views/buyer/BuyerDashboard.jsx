@@ -42,25 +42,31 @@ const BuyerDashboard = () => {
     setQuantities(qtyMap);
   }, [cart]);
 
-  const handleQuantityChange = (productId, delta) => {
-    const currentQty = quantities[productId] || 0;
-    const newQty = Math.max(0, currentQty + delta);
+const handleQuantityChange = async (productId, delta) => {
+  const currentQty = quantities[productId] || 0;
+  const newQty = Math.max(0, currentQty + delta);
 
-    setQuantities((prev) => ({
-      ...prev,
-      [productId]: newQty,
-    }));
+  setQuantities((prev) => ({
+    ...prev,
+    [productId]: newQty,
+  }));
 
-    const cartItem = cart.find((item) => item.product_id === productId);
+  const cartItem = cart.find((item) => item.product_id === productId);
 
+  try {
     if (newQty === 0 && cartItem) {
-      deleteFromCart(cartItem.id).then(refreshCart);
+      await deleteFromCart(cartItem.id);
+      await refreshCart(); // make sure refresh happens after delete
     } else if (cartItem) {
-      updateCart(cartItem.id, newQty);
+      await updateCart(cartItem.id, newQty);
     } else if (newQty > 0) {
-      addToCart(productId, newQty);
+      await addToCart(productId, newQty);
     }
-  };
+  } catch (error) {
+    console.error('❌ Error updating cart:', error);
+    // Optionally show a Snackbar/Toast message to the user here
+  }
+};
 
 
 const handleCardClick = (productId) => {

@@ -50,17 +50,7 @@ const BuyerOrders = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [reviewInputs, setReviewInputs] = useState({});
-  const [reloadData, setReloadData] = useState(false);
 
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     await dispatch(fetchProductsAction()).unwrap();
-  //     fetchOrders();
-  //   };
-
-  //   fetchData();
-  // }, [dispatch, location]);
 
   useEffect(() => {
     if (!Array.isArray(orders) || orders.length === 0) return;
@@ -110,18 +100,18 @@ const BuyerOrders = () => {
 
 
 
- const calculateOrderTotal = (items = []) => {
-  const total = items.reduce((sum, item, index) => {
-    const price = Number(item?.price) || 0;
-    const quantity = Number(item?.quantity) || 0;
-    const subtotal = price * quantity;
+  const calculateOrderTotal = (items = []) => {
+    const total = items.reduce((sum, item, index) => {
+      const price = Number(item?.price) || 0;
+      const quantity = Number(item?.quantity) || 0;
+      const subtotal = price * quantity;
 
 
-    return sum + subtotal;
-  }, 0);
+      return sum + subtotal;
+    }, 0);
 
-  return total;
-};
+    return total;
+  };
 
   const handlePayNowClick = (order) => {
     if (!order) return;
@@ -151,18 +141,17 @@ const BuyerOrders = () => {
         status: 'success',
         transaction_id: transactionId,
       });
-
-      setSuccessMessage(` Payment verified for Order #${selectedOrder.id}`);
+      setSuccessMessage(`Payment verified for Order #${selectedOrder.id}`);
     } catch (error) {
-      console.error(' Payment error:', error);
-      setSuccessMessage(` Payment failed for Order #${selectedOrder.id}`);
+      setSuccessMessage(`Payment failed for Order #${selectedOrder.id}`);
     } finally {
       setOpenSnackbar(true);
-      setPayingOrderId(null);
       setPaymentModalOpen(false);
-      setSelectedOrder(null);
-      fetchOrders(); 
-      fetchPaymentStatus(); 
+      setPayingOrderId('');
+      setTimeout(async () => {
+        await fetchOrders();
+        await fetchPaymentStatus();
+      }, 10);
     }
   };
 
@@ -320,6 +309,8 @@ const BuyerOrders = () => {
                               Paid
                             </Button>
                           )}
+
+
 
 
 
@@ -540,9 +531,16 @@ const BuyerOrders = () => {
             </Select>
           </FormControl>
 
-          <Button variant="contained" fullWidth color="success" sx={{ mt: 3 }} onClick={handleVerifyPayment} disabled={payingOrderId === selectedOrder?.id}>
-            {payingOrderId === selectedOrder?.id ? 'Processing...' : 'Verify & Pay'}
+          <Button
+            variant="contained"
+            fullWidth
+            color="success"
+            sx={{ mt: 3 }}
+            onClick={handleVerifyPayment}
+          >
+            Verify & Pay
           </Button>
+
         </Box>
       </Modal>
 

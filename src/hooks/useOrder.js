@@ -90,19 +90,16 @@ const useOrderManager = (role = 'buyer') => {
     dispatch(updateOrderStatusAction({ orderId, status }));
   }, [dispatch]);
 
-useEffect(() => {
-  console.log("useEffect running because of role or fetch functions", role);
-
-  if (role === 'buyer') {
-    fetchBuyerOrders();
-    fetchPaymentStatus();
-    fetchSellerProducts();
-    console.log("From buyer");
-  } else if (role === 'seller') {
-    fetchSellerOrders();
-    fetchSellerProducts();
-  }
-}, [role, fetchBuyerOrders, fetchPaymentStatus, fetchSellerOrders, fetchSellerProducts]);
+  useEffect(() => {
+    if (role === 'buyer') {
+      fetchBuyerOrders();
+      fetchPaymentStatus();
+      fetchSellerProducts();      
+    } else if (role === 'seller') {
+      fetchSellerOrders();
+      fetchSellerProducts();
+    }
+  }, [role, fetchBuyerOrders, fetchPaymentStatus, fetchSellerOrders, fetchSellerProducts]);
 
   return {
     role,
