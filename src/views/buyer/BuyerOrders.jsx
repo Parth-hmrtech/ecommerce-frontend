@@ -39,7 +39,6 @@ const BuyerOrders = () => {
 
   const { products = [] } = useSelector((state) => state.product);
 
-  console.log(orders);
 
   const [openRows, setOpenRows] = useState({});
   const [editAddressRow, setEditAddressRow] = useState(null);
