@@ -100,7 +100,6 @@ const deleteBuyerIdCartAction = createAsyncThunk(
   'buyerCart/deleteAllByBuyerId',
   async (buyerId, { fulfillWithValue, rejectWithValue }) => {
     try {   
-      console.log(buyerId);
          
       const response = await apiRequest({
         method: 'DELETE',

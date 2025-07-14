@@ -12,7 +12,7 @@ const initialState = {
   message: '',
   apiName: '',
   alertType: '',
-  success: false, 
+  success: false,
 };
 
 const authSlice = createSlice({
@@ -26,9 +26,11 @@ const authSlice = createSlice({
       state.error = false;
     },
     setAuthError: (state, action) => {
-      state.alertType = action.payload.alertType;
-      state.apiName = action.payload.apiName;
-      state.message = action.payload.message;
+      const { alertType, apiName, message } = action.payload;
+      state.alertType = alertType;
+      state.apiName = apiName;
+      state.message = message;
+      state.error = true;
     },
     resetAuthState: (state) => {
       state.user = null;
@@ -41,63 +43,60 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(signUpUserAction.pending, (state) => {
-      state.apiName = 'auth/signUp';
-      state.loading = 'auth/signUp';
-      state.success = false; 
-    });
-    builder.addCase(signUpUserAction.fulfilled, (state, { payload }) => {
-      state.loading = '';
-      state.success = true;
-      state.alertType = 'success';
-      state.message = payload?.message ;
-      state.user = payload?.data?.user ;
-    });
-    builder.addCase(signUpUserAction.rejected, (state, { payload }) => {
-      state.loading = '';
-      state.success = false;
-      state.alertType = 'error';
-      if (payload) {
+    builder
+      .addCase(signUpUserAction.pending, (state) => {
+        state.apiName = 'auth/signUp';
+        state.loading = 'auth/signUp';
+        state.success = false;
+      })
+      .addCase(signUpUserAction.fulfilled, (state, { payload }) => {
+        state.loading = '';
+        state.success = true;
+        state.alertType = 'success';
         state.message = payload.message;
-      }
-    });
+        state.user = payload.data.user;
+      })
+      .addCase(signUpUserAction.rejected, (state, { payload }) => {
+        state.loading = '';
+        state.success = false;
+        state.alertType = 'error';
+        state.message = payload.message;
+      });
 
-    builder.addCase(signInUserAction.pending, (state) => {
-      state.apiName = 'auth/signIn';
-      state.loading = 'auth/signIn';
-    });
-    builder.addCase(signInUserAction.fulfilled, (state, { payload }) => {
-      state.loading = '';
-      state.alertType = 'success';
-      state.message = payload?.message ;
-      state.user = payload?.data?.user;
-      localStorage.setItem('user', JSON.stringify(payload?.data?.user));
-      localStorage.setItem('access_token', payload?.data?.token);
-    });
-    builder.addCase(signInUserAction.rejected, (state, { payload }) => {
-      state.loading = '';
-      state.alertType = 'error';
-      if (payload) {
+    builder
+      .addCase(signInUserAction.pending, (state) => {
+        state.apiName = 'auth/signIn';
+        state.loading = 'auth/signIn';
+      })
+      .addCase(signInUserAction.fulfilled, (state, { payload }) => {
+        state.loading = '';
+        state.alertType = 'success';
         state.message = payload.message;
-      }
-    });
+        state.user = payload.data.user;
+        localStorage.setItem('user', JSON.stringify(payload.data.user));
+        localStorage.setItem('access_token', payload.data.token);
+      })
+      .addCase(signInUserAction.rejected, (state, { payload }) => {
+        state.loading = '';
+        state.alertType = 'error';
+        state.message = payload.message;
+      });
 
-    builder.addCase(forgotPasswordAction.pending, (state) => {
-      state.apiName = 'auth/forgotPassword';
-      state.loading = 'auth/forgotPassword';
-    });
-    builder.addCase(forgotPasswordAction.fulfilled, (state, { payload }) => {
-      state.loading = '';
-      state.alertType = 'success';
-      state.message = payload?.message ;
-    });
-    builder.addCase(forgotPasswordAction.rejected, (state, { payload }) => {
-      state.loading = '';
-      state.alertType = 'error';
-      if (payload) {
+    builder
+      .addCase(forgotPasswordAction.pending, (state) => {
+        state.apiName = 'auth/forgotPassword';
+        state.loading = 'auth/forgotPassword';
+      })
+      .addCase(forgotPasswordAction.fulfilled, (state, { payload }) => {
+        state.loading = '';
+        state.alertType = 'success';
         state.message = payload.message;
-      }
-    });
+      })
+      .addCase(forgotPasswordAction.rejected, (state, { payload }) => {
+        state.loading = '';
+        state.alertType = 'error';
+        state.message = payload.message;
+      });
   },
 });
 

@@ -38,13 +38,13 @@ const signInUserAction = createAsyncThunk(
       });
 
       if (response?.status !== 200) {
-        return rejectWithValue(new Error("Something is wrong here"));
+        return rejectWithValue("Something is wrong here");
       }
 
-      return fulfillWithValue(response?.data);
+      return fulfillWithValue(response.data);
     } catch (error) {
       return rejectWithValue(
-        new Error(error?.data?.message || "Something is wrong here")
+        error?.response?.data?.message || "Something is wrong here"
       );
     }
   }
@@ -61,13 +61,13 @@ const forgotPasswordAction = createAsyncThunk(
       });
 
       if (response?.status !== 200) {
-        return rejectWithValue(new Error("Something is wrong here"));
+        return rejectWithValue("Something is wrong here");
       }
 
-      return fulfillWithValue(response?.data);
+      return fulfillWithValue(response.data);
     } catch (error) {
       return rejectWithValue(
-        new Error(error?.data?.message || "Something is wrong here")
+        error?.response?.data?.message || "Something is wrong here"
       );
     }
   }
