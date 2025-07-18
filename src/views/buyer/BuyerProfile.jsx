@@ -101,8 +101,6 @@ const BuyerProfile = () => {
     try {
       const res = await updateUserProfile({ id: userId, data }).unwrap();
       fetchUserProfile(userId);
-      console.log(res);
-
       const msg = res?.data?.message || res?.message;
       setUpdateAlertType('success');
       setUpdateMessage(msg);
